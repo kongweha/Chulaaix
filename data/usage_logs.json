@@ -1,0 +1,44 @@
+[
+  {
+    "sessionId": "session_1724395000_a1b2c",
+    "email": "chulaaix01@gmail.com",
+    "startTime": "2026-08-23T01:15:00.000Z",
+    "endTime": "2026-08-23T03:00:00.000Z",
+    "totalSessionSeconds": 6300,
+    "activeToolsTotalSeconds": 5400,
+    "tools": {
+      "ChatGPT": 2400,
+      "Claude": 1800,
+      "Perplexity": 1200
+    },
+    "createdAt": "2026-08-23T03:00:05.000Z"
+  },
+  {
+    "sessionId": "session_1724398000_d3e4f",
+    "email": "chulaaix09@gmail.com",
+    "startTime": "2026-08-23T03:30:00.000Z",
+    "endTime": "2026-08-23T05:45:00.000Z",
+    "totalSessionSeconds": 8100,
+    "activeToolsTotalSeconds": 7200,
+    "tools": {
+      "ChatGPT": 3600,
+      "QuillBot": 2100,
+      "SciSpace": 1500
+    },
+    "createdAt": "2026-08-23T05:45:05.000Z"
+  },
+  {
+    "sessionId": "session_1724401000_g5h6i",
+    "email": "student.cu@chula.ac.th",
+    "startTime": "2026-08-23T05:00:00.000Z",
+    "endTime": "2026-08-23T06:10:00.000Z",
+    "totalSessionSeconds": 4200,
+    "activeToolsTotalSeconds": 3600,
+    "tools": {
+      "Perplexity": 1800,
+      "Claude": 1200,
+      "Gemini": 600
+    },
+    "createdAt": "2026-08-23T06:10:05.000Z"
+  }
+]
