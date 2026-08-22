@@ -73,12 +73,18 @@
                     <i data-lucide="download" class="w-4 h-4"></i>
                     <span>ส่งออก CSV</span>
                 </button>
-                <button onclick="openConfigModal()" class="flex items-center justify-center w-9 h-9 bg-white/10 hover:bg-white/20 text-white rounded-lg transition border border-white/20" title="ตั้งค่าแหล่งข้อมูล">
+                <button onclick="openConfigModal()" class="flex items-center justify-center w-9 h-9 bg-white/10 hover:bg-white/20 text-white rounded-lg transition border border-white/20" title="ตั้งค่าแหล่งข้อมูล & GitHub">
                     <i data-lucide="settings" class="w-4 h-4"></i>
                 </button>
             </div>
         </div>
     </header>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700">
+        <i id="toastIcon" data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>
+        <span id="toastMsg" class="text-sm font-medium">บันทึกสำเร็จ</span>
+    </div>
 
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
@@ -231,8 +237,14 @@
                     </h4>
                     <p class="text-xs text-slate-400 mt-0.5">แสดงข้อมูลเวลาการเปิดใช้งานแยกรายบุคคลและรายเครื่องมือ</p>
                 </div>
-                <div id="tableCountBadge" class="text-xs font-semibold bg-slate-100 text-slate-600 px-3 py-1 rounded-full">
-                    ทั้งหมด 0 รายการ
+                <div class="flex items-center gap-3">
+                    <div id="tableCountBadge" class="text-xs font-semibold bg-slate-100 text-slate-600 px-3 py-1 rounded-full">
+                        ทั้งหมด 0 รายการ
+                    </div>
+                    <button onclick="confirmClearAllLogs()" class="flex items-center gap-1.5 px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold rounded-lg border border-rose-200 transition active:scale-95" title="ล้างประวัติทั้งหมด">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        <span>ลบทั้งหมด</span>
+                    </button>
                 </div>
             </div>
 
@@ -244,7 +256,7 @@
                             <th class="px-5 py-3.5">ผู้ใช้งาน (Email)</th>
                             <th class="px-5 py-3.5">เวลารวม Session</th>
                             <th class="px-5 py-3.5">สัดส่วนเวลาเครื่องมือ AI ที่เปิดค้างไว้</th>
-                            <th class="px-5 py-3.5 text-right">สถานะ</th>
+                            <th class="px-5 py-3.5 text-center">จัดการ</th>
                         </tr>
                     </thead>
                     <tbody id="logsTableBody" class="divide-y divide-slate-100">
@@ -279,7 +291,7 @@
             <div class="flex items-center justify-between">
                 <h3 class="font-bold text-slate-800 flex items-center gap-2">
                     <i data-lucide="database" class="w-5 h-5 text-brand-600"></i>
-                    ตั้งค่าแหล่งข้อมูล (Data Source)
+                    ตั้งค่า GitHub & แหล่งข้อมูล
                 </h3>
                 <button onclick="closeConfigModal()" class="text-slate-400 hover:text-slate-600">
                     <i data-lucide="x" class="w-5 h-5"></i>
@@ -288,27 +300,29 @@
 
             <div class="space-y-3 text-sm">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">GitHub Raw JSON URL / Path</label>
-                    <input type="text" id="customDataUrl" placeholder="data/usage_logs.json หรือ Raw GitHub URL" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
-                    <p class="text-[11px] text-slate-400 mt-1">สามารถใส่ Path ใน repo หรือ Raw URL จาก GitHub</p>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">GitHub Owner (Username)</label>
+                    <input type="text" id="cfgOwner" value="kongweha" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
                 </div>
-
-                <div class="pt-2 border-t border-slate-100">
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">หรือ อัปโหลดไฟล์ JSON โดยตรง</label>
-                    <input type="file" id="jsonFileInput" accept=".json" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">GitHub Repository</label>
+                    <input type="text" id="cfgRepo" value="Chulaaix" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">GitHub Token (PAT)</label>
+                    <input type="password" id="cfgToken" placeholder="ghp_xxxxxxxxxxxx" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+                    <p class="text-[11px] text-slate-400 mt-1">ใช้สำหรับการกดลบข้อมูลและอัปเดตไฟล์บน GitHub โดยตรง</p>
                 </div>
             </div>
 
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeConfigModal()" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-xl">ยกเลิก</button>
-                <button onclick="saveDataSourceConfig()" class="px-4 py-2 text-sm bg-brand-700 hover:bg-brand-800 text-white font-medium rounded-xl shadow">บันทึกและโหลดข้อมูล</button>
+                <button onclick="saveDataSourceConfig()" class="px-4 py-2 text-sm bg-brand-700 hover:bg-brand-800 text-white font-medium rounded-xl shadow">บันทึกการตั้งค่า</button>
             </div>
         </div>
     </div>
 
     <!-- Application Script -->
     <script>
-        // Color Palette for AI Tools
         const TOOL_COLORS = {
             'ChatGPT': '#10a37f',
             'Claude': '#d97706',
@@ -332,18 +346,37 @@
         let dailyChart = null;
         let topUsersChart = null;
 
-        // Default Data URL
-        let dataUrl = localStorage.getItem('aix_data_url') || 'data/usage_logs.json';
+        // GitHub Configuration
+        let githubOwner = localStorage.getItem('aix_gh_owner') || 'kongweha';
+        let githubRepo = localStorage.getItem('aix_gh_repo') || 'Chulaaix';
+        let githubToken = localStorage.getItem('aix_gh_token') || '';
+        let dataFilePath = 'data/usage_logs.json';
 
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-            document.getElementById('customDataUrl').value = dataUrl;
+            document.getElementById('cfgOwner').value = githubOwner;
+            document.getElementById('cfgRepo').value = githubRepo;
+            document.getElementById('cfgToken').value = githubToken;
             loadData();
         });
 
-        // Format Seconds to H:M:S
+        function showToast(msg, isSuccess = true) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+            toastMsg.textContent = msg;
+            toastIcon.setAttribute('data-lucide', isSuccess ? 'check-circle' : 'alert-circle');
+            toastIcon.className = `w-5 h-5 ${isSuccess ? 'text-emerald-400' : 'text-rose-400'}`;
+            lucide.createIcons();
+
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
         function formatDuration(totalSeconds) {
-            if (!totalSeconds || totalSeconds < 1) return '0 วินาที';
+            if (!totalSeconds || totalSeconds < 1) return '0 วิ';
             const h = Math.floor(totalSeconds / 3600);
             const m = Math.floor((totalSeconds % 3600) / 60);
             const s = totalSeconds % 60;
@@ -354,25 +387,42 @@
             return parts.join(' ');
         }
 
-        // Fetch Data
+        // Fetch Data from GitHub API (or fallback to local file)
         async function loadData() {
+            document.getElementById('lastUpdatedText').textContent = 'กำลังโหลดข้อมูลจาก GitHub...';
             try {
-                const res = await fetch(dataUrl + '?t=' + Date.now());
-                if (!res.ok) throw new Error('Cannot fetch data file');
-                rawLogs = await res.json();
+                // Fetch directly from GitHub API for real-time fresh data
+                const url = `https://api.github.com/repos/${githubOwner}/${githubRepo}/contents/${dataFilePath}?t=${Date.now()}`;
+                const headers = { 'Accept': 'application/vnd.github.v3+json' };
+                if (githubToken) headers['Authorization'] = `token ${githubToken}`;
+
+                const res = await fetch(url, { headers });
+                if (res.ok) {
+                    const data = await res.json();
+                    const contentStr = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+                    rawLogs = JSON.parse(contentStr);
+                } else {
+                    // Fallback to relative path
+                    const fallbackRes = await fetch(dataFilePath + '?t=' + Date.now());
+                    if (fallbackRes.ok) rawLogs = await fallbackRes.json();
+                }
+
                 if (!Array.isArray(rawLogs)) rawLogs = [];
-                
+                // Sort latest first
+                rawLogs.sort((a, b) => new Date(b.startTime || b.createdAt) - new Date(a.startTime || a.createdAt));
+
                 document.getElementById('lastUpdatedText').textContent = 'อัปเดตล่าสุด: ' + new Date().toLocaleTimeString('th-TH');
                 applyFilters();
             } catch (err) {
-                console.warn('Fallback to sample data:', err);
-                document.getElementById('lastUpdatedText').textContent = 'โหลดข้อมูลไม่สำเร็จ (ใช้ข้อมูลจำลอง)';
+                console.error('Error loading data:', err);
+                document.getElementById('lastUpdatedText').textContent = 'โหลดข้อมูลไม่สำเร็จ';
                 applyFilters();
             }
         }
 
         function refreshData() {
             loadData();
+            showToast('รีเฟรชข้อมูลล่าสุดแล้ว');
         }
 
         // Filter Logic
@@ -384,16 +434,13 @@
             const now = new Date();
 
             filteredLogs = rawLogs.filter(log => {
-                // Email Search
                 const matchEmail = (log.email || '').toLowerCase().includes(query);
 
-                // Tool Filter
                 let matchTool = true;
                 if (tool !== 'all') {
                     matchTool = log.tools && log.tools[tool] && log.tools[tool] > 0;
                 }
 
-                // Date Filter
                 let matchDate = true;
                 if (dateRange !== 'all') {
                     const logDate = new Date(log.startTime || log.createdAt);
@@ -410,14 +457,13 @@
             updateDashboard();
         }
 
-        // Update All Dashboard Components
         function updateDashboard() {
             updateMetrics();
             renderCharts();
             renderTable();
         }
 
-        // 1. Calculate Metrics
+        // Metrics
         function updateMetrics() {
             let totalSec = 0;
             let activeToolsSec = 0;
@@ -436,7 +482,6 @@
                 }
             });
 
-            // Find top tool
             let topTool = '-';
             let topToolMaxSec = 0;
             for (const [t, s] of Object.entries(toolUsageMap)) {
@@ -454,7 +499,7 @@
             document.getElementById('statTopToolTime').textContent = topTool !== '-' ? formatDuration(topToolMaxSec) : 'ไม่มีข้อมูล';
         }
 
-        // 2. Render Charts
+        // Charts
         function renderCharts() {
             // A. Tool Pie Chart
             const toolAgg = {};
@@ -467,7 +512,7 @@
             });
 
             const toolLabels = Object.keys(toolAgg);
-            const toolData = Object.values(toolAgg).map(s => Math.round(s / 60)); // in minutes
+            const toolData = Object.values(toolAgg).map(s => Math.round(s / 60));
             const toolColors = toolLabels.map(t => TOOL_COLORS[t] || '#94a3b8');
 
             if (pieChart) pieChart.destroy();
@@ -498,11 +543,11 @@
                 }
             });
 
-            // B. Daily Trends Chart
+            // B. Daily Trends
             const dailyAgg = {};
             filteredLogs.forEach(log => {
                 const d = new Date(log.startTime || log.createdAt).toLocaleDateString('th-TH', { month: 'short', day: 'numeric' });
-                dailyAgg[d] = (dailyAgg[d] || 0) + ((log.totalSessionSeconds || 0) / 3600); // hours
+                dailyAgg[d] = (dailyAgg[d] || 0) + ((log.totalSessionSeconds || 0) / 3600);
             });
 
             const dayLabels = Object.keys(dailyAgg);
@@ -528,13 +573,11 @@
                         y: { beginAtZero: true, title: { display: true, text: 'ชั่วโมง', font: { family: 'Prompt' } } },
                         x: { grid: { display: false } }
                     },
-                    plugins: {
-                        legend: { display: false }
-                    }
+                    plugins: { legend: { display: false } }
                 }
             });
 
-            // C. Top Users Chart
+            // C. Top Users
             const userAgg = {};
             filteredLogs.forEach(log => {
                 const em = log.email || 'Anonymous';
@@ -543,7 +586,7 @@
 
             const sortedUsers = Object.entries(userAgg).sort((a, b) => b[1] - a[1]).slice(0, 5);
             const userLabels = sortedUsers.map(u => u[0]);
-            const userData = sortedUsers.map(u => Math.round(u[1] / 60)); // minutes
+            const userData = sortedUsers.map(u => Math.round(u[1] / 60));
 
             if (topUsersChart) topUsersChart.destroy();
             const ctxUsers = document.getElementById('topUsersChart').getContext('2d');
@@ -566,20 +609,18 @@
                         x: { beginAtZero: true, title: { display: true, text: 'นาที (Minutes)', font: { family: 'Prompt' } } },
                         y: { grid: { display: false } }
                     },
-                    plugins: {
-                        legend: { display: false }
-                    }
+                    plugins: { legend: { display: false } }
                 }
             });
         }
 
-        // 3. Render Session Logs Table
+        // Render Table with Delete Actions
         function renderTable() {
             const tbody = document.getElementById('logsTableBody');
             document.getElementById('tableCountBadge').textContent = `ทั้งหมด ${filteredLogs.length} รายการ`;
 
             if (filteredLogs.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-400">ไม่พบประวัติการใช้งานที่ตรงตามเงื่อนไข</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-slate-400">ไม่พบประวัติการใช้งาน</td></tr>`;
                 return;
             }
 
@@ -587,10 +628,9 @@
             const pageLogs = filteredLogs.slice(startIndex, startIndex + pageSize);
 
             let html = '';
-            pageLogs.forEach(log => {
+            pageLogs.forEach((log) => {
                 const start = new Date(log.startTime || log.createdAt).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' });
                 
-                // Render Tool breakdown chips
                 let toolBadges = '';
                 if (log.tools && Object.keys(log.tools).length > 0) {
                     for (const [tool, sec] of Object.entries(log.tools)) {
@@ -607,7 +647,7 @@
                 }
 
                 html += `
-                    <tr class="hover:bg-slate-50/80 transition">
+                    <tr class="hover:bg-slate-50/80 transition group">
                         <td class="px-5 py-4 whitespace-nowrap font-medium text-slate-700">${start}</td>
                         <td class="px-5 py-4 whitespace-nowrap">
                             <div class="flex items-center gap-2">
@@ -625,18 +665,18 @@
                                 ${toolBadges}
                             </div>
                         </td>
-                        <td class="px-5 py-4 whitespace-nowrap text-right">
-                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> บันทึกแล้ว
-                            </span>
+                        <td class="px-5 py-4 whitespace-nowrap text-center">
+                            <button onclick="deleteSingleLog('${log.sessionId}')" class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition active:scale-95" title="ลบรายการนี้">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
                         </td>
                     </tr>
                 `;
             });
 
             tbody.innerHTML = html;
+            lucide.createIcons();
 
-            // Pagination Controls
             const totalPages = Math.ceil(filteredLogs.length / pageSize) || 1;
             document.getElementById('pageIndicator').textContent = `หน้า ${currentPage} จาก ${totalPages}`;
             document.getElementById('prevPageBtn').disabled = currentPage <= 1;
@@ -658,7 +698,81 @@
             }
         }
 
-        // Export Table to CSV
+        // Delete Single Log
+        async function deleteSingleLog(sessionId) {
+            if (!confirm('ยืนยันที่จะลบประวัติรายการนี้หรือไม่?')) return;
+
+            rawLogs = rawLogs.filter(l => l.sessionId !== sessionId);
+            applyFilters();
+
+            // Save to GitHub
+            await syncUpdatedLogsToGitHub(rawLogs, 'Delete session: ' + sessionId);
+        }
+
+        // Clear All Logs
+        async function confirmClearAllLogs() {
+            if (!confirm('⚠️ คำเตือน: คุณต้องการลบประวัติการใช้งานทั้งหมดหรือไม่? ข้อมูลทั้งหมดบน GitHub จะถูกล้าง')) return;
+
+            rawLogs = [];
+            applyFilters();
+
+            // Save empty list to GitHub
+            await syncUpdatedLogsToGitHub([], 'Clear all usage logs');
+        }
+
+        // Commit updated JSON back to GitHub
+        async function syncUpdatedLogsToGitHub(updatedList, commitMsg) {
+            if (!githubToken) {
+                showToast('บันทึกลงเครื่องแล้ว (กรุณาใส่ Token เพื่อซิงค์ขึ้น GitHub)', false);
+                return;
+            }
+
+            try {
+                const url = `https://api.github.com/repos/${githubOwner}/${githubRepo}/contents/${dataFilePath}`;
+                
+                // 1. Get SHA
+                const getRes = await fetch(url, {
+                    headers: {
+                        'Authorization': `token ${githubToken}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                let sha = null;
+                if (getRes.ok) {
+                    const fileObj = await getRes.json();
+                    sha = fileObj.sha;
+                }
+
+                // 2. Put new content
+                const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(updatedList, null, 2))));
+                const putBody = {
+                    message: commitMsg,
+                    content: b64,
+                    branch: 'main'
+                };
+                if (sha) putBody.sha = sha;
+
+                const putRes = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${githubToken}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(putBody)
+                });
+
+                if (putRes.ok) {
+                    showToast('✅ ลบข้อมูลและอัปเดตบน GitHub สำเร็จ!');
+                } else {
+                    showToast('⚠️ อัปเดต GitHub ไม่สำเร็จ: ' + putRes.status, false);
+                }
+            } catch (err) {
+                console.error('GitHub API update error:', err);
+                showToast('❌ ข้อผิดพลาดในการเชื่อมต่อ GitHub', false);
+            }
+        }
+
         function exportCSV() {
             if (filteredLogs.length === 0) {
                 alert('ไม่มีข้อมูลสำหรับส่งออก');
@@ -685,7 +799,6 @@
             URL.revokeObjectURL(url);
         }
 
-        // Modal Controls
         function openConfigModal() {
             document.getElementById('configModal').classList.remove('hidden');
         }
@@ -695,32 +808,17 @@
         }
 
         function saveDataSourceConfig() {
-            const customUrl = document.getElementById('customDataUrl').value.trim();
-            const fileInput = document.getElementById('jsonFileInput');
+            githubOwner = document.getElementById('cfgOwner').value.trim();
+            githubRepo = document.getElementById('cfgRepo').value.trim();
+            githubToken = document.getElementById('cfgToken').value.trim();
 
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        rawLogs = JSON.parse(e.target.result);
-                        applyFilters();
-                        closeConfigModal();
-                        alert('✅ อัปโหลดและแสดงผลไฟล์ JSON สำเร็จ!');
-                    } catch (err) {
-                        alert('❌ ไฟล์ JSON ไม่ถูกต้อง');
-                    }
-                };
-                reader.readAsText(file);
-                return;
-            }
+            localStorage.setItem('aix_gh_owner', githubOwner);
+            localStorage.setItem('aix_gh_repo', githubRepo);
+            localStorage.setItem('aix_gh_token', githubToken);
 
-            if (customUrl) {
-                dataUrl = customUrl;
-                localStorage.setItem('aix_data_url', customUrl);
-                loadData();
-                closeConfigModal();
-            }
+            closeConfigModal();
+            loadData();
+            showToast('บันทึกการตั้งค่าเรียบร้อยแล้ว');
         }
     </script>
 </body>
