@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chula AIX - AI Analytics & Registration Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Prompt & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fbf5fd',
+                            100: '#f5e8fb',
+                            200: '#edd4f8',
+                            300: '#deb3f3',
+                            400: '#c785eb',
+                            500: '#ae5be0',
+                            600: '#943dcb',
+                            700: '#7b2fa0',
+                            800: '#672884',
+                            900: '#55236b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Prompt', 'Inter', sans-serif; background-color: #f8fafc; }
+        .gradient-brand { background: linear-gradient(135deg, #a855c8 0%, #7b2fa0 100%); }
+        .badge-tool { transition: all 0.2s; }
+        .badge-tool:hover { transform: translateY(-1px); }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <header class="gradient-brand text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-inner">
+                    <i data-lucide="cpu" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-wide flex items-center gap-2">
+                        Chula AIX <span class="text-xs bg-white/20 px-2 py-0.5 rounded-full font-normal border border-white/30">Analytics & Registry</span>
+                    </h1>
+                    <p class="text-xs text-white/80">ระบบติดตามการใช้งานและฐานข้อมูลผู้ลงทะเบียน AI</p>
+                </div>
+            </div>
+
+            <!-- Header Controls -->
+            <div class="flex items-center gap-2.5">
+                <button onclick="refreshAllData()" class="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 active:scale-95 text-white px-3.5 py-1.5 rounded-lg text-sm font-medium transition border border-white/20">
+                    <i data-lucide="rotate-cw" class="w-4 h-4"></i>
+                    <span>รีเฟรช</span>
+                </button>
+                <button onclick="exportCurrentCSV()" class="flex items-center gap-1.5 bg-white text-brand-700 hover:bg-white/90 active:scale-95 px-3.5 py-1.5 rounded-lg text-sm font-semibold shadow transition">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>ส่งออก CSV</span>
+                </button>
+                <button onclick="openConfigModal()" class="flex items-center justify-center w-9 h-9 bg-white/10 hover:bg-white/20 text-white rounded-lg transition border border-white/20" title="ตั้งค่าแหล่งข้อมูล Firebase & GitHub">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700">
+        <i id="toastIcon" data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>
+        <span id="toastMsg" class="text-sm font-medium">บันทึกสำเร็จ</span>
+    </div>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
+
+        <!-- Top Navigation Tabs (Usage Logs vs Registered Users) -->
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2 flex-wrap gap-4">
+            <div class="flex items-center gap-2">
+                <button id="tabBtnUsage" onclick="switchDashboardTab('usage')" class="px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition bg-brand-700 text-white shadow-md shadow-brand-500/20">
+                    <i data-lucide="activity" class="w-4 h-4"></i>
+                    <span>สถิติการใช้งาน AI (Usage Analytics)</span>
+                </button>
+                <button id="tabBtnUsers" onclick="switchDashboardTab('users')" class="px-5 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                    <span>ผู้ลงทะเบียน (Registered Users)</span>
+                    <span id="badgeUserCount" class="bg-purple-100 text-brand-700 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                </button>
+            </div>
+
+            <div class="text-xs text-slate-400 font-medium flex items-center gap-1.5">
+                <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                <span id="lastUpdatedText">กำลังโหลดข้อมูล...</span>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- TAB 1: USAGE ANALYTICS SECTION -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div id="tabContentUsage" class="space-y-6">
+
+            <!-- Filter Bar for Usage -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex flex-wrap items-center gap-3 flex-1 min-w-[280px]">
+                    <!-- Search Input -->
+                    <div class="relative flex-1 min-w-[220px]">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" id="searchInput" oninput="applyFilters()" placeholder="ค้นหาด้วยอีเมล / รหัสนิสิต..." class="w-full pl-9 pr-4 py-2 bg-slate-50 hover:bg-slate-100/80 focus:bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition">
+                    </div>
+
+                    <!-- Tool Filter -->
+                    <select id="toolFilter" onchange="applyFilters()" class="py-2 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition text-slate-600 font-medium">
+                        <option value="all">เครื่องมือทั้งหมด (All AI Tools)</option>
+                        <option value="ChatGPT">ChatGPT</option>
+                        <option value="Claude">Claude</option>
+                        <option value="Grammarly">Grammarly</option>
+                        <option value="Connected Papers">Connected Papers</option>
+                        <option value="Runway">Runway</option>
+                        <option value="Consensus">Consensus</option>
+                        <option value="SciSpace">SciSpace</option>
+                        <option value="Perplexity">Perplexity</option>
+                        <option value="QuillBot">QuillBot</option>
+                        <option value="Gemini">Gemini</option>
+                    </select>
+
+                    <!-- Date Filter -->
+                    <select id="dateFilter" onchange="applyFilters()" class="py-2 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition text-slate-600 font-medium">
+                        <option value="all">ช่วงเวลาทั้งหมด</option>
+                        <option value="today">วันนี้</option>
+                        <option value="7days">7 วันล่าสุด</option>
+                        <option value="30days">30 วันล่าสุด</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Metrics Overview Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <!-- Total Session Hours -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 relative overflow-hidden group">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">เวลารวมทั้งหมด (Session)</p>
+                            <h3 id="statTotalTime" class="text-2xl font-bold text-slate-800 mt-1.5">0 ชม. 0 นาที</h3>
+                            <p id="statActiveToolsTime" class="text-xs text-brand-600 font-medium mt-1">เวลาบน AI จริง: 0 นาที</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-purple-50 text-brand-600 flex items-center justify-center group-hover:scale-110 transition">
+                            <i data-lucide="clock-9" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Sessions -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 relative overflow-hidden group">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">จำนวนรอบการเข้าใช้</p>
+                            <h3 id="statTotalSessions" class="text-2xl font-bold text-slate-800 mt-1.5">0</h3>
+                            <p id="statAvgSessionTime" class="text-xs text-slate-500 mt-1">เฉลี่ย: 0 นาที / รอบ</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition">
+                            <i data-lucide="zap" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unique Users -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 relative overflow-hidden group">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">ผู้ใช้งานที่บันทึกเวลา</p>
+                            <h3 id="statUniqueUsers" class="text-2xl font-bold text-slate-800 mt-1.5">0</h3>
+                            <p class="text-xs text-emerald-600 font-medium mt-1">ผู้ใช้ที่มีประวัติการใช้งาน</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition">
+                            <i data-lucide="user-check" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top AI Tool -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 relative overflow-hidden group">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">AI Tool ที่นิยมสูงสุด</p>
+                            <h3 id="statTopTool" class="text-2xl font-bold text-slate-800 mt-1.5">-</h3>
+                            <p id="statTopToolTime" class="text-xs text-slate-500 mt-1">0 นาที</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-110 transition">
+                            <i data-lucide="award" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Tool Usage Bar Chart -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 lg:col-span-2">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base">สัดส่วนระยะเวลาการใช้งาน AI แต่ละเครื่องมือ</h3>
+                            <p class="text-xs text-slate-400">Total active time spent per AI tool</p>
+                        </div>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="toolChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Tool Share Donut Chart -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base">สัดส่วนความนิยม</h3>
+                            <p class="text-xs text-slate-400">Share of AI Tools usage</p>
+                        </div>
+                    </div>
+                    <div class="h-64 flex items-center justify-center">
+                        <canvas id="donutChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Usage Logs Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base">บันทึกประวัติการใช้งานล่าสุด</h3>
+                        <p class="text-xs text-slate-400">AI Tool usage session history</p>
+                    </div>
+                    <span id="logCountText" class="text-xs bg-slate-200/70 text-slate-600 font-semibold px-2.5 py-1 rounded-full">แสดง 0 รายการ</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-100 text-slate-400 text-xs uppercase tracking-wider bg-slate-50/30">
+                                <th class="py-3.5 px-6 font-semibold">ผู้ใช้งาน (Email / ID)</th>
+                                <th class="py-3.5 px-6 font-semibold">ช่วงเวลา (Time)</th>
+                                <th class="py-3.5 px-6 font-semibold">เวลารวม (Session)</th>
+                                <th class="py-3.5 px-6 font-semibold">เวลาบน AI (Active)</th>
+                                <th class="py-3.5 px-6 font-semibold">เครื่องมือที่ใช้ (Tools)</th>
+                                <th class="py-3.5 px-6 font-semibold text-right">การจัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody" class="divide-y divide-slate-100 text-sm">
+                            <tr>
+                                <td colspan="6" class="py-8 text-center text-slate-400">กำลังโหลดข้อมูล...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- TAB 2: REGISTERED USERS SECTION -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div id="tabContentUsers" class="hidden space-y-6">
+
+            <!-- Registered Users Metrics -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">ผู้ลงทะเบียนทั้งหมด</p>
+                    <h3 id="statRegTotal" class="text-2xl font-bold text-slate-800 mt-1.5">0 คน</h3>
+                    <p class="text-xs text-brand-600 font-medium mt-1">ฐานข้อมูล Firebase Realtime</p>
+                </div>
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">นิสิตจุฬาฯ (Students)</p>
+                    <h3 id="statRegStudents" class="text-2xl font-bold text-purple-700 mt-1.5">0 คน</h3>
+                    <p id="statRegStudentsPct" class="text-xs text-slate-500 mt-1">0% ของผู้ลงทะเบียน</p>
+                </div>
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">บุคลากรจุฬาฯ (Personnel)</p>
+                    <h3 id="statRegPersonnel" class="text-2xl font-bold text-indigo-700 mt-1.5">0 คน</h3>
+                    <p id="statRegPersonnelPct" class="text-xs text-slate-500 mt-1">0% ของผู้ลงทะเบียน</p>
+                </div>
+            </div>
+
+            <!-- Registered Users Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base">รายชื่อผู้ลงทะเบียนใช้งาน AI</h3>
+                        <p class="text-xs text-slate-400">All registered Chula Students & Personnel</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="searchUserInput" oninput="applyUserFilters()" placeholder="ค้นหาผู้ลงทะเบียน..." class="px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+                        <span id="regUserCountBadge" class="text-xs bg-purple-100 text-brand-700 font-bold px-2.5 py-1 rounded-full">0 คน</span>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-100 text-slate-400 text-xs uppercase tracking-wider bg-slate-50/30">
+                                <th class="py-3.5 px-6 font-semibold">ประเภทผู้ใช้</th>
+                                <th class="py-3.5 px-6 font-semibold">รหัสนิสิต / อีเมล</th>
+                                <th class="py-3.5 px-6 font-semibold">คณะ / หน่วยงาน</th>
+                                <th class="py-3.5 px-6 font-semibold">ระดับการศึกษา / ตำแหน่ง</th>
+                                <th class="py-3.5 px-6 font-semibold">วันที่ลงทะเบียน</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody" class="divide-y divide-slate-100 text-sm">
+                            <tr>
+                                <td colspan="5" class="py-8 text-center text-slate-400">กำลังโหลดรายชื่อผู้ลงทะเบียน...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Configuration Modal -->
+    <div id="configModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 w-full max-w-lg p-6 space-y-5 transform transition-all">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                    <i data-lucide="database" class="w-5 h-5 text-brand-600"></i>
+                    ตั้งค่าแหล่งข้อมูล (Firebase & GitHub)
+                </h3>
+                <button onclick="closeConfigModal()" class="text-slate-400 hover:text-slate-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-sm">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Firebase Project ID</label>
+                    <input type="text" id="cfgProjectId" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl font-mono text-xs focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500" value="chula-aix">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">GitHub Owner</label>
+                    <input type="text" id="cfgOwner" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl font-mono text-xs focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">GitHub Repository</label>
+                    <input type="text" id="cfgRepo" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl font-mono text-xs focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">GitHub Personal Access Token (Fallback)</label>
+                    <input type="password" id="cfgToken" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl font-mono text-xs focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                <button onclick="closeConfigModal()" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-sm font-medium">ยกเลิก</button>
+                <button onclick="saveConfig()" class="px-5 py-2 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-sm font-semibold shadow">บันทึกการตั้งค่า</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Firebase Config File -->
+    <script src="../config/firebase-config.js"></script>
+
+    <!-- Firebase SDK Compat -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <!-- Script Logic -->
+    <script>
+        // State Variables
+        let currentTab = 'usage';
+        let rawLogs = [];
+        let filteredLogs = [];
+        let rawUsers = [];
+        let filteredUsers = [];
+        let toolChartInstance = null;
+        let donutChartInstance = null;
+
+        // Config from firebase-config.js with fallback
+        const activeFirebaseConfig = window.FIREBASE_CONFIG || {
+            apiKey: "AIzaSyCLQkUz59m3twJMQFoBL5xO9_VmZZHwU0c",
+            authDomain: "chula-aix.firebaseapp.com",
+            projectId: "chula-aix",
+            storageBucket: "chula-aix.firebasestorage.app",
+            messagingSenderId: "692837434850",
+            appId: "1:692837434850:web:44867ec5fa00b01d5525bb",
+            measurementId: "G-TP02CWZWY2"
+        };
+
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(activeFirebaseConfig);
+            }
+        } catch (e) {
+            console.warn('Firebase init warning:', e);
+        }
+
+        let githubOwner = localStorage.getItem('aix_gh_owner') || 'kongweha';
+        let githubRepo = localStorage.getItem('aix_gh_repo') || 'Chulaaix';
+        let githubToken = localStorage.getItem('aix_gh_token') || '';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            document.getElementById('cfgOwner').value = githubOwner;
+            document.getElementById('cfgRepo').value = githubRepo;
+            document.getElementById('cfgToken').value = githubToken;
+            loadAllData();
+        });
+
+        function switchDashboardTab(tab) {
+            currentTab = tab;
+            const btnUsage = document.getElementById('tabBtnUsage');
+            const btnUsers = document.getElementById('tabBtnUsers');
+            const contentUsage = document.getElementById('tabContentUsage');
+            const contentUsers = document.getElementById('tabContentUsers');
+
+            if (tab === 'usage') {
+                btnUsage.className = 'px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition bg-brand-700 text-white shadow-md shadow-brand-500/20';
+                btnUsers.className = 'px-5 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition bg-white text-slate-600 hover:bg-slate-100 border border-slate-200';
+                contentUsage.classList.remove('hidden');
+                contentUsers.classList.add('hidden');
+            } else {
+                btnUsers.className = 'px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition bg-brand-700 text-white shadow-md shadow-brand-500/20';
+                btnUsage.className = 'px-5 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition bg-white text-slate-600 hover:bg-slate-100 border border-slate-200';
+                contentUsers.classList.remove('hidden');
+                contentUsage.classList.add('hidden');
+            }
+            lucide.createIcons();
+        }
+
+        function showToast(msg, isSuccess = true) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+            toastMsg.textContent = msg;
+            toastIcon.setAttribute('data-lucide', isSuccess ? 'check-circle' : 'alert-circle');
+            toastIcon.className = `w-5 h-5 ${isSuccess ? 'text-emerald-400' : 'text-rose-400'}`;
+            lucide.createIcons();
+
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        function formatDuration(totalSeconds) {
+            if (!totalSeconds || totalSeconds < 1) return '0 วิ';
+            const h = Math.floor(totalSeconds / 3600);
+            const m = Math.floor((totalSeconds % 3600) / 60);
+            const s = totalSeconds % 60;
+            let parts = [];
+            if (h > 0) parts.push(`${h} ชม.`);
+            if (m > 0) parts.push(`${m} นาที`);
+            if (h === 0 && m === 0) parts.push(`${s} วิ`);
+            return parts.join(' ');
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // REAL-TIME DATA FETCHING (FIREBASE RTDB FIRST)
+        // ═══════════════════════════════════════════════════════════
+        async function loadAllData() {
+            document.getElementById('lastUpdatedText').textContent = 'กำลังโหลดข้อมูล...';
+
+            // Real-time listener on usage_logs
+            try {
+                firebase.database().ref('usage_logs').on('value', snapshot => {
+                    const val = snapshot.val();
+                    rawLogs = [];
+                    if (val) {
+                        rawLogs = Array.isArray(val) ? val : Object.values(val);
+                    }
+                    rawLogs.sort((a, b) => new Date(b.startTime || b.createdAt) - new Date(a.startTime || a.createdAt));
+                    applyFilters();
+                    document.getElementById('lastUpdatedText').textContent = 'อัปเดตล่าสุด: ' + new Date().toLocaleTimeString('th-TH');
+                });
+            } catch (e) {
+                console.warn('RTDB usage logs listener note:', e);
+            }
+
+            // Real-time listener on registrations
+            try {
+                firebase.database().ref('registrations').on('value', snapshot => {
+                    const val = snapshot.val();
+                    rawUsers = [];
+                    if (val) {
+                        rawUsers = Array.isArray(val) ? val : Object.values(val);
+                    }
+                    rawUsers.sort((a, b) => new Date(b.registeredAt) - new Date(a.registeredAt));
+                    applyUserFilters();
+                });
+            } catch (e) {
+                console.warn('RTDB registrations listener note:', e);
+            }
+        }
+
+        function refreshAllData() {
+            loadAllData();
+            showToast('รีเฟรชข้อมูลล่าสุดทั้งหมดแล้ว');
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // USAGE LOGS FILTER & METRICS
+        // ═══════════════════════════════════════════════════════════
+        function applyFilters() {
+            const query = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
+            const tool = document.getElementById('toolFilter')?.value || 'all';
+            const dateRange = document.getElementById('dateFilter')?.value || 'all';
+            const now = new Date();
+
+            filteredLogs = rawLogs.filter(log => {
+                const matchEmail = (log.email || '').toLowerCase().includes(query) ||
+                                   (log.sessionId || '').toLowerCase().includes(query);
+
+                let matchTool = true;
+                if (tool !== 'all') {
+                    matchTool = log.tools && log.tools[tool] && log.tools[tool] > 0;
+                }
+
+                let matchDate = true;
+                if (dateRange !== 'all') {
+                    const logDate = new Date(log.startTime || log.createdAt);
+                    const diffDays = (now - logDate) / (1000 * 60 * 60 * 24);
+                    if (dateRange === 'today') matchDate = diffDays <= 1;
+                    else if (dateRange === '7days') matchDate = diffDays <= 7;
+                    else if (dateRange === '30days') matchDate = diffDays <= 30;
+                }
+
+                return matchEmail && matchTool && matchDate;
+            });
+
+            updateUsageMetrics();
+            renderUsageCharts();
+            renderUsageTable();
+        }
+
+        function updateUsageMetrics() {
+            let totalSessionSeconds = 0;
+            let totalActiveSeconds = 0;
+            let toolTotals = {};
+            let uniqueEmails = new Set();
+
+            filteredLogs.forEach(log => {
+                totalSessionSeconds += (log.totalSessionSeconds || 0);
+                totalActiveSeconds += (log.activeToolsTotalSeconds || 0);
+                if (log.email) uniqueEmails.add(log.email);
+
+                if (log.tools) {
+                    for (let [tName, sec] of Object.entries(log.tools)) {
+                        toolTotals[tName] = (toolTotals[tName] || 0) + sec;
+                    }
+                }
+            });
+
+            document.getElementById('statTotalTime').textContent = formatDuration(totalSessionSeconds);
+            document.getElementById('statActiveToolsTime').textContent = 'เวลาบน AI จริง: ' + formatDuration(totalActiveSeconds);
+            document.getElementById('statTotalSessions').textContent = filteredLogs.length.toLocaleString('th-TH');
+
+            const avgSec = filteredLogs.length > 0 ? Math.round(totalSessionSeconds / filteredLogs.length) : 0;
+            document.getElementById('statAvgSessionTime').textContent = 'เฉลี่ย: ' + formatDuration(avgSec) + ' / รอบ';
+            document.getElementById('statUniqueUsers').textContent = uniqueEmails.size.toLocaleString('th-TH') + ' คน';
+
+            // Top Tool
+            let topTool = '-';
+            let maxToolSec = 0;
+            for (let [tName, sec] of Object.entries(toolTotals)) {
+                if (sec > maxToolSec) {
+                    maxToolSec = sec;
+                    topTool = tName;
+                }
+            }
+            document.getElementById('statTopTool').textContent = topTool;
+            document.getElementById('statTopToolTime').textContent = maxToolSec > 0 ? formatDuration(maxToolSec) : '0 นาที';
+        }
+
+        function renderUsageCharts() {
+            let toolTotals = {};
+            filteredLogs.forEach(log => {
+                if (log.tools) {
+                    for (let [tName, sec] of Object.entries(log.tools)) {
+                        toolTotals[tName] = (toolTotals[tName] || 0) + sec;
+                    }
+                }
+            });
+
+            const labels = Object.keys(toolTotals);
+            const dataMinutes = labels.map(l => Math.round(toolTotals[l] / 60));
+            const colors = ['#a855f7', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#6366f1', '#14b8a6', '#8b5cf6', '#f97316', '#06b6d4'];
+
+            // Bar Chart
+            if (toolChartInstance) toolChartInstance.destroy();
+            const ctx1 = document.getElementById('toolChart').getContext('2d');
+            toolChartInstance = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: labels.length ? labels : ['ไม่มีข้อมูล'],
+                    datasets: [{
+                        label: 'ระยะเวลาใช้งาน (นาที)',
+                        data: dataMinutes.length ? dataMinutes : [0],
+                        backgroundColor: colors.slice(0, labels.length || 1),
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'นาที (Minutes)' } }
+                    }
+                }
+            });
+
+            // Donut Chart
+            if (donutChartInstance) donutChartInstance.destroy();
+            const ctx2 = document.getElementById('donutChart').getContext('2d');
+            donutChartInstance = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: labels.length ? labels : ['ไม่มีข้อมูล'],
+                    datasets: [{
+                        data: dataMinutes.length ? dataMinutes : [1],
+                        backgroundColor: colors.slice(0, labels.length || 1)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        }
+
+        function renderUsageTable() {
+            const tbody = document.getElementById('logsTableBody');
+            document.getElementById('logCountText').textContent = `แสดง ${filteredLogs.length.toLocaleString()} รายการ`;
+
+            if (filteredLogs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">ไม่พบประวัติการใช้งานตามเงื่อนไขที่เลือก</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filteredLogs.map((log, idx) => {
+                const toolsBadges = log.tools ? Object.entries(log.tools).map(([t, sec]) =>
+                    `<span class="badge-tool inline-flex items-center gap-1 bg-purple-50 text-brand-700 text-xs px-2 py-0.5 rounded-md font-medium border border-purple-200">
+                        ${t}: ${formatDuration(sec)}
+                    </span>`
+                ).join(' ') : '<span class="text-xs text-slate-400">-</span>';
+
+                const stDate = log.startTime ? new Date(log.startTime).toLocaleString('th-TH') : '-';
+
+                return `
+                <tr class="hover:bg-slate-50/80 transition">
+                    <td class="py-3.5 px-6 font-semibold text-slate-800">${log.email || 'Anonymous'}</td>
+                    <td class="py-3.5 px-6 text-xs text-slate-500">${stDate}</td>
+                    <td class="py-3.5 px-6 font-bold text-slate-700">${formatDuration(log.totalSessionSeconds)}</td>
+                    <td class="py-3.5 px-6 font-bold text-brand-700">${formatDuration(log.activeToolsTotalSeconds)}</td>
+                    <td class="py-3.5 px-6"><div class="flex flex-wrap gap-1">${toolsBadges}</div></td>
+                    <td class="py-3.5 px-6 text-right">
+                        <button onclick="deleteSingleLog('${log.sessionId}')" class="text-slate-400 hover:text-rose-600 transition" title="ลบรายการนี้">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // REGISTERED USERS FILTER & METRICS
+        // ═══════════════════════════════════════════════════════════
+        function applyUserFilters() {
+            const query = (document.getElementById('searchUserInput')?.value || '').trim().toLowerCase();
+
+            filteredUsers = rawUsers.filter(u => {
+                return (u.email || '').toLowerCase().includes(query) ||
+                       (u.studentId || '').toLowerCase().includes(query) ||
+                       (u.facultyName || '').toLowerCase().includes(query) ||
+                       (u.userType || '').toLowerCase().includes(query);
+            });
+
+            // Metrics
+            const total = rawUsers.length;
+            const students = rawUsers.filter(u => (u.userType || '').includes('นิสิต') || u.studentId).length;
+            const personnel = total - students;
+
+            document.getElementById('badgeUserCount').textContent = total.toString();
+            document.getElementById('statRegTotal').textContent = total.toLocaleString('th-TH') + ' คน';
+            document.getElementById('statRegStudents').textContent = students.toLocaleString('th-TH') + ' คน';
+            document.getElementById('statRegPersonnel').textContent = personnel.toLocaleString('th-TH') + ' คน';
+
+            const stPct = total > 0 ? Math.round((students / total) * 100) : 0;
+            const prPct = total > 0 ? Math.round((personnel / total) * 100) : 0;
+            document.getElementById('statRegStudentsPct').textContent = `${stPct}% ของผู้ลงทะเบียน`;
+            document.getElementById('statRegPersonnelPct').textContent = `${prPct}% ของผู้ลงทะเบียน`;
+
+            renderUsersTable();
+        }
+
+        function renderUsersTable() {
+            const tbody = document.getElementById('usersTableBody');
+            document.getElementById('regUserCountBadge').textContent = `${filteredUsers.length} คน`;
+
+            if (filteredUsers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400">ยังไม่มีผู้ลงทะเบียนในระบบ</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filteredUsers.map(u => {
+                const isStudent = (u.userType || '').includes('นิสิต') || !!u.studentId;
+                const typeBadge = isStudent
+                    ? `<span class="bg-purple-100 text-chula-900 border border-purple-300 text-xs px-2.5 py-1 rounded-full font-bold">นิสิต (Student)</span>`
+                    : `<span class="bg-indigo-100 text-indigo-900 border border-indigo-300 text-xs px-2.5 py-1 rounded-full font-bold">บุคลากร (Personnel)</span>`;
+
+                const regDate = u.registeredAt ? new Date(u.registeredAt).toLocaleString('th-TH') : '-';
+                const detail = isStudent ? (u.degree || 'ปริญญาตรี') : (u.personnelType || 'บุคลากร');
+
+                return `
+                <tr class="hover:bg-slate-50/80 transition">
+                    <td class="py-3.5 px-6">${typeBadge}</td>
+                    <td class="py-3.5 px-6">
+                        <div class="font-bold text-slate-800">${u.studentId || u.email}</div>
+                        ${u.studentId ? `<div class="text-xs text-slate-400">${u.email}</div>` : ''}
+                    </td>
+                    <td class="py-3.5 px-6 font-medium text-slate-700">${u.facultyName || '-'}</td>
+                    <td class="py-3.5 px-6 text-slate-600">${detail}</td>
+                    <td class="py-3.5 px-6 text-xs text-slate-500">${regDate}</td>
+                </tr>`;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // EXPORT CSV
+        // ═══════════════════════════════════════════════════════════
+        function exportCurrentCSV() {
+            if (currentTab === 'usage') {
+                if (filteredLogs.length === 0) return alert('ไม่มีข้อมูลสำหรับส่งออก');
+                let csv = 'SessionID,Email,StartTime,EndTime,TotalSeconds,ActiveSeconds,ToolsUsage\n';
+                filteredLogs.forEach(l => {
+                    const tools = l.tools ? Object.entries(l.tools).map(([k, v]) => `${k}:${v}s`).join(';') : '';
+                    csv += `"${l.sessionId}","${l.email}","${l.startTime}","${l.endTime}",${l.totalSessionSeconds},${l.activeToolsTotalSeconds},"${tools}"\n`;
+                });
+                downloadCSV(csv, `ChulaAIX_Usage_${Date.now()}.csv`);
+            } else {
+                if (filteredUsers.length === 0) return alert('ไม่มีข้อมูลสำหรับส่งออก');
+                let csv = 'UserType,Email,StudentID,Faculty,DegreeOrCategory,RegisteredAt\n';
+                filteredUsers.forEach(u => {
+                    csv += `"${u.userType}","${u.email}","${u.studentId || ''}","${u.facultyName || ''}","${u.degree || u.personnelType || ''}","${u.registeredAt}"\n`;
+                });
+                downloadCSV(csv, `ChulaAIX_Users_${Date.now()}.csv`);
+            }
+        }
+
+        function downloadCSV(csvContent, filename) {
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // DELETE LOG
+        // ═══════════════════════════════════════════════════════════
+        async function deleteSingleLog(sessionId) {
+            if (!confirm('ยืนยันการลบรายการนี้ใช่หรือไม่?')) return;
+            rawLogs = rawLogs.filter(l => l.sessionId !== sessionId);
+            applyFilters();
+            showToast('ลบรายการสำเร็จ');
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // CONFIG MODAL
+        // ═══════════════════════════════════════════════════════════
+        function openConfigModal() { document.getElementById('configModal').classList.remove('hidden'); }
+        function closeConfigModal() { document.getElementById('configModal').classList.add('hidden'); }
+        function saveConfig() {
+            githubOwner = document.getElementById('cfgOwner').value.trim();
+            githubRepo = document.getElementById('cfgRepo').value.trim();
+            githubToken = document.getElementById('cfgToken').value.trim();
+
+            localStorage.setItem('aix_gh_owner', githubOwner);
+            localStorage.setItem('aix_gh_repo', githubRepo);
+            localStorage.setItem('aix_gh_token', githubToken);
+
+            closeConfigModal();
+            loadAllData();
+            showToast('บันทึกการตั้งค่าเรียบร้อยแล้ว');
+        }
+    </script>
+</body>
+</html>
