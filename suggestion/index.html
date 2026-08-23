@@ -169,10 +169,10 @@
                     <!-- Searchable Faculty Combobox -->
                     <div class="sm:col-span-2 relative" id="facultyComboboxContainer">
                         <label id="t_lbl_faculty" class="block text-xs font-semibold text-gray-700 mb-1.5">
-                            คณะ / สถาบัน / หน่วยงานที่สังกัด <span class="text-rose-500">*</span>
+                            Faculty / Institute / Affiliation <span class="text-rose-500">*</span>
                         </label>
                         <div class="relative">
-                            <input type="text" id="facultySearchInput" placeholder="-- ค้นหาหรือเลือกคณะ / สถาบัน / หน่วยงาน --"
+                            <input type="text" id="facultySearchInput" placeholder="-- Search or select faculty / department --"
                                    autocomplete="off"
                                    class="w-full px-4 py-2.5 pr-10 rounded-xl border border-gray-300 text-gray-800 text-sm input-focus bg-white font-medium cursor-pointer"
                                    onclick="toggleFacultyDropdown(true)"
@@ -481,7 +481,7 @@
             const currentVal = document.getElementById('selectedFaculty')?.value || '';
             if (!list) return;
 
-            const lang = currentLang || 'th';
+            const lang = currentLang || 'en';
             const filtered = FACULTIES_DATA.filter(f => {
                 if (!search) return true;
                 return (f.th || '').toLowerCase().includes(search) || (f.en || '').toLowerCase().includes(search) || (f.code || '').includes(search);
@@ -493,7 +493,7 @@
             }
 
             list.innerHTML = filtered.map(f => {
-                const displayName = f[lang] || f.th;
+                const displayName = f[lang] || f.en || f.th;
                 const isSelected = f.th === currentVal || f.en === currentVal || displayName === currentVal;
                 const activeClass = isSelected ? 'bg-purple-100/80 text-chula-900 font-bold' : 'text-gray-700 hover:bg-purple-50/60 font-medium';
                 return `
@@ -509,7 +509,13 @@
 
         function selectFaculty(value, displayText) {
             document.getElementById('selectedFaculty').value = value;
-            document.getElementById('facultySearchInput').value = displayText;
+            const found = FACULTIES_DATA.find(f => f.th === value || f.en === value || f.code === value);
+            if (found) {
+                const lang = currentLang || 'en';
+                document.getElementById('facultySearchInput').value = found[lang] || found.en || found.th;
+            } else {
+                document.getElementById('facultySearchInput').value = displayText;
+            }
             toggleFacultyDropdown(false);
         }
 
@@ -518,17 +524,15 @@
             if (container && !container.contains(e.target)) toggleFacultyDropdown(false);
         });
 
-        // Initialize & Auto-fill from localStorage if available
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-            setLanguage(currentLang);
-
+        function autoFillUserData() {
             try {
                 const regDataStr = localStorage.getItem('aix_registration_data');
                 if (regDataStr) {
                     const regData = JSON.parse(regDataStr);
-                    if (regData.userType && regData.userType.includes('Personnel')) {
+                    if (regData.userType && (regData.userType.includes('Personnel') || regData.userType === 'personnel')) {
                         document.getElementById('userType').value = 'personnel';
+                    } else {
+                        document.getElementById('userType').value = 'student';
                     }
                     if (regData.studentId) {
                         document.getElementById('userIdentifier').value = regData.studentId;
@@ -536,10 +540,35 @@
                         document.getElementById('userIdentifier').value = regData.email;
                     }
                     if (regData.facultyName) {
-                        selectFaculty(regData.facultyName, regData.facultyName);
+                        const found = FACULTIES_DATA.find(f => f.th === regData.facultyName || f.en === regData.facultyName || f.code === regData.facultyName);
+                        if (found) {
+                            document.getElementById('selectedFaculty').value = found.th;
+                            const lang = currentLang || 'en';
+                            document.getElementById('facultySearchInput').value = found[lang] || found.en || found.th;
+                        } else {
+                            document.getElementById('selectedFaculty').value = regData.facultyName;
+                            document.getElementById('facultySearchInput').value = regData.facultyName;
+                        }
+                    }
+                } else {
+                    const email = localStorage.getItem('gf_user_email');
+                    if (email) {
+                        document.getElementById('userIdentifier').value = email;
+                        if (/^\d{10}/.test(email)) {
+                            document.getElementById('userType').value = 'student';
+                        }
                     }
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.error('Error autofilling user data:', e);
+            }
+        }
+
+        // Initialize & Auto-fill from localStorage if available
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            autoFillUserData();
+            setLanguage(currentLang);
         });
 
         function handleUserTypeChange() {
