@@ -196,6 +196,26 @@
                         <div class="text-[10px] opacity-70">Registration Records & Delete</div>
                     </div>
                 </button>
+
+                <!-- Nav 6: AI Tool Suggestions -->
+                <button onclick="switchView('suggestions')" id="nav-suggestions" title="ข้อเสนอแนะเครื่องมือ AI (AI Tool Suggestions)"
+                        class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-left text-sm text-purple-200">
+                    <i data-lucide="lightbulb" class="w-4 h-4 shrink-0 text-purple-300"></i>
+                    <div class="sidebar-text truncate">
+                        <div>ข้อเสนอแนะ AI Tool</div>
+                        <div class="text-[10px] opacity-70">AI Tool Suggestions</div>
+                    </div>
+                </button>
+
+                <!-- Nav 7: Service Feedback -->
+                <button onclick="switchView('feedbacks')" id="nav-feedbacks" title="ผลประเมินความพึงพอใจ (Service Feedback)"
+                        class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-left text-sm text-purple-200">
+                    <i data-lucide="message-square-heart" class="w-4 h-4 shrink-0 text-purple-300"></i>
+                    <div class="sidebar-text truncate">
+                        <div>ผลการประเมินความพึงพอใจ</div>
+                        <div class="text-[10px] opacity-70">Service Feedback & Ratings</div>
+                    </div>
+                </button>
             </nav>
         </div>
 
@@ -650,6 +670,224 @@
                 </div>
             </div>
 
+            <!-- ═══════════════════════════════════════════════════════ -->
+            <!-- VIEW 6: AI TOOL SUGGESTIONS -->
+            <!-- ═══════════════════════════════════════════════════════ -->
+            <div id="view-suggestions" class="view-panel hidden space-y-6">
+                
+                <!-- Stat Cards Row -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="card-stat p-5 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                            <i data-lucide="lightbulb" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500">จำนวนข้อเสนอแนะทั้งหมด</p>
+                            <h4 id="statTotalSuggestions" class="text-2xl font-black text-slate-900">0 ข้อเสนอ</h4>
+                        </div>
+                    </div>
+                    <div class="card-stat p-5 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                            <i data-lucide="building-2" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500">จำนวนคณะ/หน่วยงานที่เสนอ</p>
+                            <h4 id="statUniqueFacultiesSuggestions" class="text-2xl font-black text-slate-900">0 คณะ</h4>
+                        </div>
+                    </div>
+                    <div class="card-stat p-5 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
+                            <i data-lucide="cpu" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500">เครื่องมือ AI ที่ถูกเสนอ</p>
+                            <h4 id="statUniqueToolsSuggestions" class="text-2xl font-black text-slate-900">0 รายการ</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Suggested AI Tools Chart Card -->
+                <div class="card-stat p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                                <i data-lucide="bar-chart-3" class="w-5 h-5 text-brand-700"></i>
+                                อันดับเครื่องมือ AI ที่มีผู้เสนอแนะมากที่สุด (Top Suggested AI Tools)
+                            </h4>
+                            <p class="text-xs text-slate-500">ความถี่ในการเสนอแนะโปรแกรมและเครื่องมือ AI ใหม่ๆ</p>
+                        </div>
+                    </div>
+                    <div class="h-64 relative">
+                        <canvas id="chartTopSuggestions"></canvas>
+                    </div>
+                </div>
+
+                <!-- Suggestions Detailed Table Card -->
+                <div class="card-stat p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                                <i data-lucide="list" class="w-5 h-5 text-brand-700"></i>
+                                ตารางรายการเสนอแนะเครื่องมือ AI ทั้งหมด
+                            </h4>
+                            <p class="text-xs text-slate-500">รายละเอียดชื่อเครื่องมือ ลิงก์ และเหตุผลในการเสนอแนะจากผู้ใช้</p>
+                        </div>
+                        
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <div class="relative">
+                                <input type="text" id="inputSearchSuggestionsTable" oninput="renderSuggestionsTable()" placeholder="ค้นหาชื่อ AI, ผู้เสนอ, คณะ, เหตุผล..." 
+                                       class="bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-xs w-48 sm:w-64 focus:outline-none focus:ring-2 focus:ring-purple-500/20">
+                                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5"></i>
+                            </div>
+                            <button onclick="exportSuggestionsCSV()" class="flex items-center gap-1.5 bg-brand-700 hover:bg-brand-800 text-white px-3.5 py-2 rounded-xl text-xs font-semibold transition shadow-sm">
+                                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i>
+                                <span>CSV</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left text-xs text-slate-700">
+                            <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                                <tr>
+                                    <th class="py-3 px-3.5 text-center">#</th>
+                                    <th class="py-3 px-3.5 whitespace-nowrap">วัน-เวลาเสนอ</th>
+                                    <th class="py-3 px-3.5 whitespace-nowrap">ชื่อเครื่องมือ AI</th>
+                                    <th class="py-3 px-3.5 whitespace-nowrap">ลิงก์เข้าถึง (URL)</th>
+                                    <th class="py-3 px-3.5 whitespace-nowrap">เหตุผลและลักษณะงาน</th>
+                                    <th class="py-3 px-3.5 whitespace-nowrap">ผู้เสนอแนะ</th>
+                                    <th class="py-3 px-3.5 whitespace-nowrap">คณะ / สถาบัน</th>
+                                    <th class="py-3 px-3.5 text-center whitespace-nowrap">จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="suggestionsTableBody" class="divide-y divide-slate-100">
+                                <tr>
+                                    <td colspan="8" class="text-center py-8 text-slate-400">กำลังโหลดข้อเสนอแนะ...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════ -->
+            <!-- VIEW 7: SERVICE FEEDBACK -->
+            <!-- ═══════════════════════════════════════════════════════ -->
+            <div id="view-feedbacks" class="view-panel hidden space-y-6">
+                
+                <!-- Stat Cards Row -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="card-stat p-5 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-pink-100 text-pink-700 flex items-center justify-center shrink-0">
+                            <i data-lucide="message-square-heart" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500">จำนวนการประเมินทั้งหมด</p>
+                            <h4 id="statTotalFeedbacks" class="text-2xl font-black text-slate-900">0 ครั้ง</h4>
+                        </div>
+                    </div>
+                    <div class="card-stat p-5 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                            <i data-lucide="star" class="w-6 h-6 fill-amber-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500">คะแนนความพึงพอใจเฉลี่ยรวม</p>
+                            <h4 id="statAvgRatingOverall" class="text-2xl font-black text-slate-900">0.0 / 5.0 ⭐</h4>
+                        </div>
+                    </div>
+                    <div class="card-stat p-5 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                            <i data-lucide="award" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500">เครื่องมือที่มีผู้ประเมินมากสุด</p>
+                            <h4 id="statMostEvaluatedTool" class="text-2xl font-black text-slate-900">-</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Chart 1: Average Rating per AI Tool -->
+                    <div class="card-stat p-6 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                                    <i data-lucide="star" class="w-4 h-4 text-amber-500"></i>
+                                    คะแนนความพึงพอใจเฉลี่ยแยกตามเครื่องมือ AI (คะแนนเต็ม 5 ดาว)
+                                </h4>
+                                <p class="text-xs text-slate-500">เปรียบเทียบคะแนนเฉลี่ยของเครื่องมือทั้ง 9 ตัว</p>
+                            </div>
+                        </div>
+                        <div class="h-64 relative">
+                            <canvas id="chartPerToolRatings"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 2: Rating Distribution -->
+                    <div class="card-stat p-6 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                                    <i data-lucide="pie-chart" class="w-4 h-4 text-brand-700"></i>
+                                    สัดส่วนคะแนนความพึงพอใจ (1 ถึง 5 ดาว)
+                                </h4>
+                                <p class="text-xs text-slate-500">การกระจายตัวของระดับคะแนนที่ผู้ใช้ให้</p>
+                            </div>
+                        </div>
+                        <div class="h-64 relative">
+                            <canvas id="chartRatingDistribution"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feedback Detailed Table Card -->
+                <div class="card-stat p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                                <i data-lucide="message-circle" class="w-5 h-5 text-brand-700"></i>
+                                ตารางรายการประเมินความพึงพอใจและความคิดเห็น
+                            </h4>
+                            <p class="text-xs text-slate-500">คะแนนประเมินแยกตามเครื่องมือ และข้อเสนอแนะเพิ่มเติม</p>
+                        </div>
+                        
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <div class="relative">
+                                <input type="text" id="inputSearchFeedbacksTable" oninput="renderFeedbacksTable()" placeholder="ค้นหาเครื่องมือ, ผู้ประเมิน, ข้อเสนอแนะ..." 
+                                       class="bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-xs w-48 sm:w-64 focus:outline-none focus:ring-2 focus:ring-purple-500/20">
+                                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5"></i>
+                            </div>
+                            <button onclick="exportFeedbacksCSV()" class="flex items-center gap-1.5 bg-brand-700 hover:bg-brand-800 text-white px-3.5 py-2 rounded-xl text-xs font-semibold transition shadow-sm">
+                                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i>
+                                <span>CSV</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left text-xs text-slate-700">
+                            <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                                <tr>
+                                    <th class="py-3 px-3.5 text-center">#</th>
+                                    <th class="py-3 px-3.5 whitespace-nowrap">วัน-เวลาประเมิน</th>
+                                    <th class="py-3 px-3.5 whitespace-nowrap">ผู้ประเมิน</th>
+                                    <th class="py-3 px-3.5 whitespace-nowrap">คณะ / สถาบัน</th>
+                                    <th class="py-3 px-3.5 whitespace-nowrap">เครื่องมือที่ประเมินและคะแนน (⭐)</th>
+                                    <th class="py-3 px-3.5 whitespace-nowrap">ข้อเสนอแนะ / ความคิดเห็น</th>
+                                    <th class="py-3 px-3.5 text-center whitespace-nowrap">จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="feedbacksTableBody" class="divide-y divide-slate-100">
+                                <tr>
+                                    <td colspan="7" class="text-center py-8 text-slate-400">กำลังโหลดผลประเมิน...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -702,6 +940,8 @@
         let currentActiveView = 'overview';
         let rawRegistrations = [];
         let rawUsageLogs = [];
+        let rawSuggestions = [];
+        let rawFeedbacks = [];
         let chartInstances = {};
 
         const VIEW_META = {
@@ -729,6 +969,16 @@
                 title: 'ตารางประวัติการลงทะเบียน (Registration Records)',
                 subtitle: 'รายการผู้ลงทะเบียนใช้งาน Chula AIX ทั้งหมด พร้อมระบบค้นหา กรอง และจัดการลบข้อมูล',
                 icon: 'user-check'
+            },
+            'suggestions': {
+                title: 'ข้อเสนอแนะเครื่องมือ AI (AI Tool Suggestions)',
+                subtitle: 'สรุปรายการและสถิติเครื่องมือ AI ที่นิสิตและบุคลากรเสนอแนะให้เปิดให้บริการ',
+                icon: 'lightbulb'
+            },
+            'feedbacks': {
+                title: 'ผลการประเมินความพึงพอใจ (Service Feedback)',
+                subtitle: 'คะแนนความพึงพอใจแยกตามเครื่องมือ AI และข้อเสนอแนะเพื่อการปรับปรุงบริการ',
+                icon: 'message-square-heart'
             }
         };
 
@@ -915,6 +1165,28 @@
                         });
                     }
                     updateAllStats();
+                });
+
+                db.ref('suggestions').on('value', snapshot => {
+                    const data = snapshot.val();
+                    rawSuggestions = [];
+                    if (data) {
+                        Object.keys(data).forEach(key => {
+                            rawSuggestions.push({ id: key, ...data[key] });
+                        });
+                    }
+                    updateSuggestionsView();
+                });
+
+                db.ref('feedbacks').on('value', snapshot => {
+                    const data = snapshot.val();
+                    rawFeedbacks = [];
+                    if (data) {
+                        Object.keys(data).forEach(key => {
+                            rawFeedbacks.push({ id: key, ...data[key] });
+                        });
+                    }
+                    updateFeedbacksView();
                 });
 
             } catch (e) {
@@ -1958,6 +2230,372 @@
         function closeConfigModal() {
             document.getElementById('configModal').classList.add('hidden');
         }
+
+        // ═══════════════════════════════════════════════════════════
+        // VIEW 6: SUGGESTIONS LOGIC & CHARTS
+        // ═══════════════════════════════════════════════════════════
+        function updateSuggestionsView() {
+            // 1. Stats
+            const totalCount = rawSuggestions.length;
+            const faculties = new Set(rawSuggestions.map(s => s.facultyName).filter(Boolean));
+            const uniqueTools = new Set(rawSuggestions.map(s => (s.toolName || '').trim().toLowerCase()).filter(Boolean));
+
+            const elTotal = document.getElementById('statTotalSuggestions');
+            if (elTotal) elTotal.textContent = `${totalCount} ข้อเสนอ`;
+            const elFac = document.getElementById('statUniqueFacultiesSuggestions');
+            if (elFac) elFac.textContent = `${faculties.size} คณะ`;
+            const elTools = document.getElementById('statUniqueToolsSuggestions');
+            if (elTools) elTools.textContent = `${uniqueTools.size} รายการ`;
+
+            // 2. Chart: Top Suggested AI Tools
+            renderTopSuggestionsChart();
+
+            // 3. Table
+            renderSuggestionsTable();
+        }
+
+        function renderTopSuggestionsChart() {
+            destroyChart('chartTopSuggestions');
+            const ctx = document.getElementById('chartTopSuggestions')?.getContext('2d');
+            if (!ctx) return;
+
+            const toolCounts = {};
+            rawSuggestions.forEach(s => {
+                const name = (s.toolName || 'Unspecified').trim();
+                if (name) toolCounts[name] = (toolCounts[name] || 0) + 1;
+            });
+
+            const sorted = Object.entries(toolCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            const labels = sorted.map(x => x[0]);
+            const data = sorted.map(x => x[1]);
+
+            chartInstances['chartTopSuggestions'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels.length > 0 ? labels : ['ยังไม่มีข้อเสนอ'],
+                    datasets: [{
+                        label: 'จำนวนที่เสนอ (ครั้ง)',
+                        data: data.length > 0 ? data : [0],
+                        backgroundColor: '#a855f7',
+                        borderRadius: 8,
+                        barThickness: 24
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (item) => ` เสนอแนะ: ${item.raw} ครั้ง`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1, font: { family: 'Prompt' } },
+                            grid: { color: '#f1f5f9' }
+                        },
+                        y: {
+                            ticks: { font: { family: 'Prompt', weight: '600' } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderSuggestionsTable() {
+            const tbody = document.getElementById('suggestionsTableBody');
+            if (!tbody) return;
+
+            const search = (document.getElementById('inputSearchSuggestionsTable')?.value || '').toLowerCase().trim();
+
+            let list = [...rawSuggestions].sort((a, b) => new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0));
+
+            if (search) {
+                list = list.filter(s => {
+                    const text = `${s.toolName || ''} ${s.reason || ''} ${s.identifier || ''} ${s.studentId || ''} ${s.email || ''} ${s.facultyName || ''}`.toLowerCase();
+                    return text.includes(search);
+                });
+            }
+
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-slate-400">ไม่พบรายการข้อเสนอแนะ</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map((s, idx) => {
+                const dateStr = s.submittedAt ? new Date(s.submittedAt).toLocaleString('th-TH') : '-';
+                const submitter = s.studentId || s.email || s.identifier || '-';
+                const urlHtml = s.toolUrl ? `<a href="${s.toolUrl}" target="_blank" class="text-brand-700 hover:underline flex items-center gap-1 font-mono text-[11px]"><i data-lucide="external-link" class="w-3 h-3"></i>${s.toolUrl.length > 35 ? s.toolUrl.substring(0, 32) + '...' : s.toolUrl}</a>` : '-';
+
+                return `
+                    <tr class="hover:bg-purple-50/40 transition">
+                        <td class="py-3 px-3.5 text-center font-bold text-slate-400">${idx + 1}</td>
+                        <td class="py-3 px-3.5 text-slate-500 whitespace-nowrap">${dateStr}</td>
+                        <td class="py-3 px-3.5 font-bold text-slate-900 whitespace-nowrap">${s.toolName || '-'}</td>
+                        <td class="py-3 px-3.5 whitespace-nowrap">${urlHtml}</td>
+                        <td class="py-3 px-3.5 text-slate-600 max-w-xs break-words leading-relaxed">${s.reason || '-'}</td>
+                        <td class="py-3 px-3.5 text-slate-700 font-mono whitespace-nowrap">${submitter}</td>
+                        <td class="py-3 px-3.5 text-slate-600 whitespace-nowrap">${s.facultyName || '-'}</td>
+                        <td class="py-3 px-3.5 text-center whitespace-nowrap">
+                            <button onclick="deleteSuggestion('${s.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded-lg hover:bg-rose-50 transition" title="ลบข้อมูลนี้">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function deleteSuggestion(id) {
+            if (!confirm('ยืนยันการลบรายการข้อเสนอแนะนี้หรือไม่?')) return;
+            const dbUrl = 'https://chula-aix-default-rtdb.asia-southeast1.firebasedatabase.app';
+            fetch(`${dbUrl}/suggestions/${id}.json`, { method: 'DELETE' })
+                .then(() => {
+                    rawSuggestions = rawSuggestions.filter(s => s.id !== id);
+                    updateSuggestionsView();
+                })
+                .catch(err => alert('เกิดข้อผิดพลาดในการลบ: ' + err.message));
+        }
+
+        function exportSuggestionsCSV() {
+            if (rawSuggestions.length === 0) { alert('ไม่มีข้อมูลสำหรับ Export'); return; }
+            let csv = '﻿ลำดับ,วันเวลา,ชื่อเครื่องมือ AI,ลิงก์ URL,เหตุผล,ผู้เสนอแนะ,ประเภทผู้ใช้,คณะ\n';
+            rawSuggestions.forEach((s, i) => {
+                const dateStr = s.submittedAt ? new Date(s.submittedAt).toLocaleString('th-TH') : '-';
+                const submitter = s.studentId || s.email || s.identifier || '-';
+                csv += `"${i + 1}","${dateStr}","${(s.toolName || '').replace(/"/g, '""')}","${(s.toolUrl || '').replace(/"/g, '""')}","${(s.reason || '').replace(/"/g, '""')}","${submitter}","${s.userType || ''}","${(s.facultyName || '').replace(/"/g, '""')}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Chula_AIX_Tool_Suggestions_${new Date().toISOString().slice(0, 10)}.csv`;
+            a.click();
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // VIEW 7: FEEDBACK LOGIC & CHARTS
+        // ═══════════════════════════════════════════════════════════
+        function updateFeedbacksView() {
+            // 1. Stats
+            const totalFeedbacks = rawFeedbacks.length;
+            let totalRatingSum = 0;
+            let totalRatingsCount = 0;
+            const toolEvalCounts = {};
+
+            rawFeedbacks.forEach(f => {
+                if (f.toolRatings && typeof f.toolRatings === 'object') {
+                    Object.entries(f.toolRatings).forEach(([tool, score]) => {
+                        totalRatingSum += Number(score);
+                        totalRatingsCount++;
+                        toolEvalCounts[tool] = (toolEvalCounts[tool] || 0) + 1;
+                    });
+                }
+            });
+
+            const avgRating = totalRatingsCount > 0 ? (totalRatingSum / totalRatingsCount).toFixed(1) : '0.0';
+            const topTool = Object.entries(toolEvalCounts).sort((a, b) => b[1] - a[1])[0];
+
+            const elTotal = document.getElementById('statTotalFeedbacks');
+            if (elTotal) elTotal.textContent = `${totalFeedbacks} ครั้ง`;
+            const elAvg = document.getElementById('statAvgRatingOverall');
+            if (elAvg) elAvg.textContent = `${avgRating} / 5.0 ⭐`;
+            const elTop = document.getElementById('statMostEvaluatedTool');
+            if (elTop) elTop.textContent = topTool ? `${topTool[0]} (${topTool[1]} ครั้ง)` : '-';
+
+            // 2. Charts
+            renderPerToolRatingsChart();
+            renderRatingDistributionChart();
+
+            // 3. Table
+            renderFeedbacksTable();
+        }
+
+        function renderPerToolRatingsChart() {
+            destroyChart('chartPerToolRatings');
+            const ctx = document.getElementById('chartPerToolRatings')?.getContext('2d');
+            if (!ctx) return;
+
+            const toolScores = {};
+            rawFeedbacks.forEach(f => {
+                if (f.toolRatings && typeof f.toolRatings === 'object') {
+                    Object.entries(f.toolRatings).forEach(([tool, score]) => {
+                        if (!toolScores[tool]) toolScores[tool] = { sum: 0, count: 0 };
+                        toolScores[tool].sum += Number(score);
+                        toolScores[tool].count++;
+                    });
+                }
+            });
+
+            const labels = Object.keys(toolScores);
+            const data = labels.map(t => (toolScores[t].sum / toolScores[t].count).toFixed(1));
+
+            chartInstances['chartPerToolRatings'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels.length > 0 ? labels : ['ยังไม่มีการประเมิน'],
+                    datasets: [{
+                        label: 'คะแนนเฉลี่ย (เต็ม 5)',
+                        data: data.length > 0 ? data : [0],
+                        backgroundColor: '#f59e0b',
+                        borderRadius: 8,
+                        barThickness: 20
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 5,
+                            ticks: { stepSize: 1, font: { family: 'Prompt' } },
+                            grid: { color: '#f1f5f9' }
+                        },
+                        x: {
+                            ticks: { font: { family: 'Prompt', size: 11 } },
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (item) => ` คะแนนเฉลี่ย: ${item.raw} / 5.0 ⭐`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderRatingDistributionChart() {
+            destroyChart('chartRatingDistribution');
+            const ctx = document.getElementById('chartRatingDistribution')?.getContext('2d');
+            if (!ctx) return;
+
+            const dist = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+            rawFeedbacks.forEach(f => {
+                if (f.toolRatings && typeof f.toolRatings === 'object') {
+                    Object.values(f.toolRatings).forEach(score => {
+                        const s = Math.round(Number(score));
+                        if (dist[s] !== undefined) dist[s]++;
+                    });
+                }
+            });
+
+            chartInstances['chartRatingDistribution'] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['1 ดาว (ปรับปรุง)', '2 ดาว (พอใช้)', '3 ดาว (ปานกลาง)', '4 ดาว (ดี)', '5 ดาว (ดีมาก)'],
+                    datasets: [{
+                        data: [dist[1], dist[2], dist[3], dist[4], dist[5]],
+                        backgroundColor: ['#f43f5e', '#fb923c', '#facc15', '#a3e635', '#10b981'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: 'Prompt', size: 11 } } }
+                    }
+                }
+            });
+        }
+
+        function renderFeedbacksTable() {
+            const tbody = document.getElementById('feedbacksTableBody');
+            if (!tbody) return;
+
+            const search = (document.getElementById('inputSearchFeedbacksTable')?.value || '').toLowerCase().trim();
+
+            let list = [...rawFeedbacks].sort((a, b) => new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0));
+
+            if (search) {
+                list = list.filter(f => {
+                    const text = `${f.identifier || ''} ${f.studentId || ''} ${f.email || ''} ${f.facultyName || ''} ${f.comments || ''} ${(f.selectedTools || []).join(' ')}`.toLowerCase();
+                    return text.includes(search);
+                });
+            }
+
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-slate-400">ไม่พบรายการผลการประเมิน</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map((f, idx) => {
+                const dateStr = f.submittedAt ? new Date(f.submittedAt).toLocaleString('th-TH') : '-';
+                const submitter = f.studentId || f.email || f.identifier || '-';
+                
+                let ratingsBadges = '-';
+                if (f.toolRatings && typeof f.toolRatings === 'object') {
+                    ratingsBadges = Object.entries(f.toolRatings).map(([t, s]) => `
+                        <span class="inline-flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-900 px-2 py-0.5 rounded-md font-semibold text-[11px] mr-1 mb-1">
+                            ${t}: ${s} ⭐
+                        </span>
+                    `).join('');
+                }
+
+                return `
+                    <tr class="hover:bg-purple-50/40 transition">
+                        <td class="py-3 px-3.5 text-center font-bold text-slate-400">${idx + 1}</td>
+                        <td class="py-3 px-3.5 text-slate-500 whitespace-nowrap">${dateStr}</td>
+                        <td class="py-3 px-3.5 text-slate-700 font-mono whitespace-nowrap">${submitter}</td>
+                        <td class="py-3 px-3.5 text-slate-600 whitespace-nowrap">${f.facultyName || '-'}</td>
+                        <td class="py-3 px-3.5 max-w-xs leading-normal">${ratingsBadges}</td>
+                        <td class="py-3 px-3.5 text-slate-600 max-w-xs break-words leading-relaxed">${f.comments || '-'}</td>
+                        <td class="py-3 px-3.5 text-center whitespace-nowrap">
+                            <button onclick="deleteFeedback('${f.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded-lg hover:bg-rose-50 transition" title="ลบข้อมูลนี้">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function deleteFeedback(id) {
+            if (!confirm('ยืนยันการลบผลการประเมินนี้หรือไม่?')) return;
+            const dbUrl = 'https://chula-aix-default-rtdb.asia-southeast1.firebasedatabase.app';
+            fetch(`${dbUrl}/feedbacks/${id}.json`, { method: 'DELETE' })
+                .then(() => {
+                    rawFeedbacks = rawFeedbacks.filter(f => f.id !== id);
+                    updateFeedbacksView();
+                })
+                .catch(err => alert('เกิดข้อผิดพลาดในการลบ: ' + err.message));
+        }
+
+        function exportFeedbacksCSV() {
+            if (rawFeedbacks.length === 0) { alert('ไม่มีข้อมูลสำหรับ Export'); return; }
+            let csv = '﻿ลำดับ,วันเวลา,ผู้ประเมิน,คณะ,เครื่องมือและคะแนน,ข้อเสนอแนะ\n';
+            rawFeedbacks.forEach((f, i) => {
+                const dateStr = f.submittedAt ? new Date(f.submittedAt).toLocaleString('th-TH') : '-';
+                const submitter = f.studentId || f.email || f.identifier || '-';
+                let ratingSummary = '';
+                if (f.toolRatings && typeof f.toolRatings === 'object') {
+                    ratingSummary = Object.entries(f.toolRatings).map(([t, s]) => `${t}: ${s} ดาว`).join('; ');
+                }
+                csv += `"${i + 1}","${dateStr}","${submitter}","${(f.facultyName || '').replace(/"/g, '""')}","${ratingSummary}","${(f.comments || '').replace(/"/g, '""')}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Chula_AIX_Feedbacks_${new Date().toISOString().slice(0, 10)}.csv`;
+            a.click();
+        }
+
     </script>
 </body>
 </html>
