@@ -79,7 +79,7 @@
 </head>
 <body class="gradient-bg min-h-screen flex items-center justify-center p-3 sm:p-6 lg:p-8">
 
-    <div class="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-purple-100 my-6">
+    <div class="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-purple-100 my-4">
         
         <!-- Header Banner with Language Switcher -->
         <div class="gradient-header px-6 sm:px-8 py-7 text-white text-center relative overflow-hidden">
@@ -443,17 +443,36 @@
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════ -->
-            <!-- SECTION 4: AGREEMENT & SUBMISSION -->
+            <!-- SECTION 4: TERMS AND CONDITIONS -->
             <!-- ═══════════════════════════════════════════════════════════ -->
-            <div id="section4" class="hidden space-y-4">
-                <!-- PDPA & Ethical AI Agreement Card -->
-                <div class="bg-purple-50/80 p-4 sm:p-5 rounded-2xl border border-purple-200/80">
-                    <label class="flex items-start gap-3 cursor-pointer">
-                        <input type="checkbox" id="consentAgree" class="w-5 h-5 mt-0.5 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0">
-                        <span id="t_pdpa_text" class="text-xs text-gray-700 leading-relaxed font-normal">
-                            ข้าพเจ้ายินยอมให้ประมวลผลข้อมูลการใช้งานเพื่อการวิเคราะห์และพัฒนานวัตกรรมการศึกษาของจุฬาลงกรณ์มหาวิทยาลัย และตกลงจะใช้งานเครื่องมือปัญญาประดิษฐ์ตามหลักจริยธรรม (Chula AI Ethical Guidelines)
-                        </span>
-                    </label>
+            <div id="section4" class="hidden form-card space-y-4 bg-purple-50/40 border-purple-200">
+                <div class="flex items-center gap-2.5 pb-2 border-b border-purple-100">
+                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">4</div>
+                    <h2 id="t_sec4_title" class="font-bold text-gray-800 text-base">ข้อกำหนดและเงื่อนไข (Terms and Conditions)</h2>
+                </div>
+
+                <div class="bg-white p-4 sm:p-5 rounded-2xl border border-purple-100 space-y-3">
+                    <p id="t_pdpa_title" class="text-xs sm:text-sm font-bold text-gray-800">
+                        Do you agree to the terms and conditions mentioned below? (ท่านยินยอมให้ดำเนินการตามเงื่อนไขด้านล่างหรือไม่?) <span class="text-rose-500">*</span>
+                    </p>
+                    
+                    <div id="t_pdpa_content" class="text-xs text-gray-600 leading-relaxed space-y-2.5 max-h-52 overflow-y-auto pr-1">
+                        <p>
+                            สำนักงานวิทยทรัพยากรให้ความสำคัญกับความเป็นส่วนตัวของท่าน โดยข้อมูลที่ระบุตัวตนจะถูกเก็บรักษาเป็นความลับ อย่างไรก็ตาม ข้อเสนอแนะและผลการประเมิน จะถูกนำไปสรุปผลและเผยแพร่เพื่อเป็นแนวทางในการพัฒนาพื้นที่ Chula AIX ต่อไป นอกจากนี้ การเข้าใช้บริการถือว่าท่านยอมรับและยินดีปฏิบัติตาม <a href="https://chula.libguides.com/c.php?g=984417&p=7176297" target="_blank" class="underline text-chula-700 font-semibold hover:text-chula-900">ระเบียบและข้อปฏิบัติในการใช้บริการพื้นที่ AIX</a> อย่างเคร่งครัด
+                        </p>
+                        <p>
+                            โปรดระบุข้อมูลที่ถูกต้อง การกรอกข้อมูลเท็จจะถูกดำเนินการตาม <a href="https://chula.libguides.com/c.php?g=984417&p=7176297" target="_blank" class="underline text-chula-700 font-semibold hover:text-chula-900">ระเบียบและข้อปฏิบัติของ Chula AIX</a>
+                        </p>
+                    </div>
+
+                    <div class="pt-3 border-t border-gray-100">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" id="consentAgree" class="w-5 h-5 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0">
+                            <span id="t_pdpa_checkbox_label" class="text-xs sm:text-sm font-bold text-chula-900">
+                                ยินยอมและยอมรับเงื่อนไข (I agree and accept the terms and conditions)
+                            </span>
+                        </label>
+                    </div>
                 </div>
 
                 <!-- Submit Button -->
@@ -511,6 +530,7 @@
                 sec1Title: "ข้อมูลผู้ใช้งาน (User Information)",
                 sec2Title: "การใช้งาน AI ในวันนี้ (AI Usage Details)",
                 sec3Title: "วัตถุประสงค์และลักษณะงาน (Purpose & Activities)",
+                sec4Title: "ข้อกำหนดและเงื่อนไข (Terms and Conditions)",
                 lblUserType: "ประเภทผู้ใช้งาน *",
                 optStudentTitle: "นิสิตจุฬาฯ",
                 optStudentSub: "Chula Student",
@@ -553,7 +573,9 @@
                 act4: "เขียนโค้ด / พัฒนาโปรแกรม (Coding)",
                 act5: "สร้างรูปภาพ / มัลติมีเดีย (Image & Media)",
                 act6: "วางแผน / ระดมความคิด (Brainstorming)",
-                pdpaText: "ข้าพเจ้ายินยอมให้ประมวลผลข้อมูลการใช้งานเพื่อการวิเคราะห์และพัฒนานวัตกรรมการศึกษาของจุฬาลงกรณ์มหาวิทยาลัย และตกลงจะใช้งานเครื่องมือปัญญาประดิษฐ์ตามหลักจริยธรรม (Chula AI Ethical Guidelines)",
+                pdpaTitle: "Do you agree to the terms and conditions mentioned below? (ท่านยินยอมให้ดำเนินการตามเงื่อนไขด้านล่างหรือไม่?) *",
+                pdpaContentHtml: `<p>สำนักงานวิทยทรัพยากรให้ความสำคัญกับความเป็นส่วนตัวของท่าน โดยข้อมูลที่ระบุตัวตนจะถูกเก็บรักษาเป็นความลับ อย่างไรก็ตาม ข้อเสนอแนะและผลการประเมิน จะถูกนำไปสรุปผลและเผยแพร่เพื่อเป็นแนวทางในการพัฒนาพื้นที่ Chula AIX ต่อไป นอกจากนี้ การเข้าใช้บริการถือว่าท่านยอมรับและยินดีปฏิบัติตาม <a href="https://chula.libguides.com/c.php?g=984417&p=7176297" target="_blank" class="underline text-chula-700 font-semibold hover:text-chula-900">ระเบียบและข้อปฏิบัติในการใช้บริการพื้นที่ AIX</a> อย่างเคร่งครัด</p><p>โปรดระบุข้อมูลที่ถูกต้อง การกรอกข้อมูลเท็จจะถูกดำเนินการตาม <a href="https://chula.libguides.com/c.php?g=984417&p=7176297" target="_blank" class="underline text-chula-700 font-semibold hover:text-chula-900">ระเบียบและข้อปฏิบัติของ Chula AIX</a></p>`,
+                pdpaCheckboxLabel: "ยินยอมและยอมรับเงื่อนไข (I agree and accept the terms and conditions)",
                 btnSubmit: "ยืนยันการลงทะเบียน (Complete Registration)",
                 alertSelectType: "กรุณาเลือกประเภทผู้ใช้งาน",
                 alertCheckStudentId: "กรุณากรอกรหัสนิสิต 10 หลักให้ถูกต้อง",
@@ -565,7 +587,7 @@
                 alertSelectDuration: "กรุณาเลือกระยะเวลาที่คาดว่าจะใช้งาน",
                 alertSelectPurpose: "กรุณาเลือกวัตถุประสงค์การใช้งานอย่างน้อย 1 ข้อ",
                 alertSelectActivity: "กรุณาเลือกลักษณะงานหรือกิจกรรมอย่างน้อย 1 ข้อ",
-                alertAgreeConsent: "กรุณายินยอมข้อตกลงการใช้งาน AI",
+                alertAgreeConsent: "กรุณายินยอมข้อตกลงและเงื่อนไขการใช้งาน AI",
                 savingText: "กำลังบันทึกข้อมูล...",
                 successTitle: "ลงทะเบียนเรียบร้อยแล้ว!",
                 successSubtitle: "Registration Complete! Welcome to Chula AIX",
@@ -579,6 +601,7 @@
                 sec1Title: "User Information",
                 sec2Title: "AI Usage Details",
                 sec3Title: "Purpose & Activities",
+                sec4Title: "Terms and Conditions",
                 lblUserType: "User Type *",
                 optStudentTitle: "Chula Student",
                 optStudentSub: "For undergraduate & graduate students",
@@ -621,7 +644,9 @@
                 act4: "Coding & Software Development",
                 act5: "Image & Multimedia Generation",
                 act6: "Brainstorming & Planning",
-                pdpaText: "I consent to the processing of my usage data for educational analytics and innovation development at Chulalongkorn University, and agree to use AI in compliance with Chula AI Ethical Guidelines.",
+                pdpaTitle: "Do you agree to the terms and conditions mentioned below? *",
+                pdpaContentHtml: `<p>The Office of Academic Resources prioritizes your privacy. All personal identifiable information will be kept strictly confidential. However, comments and evaluation results will be summarized and shared to help improve and develop the Chula AIX service area. By using this service, you acknowledge and agree to comply with the <a href="https://chula.libguides.com/c.php?g=984417&p=7176297" target="_blank" class="underline text-chula-700 font-semibold hover:text-chula-900">Chula AIX Regulations and Guidelines</a>.</p><p>Please provide accurate information. False entries will be subject to the <a href="https://chula.libguides.com/c.php?g=984417&p=7176297" target="_blank" class="underline text-chula-700 font-semibold hover:text-chula-900">Chula AIX regulations and guidelines</a>.</p>`,
+                pdpaCheckboxLabel: "I agree and accept the terms and conditions",
                 btnSubmit: "Complete Registration",
                 alertSelectType: "Please select your user type",
                 alertCheckStudentId: "Please provide a valid 10-digit Student ID",
@@ -633,7 +658,7 @@
                 alertSelectDuration: "Please select your expected usage duration",
                 alertSelectPurpose: "Please select at least one primary purpose",
                 alertSelectActivity: "Please select at least one activity type",
-                alertAgreeConsent: "Please agree to the AI Ethical & PDPA consent",
+                alertAgreeConsent: "Please agree to the terms and conditions",
                 savingText: "Submitting registration...",
                 successTitle: "Registration Complete!",
                 successSubtitle: "Welcome to Chula AIX Platform",
@@ -664,6 +689,7 @@
             document.getElementById('t_sec1_title').textContent = dict.sec1Title;
             document.getElementById('t_sec2_title').textContent = dict.sec2Title;
             document.getElementById('t_sec3_title').textContent = dict.sec3Title;
+            document.getElementById('t_sec4_title').textContent = dict.sec4Title;
 
             document.getElementById('t_lbl_usertype').innerHTML = dict.lblUserType.replace('*', '<span class="text-rose-500">*</span>');
             document.getElementById('t_opt_student_title').textContent = dict.optStudentTitle;
@@ -716,7 +742,9 @@
             document.getElementById('t_act_5').textContent = dict.act5;
             document.getElementById('t_act_6').textContent = dict.act6;
 
-            document.getElementById('t_pdpa_text').textContent = dict.pdpaText;
+            document.getElementById('t_pdpa_title').innerHTML = dict.pdpaTitle.replace('*', '<span class="text-rose-500">*</span>');
+            document.getElementById('t_pdpa_content').innerHTML = dict.pdpaContentHtml;
+            document.getElementById('t_pdpa_checkbox_label').textContent = dict.pdpaCheckboxLabel;
             document.getElementById('t_btn_submit').textContent = dict.btnSubmit;
 
             document.getElementById('t_success_title').textContent = dict.successTitle;
@@ -990,6 +1018,11 @@
             localStorage.setItem('gf_user_email', email);
             localStorage.setItem('gf_last_heartbeat', Date.now().toString());
             localStorage.setItem('aix_registration_data', JSON.stringify(registrationData));
+
+            // Notify parent window if loaded in In-Page Modal Iframe
+            try {
+                window.parent.postMessage({ type: 'AIX_UNLOCKED', email: email }, '*');
+            } catch (e) {}
 
             // Save to Firebase Realtime Database
             let saved = false;
