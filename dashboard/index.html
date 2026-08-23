@@ -1470,13 +1470,13 @@
             const statRegPagePersonnel = document.getElementById('statRegPagePersonnel');
             if (statRegPagePersonnel) statRegPagePersonnel.textContent = `${regPersonnel} คน`;
 
-            // Render components
-            renderOverviewUsersTable();
-            renderOverviewToolsPerformanceGrid();
-            renderToolBadgesGrid();
-            renderCrossAnalysisTable();
-            renderRegistrationsManagementTable();
-            renderCurrentViewCharts();
+            // Render components (each wrapped in try-catch for resilience)
+            try { renderOverviewUsersTable(); } catch(e) { console.error('renderOverviewUsersTable error:', e); }
+            try { renderOverviewToolsPerformanceGrid(); } catch(e) { console.error('renderOverviewToolsPerformanceGrid error:', e); }
+            try { renderToolBadgesGrid(); } catch(e) { console.error('renderToolBadgesGrid error:', e); }
+            try { renderCrossAnalysisTable(); } catch(e) { console.error('renderCrossAnalysisTable error:', e); }
+            try { renderRegistrationsManagementTable(); } catch(e) { console.error('renderRegistrationsManagementTable error:', e); }
+            try { renderCurrentViewCharts(); } catch(e) { console.error('renderCurrentViewCharts error:', e); }
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -1565,26 +1565,26 @@
 
 function renderCurrentViewCharts() {
             if (currentActiveView === 'overview') {
-                renderOverviewDailyTrendsChart();
-                renderOverviewUserTypesDonut();
-                renderOverviewToolsDurationDonut();
-                renderOverviewToolsPerformanceGrid();
+                try { renderOverviewDailyTrendsChart(); } catch(e) { console.error('renderOverviewDailyTrendsChart error:', e); }
+                try { renderOverviewUserTypesDonut(); } catch(e) { console.error('renderOverviewUserTypesDonut error:', e); }
+                try { renderOverviewToolsDurationDonut(); } catch(e) { console.error('renderOverviewToolsDurationDonut error:', e); }
+                try { renderOverviewToolsPerformanceGrid(); } catch(e) { console.error('renderOverviewToolsPerformanceGrid error:', e); }
             } else if (currentActiveView === 'demographics') {
-                renderStudentDegreesChart();
-                renderPersonnelCategoriesChart();
-                renderFacultiesRankingChart();
+                try { renderStudentDegreesChart(); } catch(e) { console.error('renderStudentDegreesChart error:', e); }
+                try { renderPersonnelCategoriesChart(); } catch(e) { console.error('renderPersonnelCategoriesChart error:', e); }
+                try { renderFacultiesRankingChart(); } catch(e) { console.error('renderFacultiesRankingChart error:', e); }
             } else if (currentActiveView === 'tools-duration') {
-                renderToolsRankingChart();
-                renderExpectedDurationChart();
-                renderToolBadgesGrid();
-                renderToolsFormVsActualChart();
+                try { renderToolsRankingChart(); } catch(e) { console.error('renderToolsRankingChart error:', e); }
+                try { renderExpectedDurationChart(); } catch(e) { console.error('renderExpectedDurationChart error:', e); }
+                try { renderToolBadgesGrid(); } catch(e) { console.error('renderToolBadgesGrid error:', e); }
+                try { renderToolsFormVsActualChart(); } catch(e) { console.error('renderToolsFormVsActualChart error:', e); }
             } else if (currentActiveView === 'survey-responses') {
-                renderPrimaryPurposesChart();
-                renderActivityTypesChart();
-                renderRelationshipMatrix();
-                renderCrossAnalysisTable();
+                try { renderPrimaryPurposesChart(); } catch(e) { console.error('renderPrimaryPurposesChart error:', e); }
+                try { renderActivityTypesChart(); } catch(e) { console.error('renderActivityTypesChart error:', e); }
+                try { renderRelationshipMatrix(); } catch(e) { console.error('renderRelationshipMatrix error:', e); }
+                try { renderCrossAnalysisTable(); } catch(e) { console.error('renderCrossAnalysisTable error:', e); }
             } else if (currentActiveView === 'registrations') {
-                renderRegistrationsManagementTable();
+                try { renderRegistrationsManagementTable(); } catch(e) { console.error('renderRegistrationsManagementTable error:', e); }
             }
         }
 
@@ -1860,6 +1860,9 @@ function renderCurrentViewCharts() {
                 });
             });
 
+            // Sort all tools strictly descending by duration
+            const sortedTools = Object.keys(toolDurations).sort((a, b) => toolDurations[b] - toolDurations[a]);
+
             const labels = [];
             const dataHours = [];
             const colors = [];
@@ -1868,11 +1871,11 @@ function renderCurrentViewCharts() {
                 "Runway": '#ec4899', "Consensus": '#8b5cf6', "SciSpace": '#6366f1', "Perplexity": '#06b6d4', "QuillBot": '#00b074'
             };
 
-            Object.keys(toolDurations).forEach(t => {
+            sortedTools.forEach(t => {
                 const hours = (toolDurations[t] / 3600);
                 if (hours > 0) {
                     labels.push(t);
-                    dataHours.push(Number(hours.toFixed(1)));
+                    dataHours.push(Number(hours.toFixed(3)));
                     colors.push(colorMap[t] || '#7b2fa0');
                 }
             });
@@ -2787,6 +2790,43 @@ function renderCurrentViewCharts() {
                     </tr>
                 `;
             }).join('');
+        }
+
+        // ───────────────────────────────────────────────────────────
+        // BUILD REGISTRATION → SESSION USAGE MAP
+        // ───────────────────────────────────────────────────────────
+        function buildRegistrationSessionUsageMap() {
+            const map = {};
+            // Build a lookup from rawRegistrations keyed by email/studentId
+            const regLookup = {};
+            rawRegistrations.forEach(r => {
+                const email = (r.email || '').toLowerCase().trim();
+                const sid = (r.studentId || '').trim();
+                if (email) regLookup[email] = r.id;
+                if (sid) regLookup[sid] = r.id;
+            });
+
+            rawUsageLogs.forEach(l => {
+                const userEmail = (l.userEmail || l.email || '').toLowerCase().trim();
+                const userId = (l.studentId || l.userId || '').trim();
+                let regId = regLookup[userEmail] || regLookup[userId] || null;
+
+                // Fallback: try matching by registrationId field
+                if (!regId && l.registrationId) {
+                    regId = l.registrationId;
+                }
+
+                if (!regId) return;
+
+                if (!map[regId]) map[regId] = {};
+
+                const logTools = getLogToolDurations(l);
+                Object.entries(logTools).forEach(([tool, secs]) => {
+                    map[regId][tool] = (map[regId][tool] || 0) + secs;
+                });
+            });
+
+            return map;
         }
 
         // 3. RENDER OVERVIEW 7-COLUMN TABLE
