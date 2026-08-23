@@ -104,7 +104,7 @@
                 </div>
             </div>
 
-            <h1 id="t_header_title" class="text-2xl sm:text-3xl font-extrabold tracking-tight">แบบฟอร์มลงทะเบียนใช้งาน AI</h1>
+            <h1 id="t_header_title" class="text-2xl sm:text-3xl font-extrabold tracking-tight">แบบฟอร์มลงทะเบียนใช้งานเครื่องมือ AI</h1>
             <p id="t_header_subtitle" class="text-purple-100 text-sm mt-1.5 font-light">Chulalongkorn University AI Service Registration</p>
         </div>
 
@@ -117,7 +117,7 @@
             <div class="form-card space-y-5 bg-gradient-to-b from-purple-50/30 to-white">
                 <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
                     <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">1</div>
-                    <h2 id="t_sec1_title" class="font-bold text-gray-800 text-base">ข้อมูลผู้ใช้งาน (User Information)</h2>
+                    <h2 id="t_sec1_title" class="font-bold text-gray-800 text-base">ข้อมูลผู้ใช้งาน</h2>
                 </div>
 
                 <!-- User Type Selection (Unchecked by default) -->
@@ -135,7 +135,7 @@
                                 </div>
                                 <div>
                                     <div id="t_opt_student_title" class="font-bold text-gray-800 peer-checked:text-chula-900 text-sm sm:text-base">นิสิตจุฬาฯ</div>
-                                    <div id="t_opt_student_sub" class="text-xs text-gray-500 font-normal">Chula Student</div>
+                                    <div id="t_opt_student_sub" class="text-xs text-gray-500 font-normal">ระดับปริญญาตรีและบัณฑิตศึกษา</div>
                                 </div>
                             </div>
                         </label>
@@ -149,7 +149,7 @@
                                 </div>
                                 <div>
                                     <div id="t_opt_personnel_title" class="font-bold text-gray-800 peer-checked:text-chula-900 text-sm sm:text-base">บุคลากรจุฬาฯ</div>
-                                    <div id="t_opt_personnel_sub" class="text-xs text-gray-500 font-normal">Chula Personnel</div>
+                                    <div id="t_opt_personnel_sub" class="text-xs text-gray-500 font-normal">อาจารย์ นักวิจัย และบุคลากรสายสนับสนุน</div>
                                 </div>
                             </div>
                         </label>
@@ -160,10 +160,10 @@
                 <div id="studentSection" class="hidden space-y-4 pt-3 border-t border-purple-100/70">
                     <div>
                         <label id="t_lbl_studentid" class="block text-sm font-semibold text-gray-700 mb-1.5">
-                            รหัสนิสิต (Student ID) 10 หลัก <span class="text-rose-500">*</span>
+                            รหัสนิสิต 10 หลัก <span class="text-rose-500">*</span>
                         </label>
                         <div class="relative">
-                            <input type="text" id="studentId" maxlength="10" placeholder="Your student ID"
+                            <input type="text" id="studentId" maxlength="10" placeholder="กรอกรหัสนิสิตของคุณ"
                                    class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-base input-focus font-medium tracking-wider"
                                    oninput="validateStudentId()">
                             <div id="studentIdIcon" class="absolute right-3.5 top-3.5 hidden">
@@ -178,7 +178,7 @@
 
                     <div>
                         <label id="t_lbl_degree" class="block text-sm font-semibold text-gray-700 mb-2">
-                            ระดับการศึกษา (Education Level) <span class="text-rose-500">*</span>
+                            ระดับการศึกษา <span class="text-rose-500">*</span>
                         </label>
                         <div class="grid grid-cols-3 gap-2.5">
                             <label class="cursor-pointer">
@@ -207,10 +207,10 @@
                 <div id="personnelSection" class="hidden space-y-4 pt-3 border-t border-purple-100/70">
                     <div>
                         <label id="t_lbl_personnelemail" class="block text-sm font-semibold text-gray-700 mb-1.5">
-                            อีเมลบุคลากรจุฬาฯ (Chula Email) <span class="text-rose-500">*</span>
+                            อีเมลจุฬาฯ <span class="text-rose-500">*</span>
                         </label>
                         <div class="relative">
-                            <input type="email" id="personnelEmail" placeholder="Your Chula email"
+                            <input type="email" id="personnelEmail" placeholder="กรอกอีเมลจุฬาฯ ของคุณ"
                                    class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-base input-focus"
                                    oninput="validatePersonnelEmail()">
                             <div id="personnelEmailIcon" class="absolute right-3.5 top-3.5 hidden">
@@ -225,7 +225,7 @@
 
                     <div>
                         <label id="t_lbl_personneltype" class="block text-sm font-semibold text-gray-700 mb-2">
-                            ประเภทบุคลากร (Personnel Category) <span class="text-rose-500">*</span>
+                            ประเภทบุคลากร <span class="text-rose-500">*</span>
                         </label>
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                             <label class="cursor-pointer">
@@ -243,7 +243,7 @@
                             <label class="cursor-pointer">
                                 <input type="radio" name="personnelType" value="นักวิจัยหลังปริญญาเอก" class="peer sr-only">
                                 <div id="t_opt_postdoc" class="py-2 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/70 peer-checked:text-chula-900 font-semibold text-xs text-gray-600 transition-all">
-                                    นักวิจัย ป.เอก
+                                    นักวิจัยหลังปริญญาเอก
                                 </div>
                             </label>
                             <label class="cursor-pointer">
@@ -255,7 +255,7 @@
                             <label class="cursor-pointer col-span-2 sm:col-span-2">
                                 <input type="radio" name="personnelType" value="อื่น ๆ" class="peer sr-only">
                                 <div id="t_opt_other_personnel" class="py-2 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/70 peer-checked:text-chula-900 font-semibold text-xs text-gray-600 transition-all">
-                                    อื่น ๆ (Other)
+                                    อื่น ๆ
                                 </div>
                             </label>
                         </div>
@@ -278,10 +278,10 @@
             <div id="section2" class="hidden form-card space-y-5">
                 <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
                     <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">2</div>
-                    <h2 id="t_sec2_title" class="font-bold text-gray-800 text-base">การใช้งาน AI ในวันนี้ (AI Usage Details)</h2>
+                    <h2 id="t_sec2_title" class="font-bold text-gray-800 text-base">การใช้งาน AI ในวันนี้</h2>
                 </div>
 
-                <!-- Q1: AI Tools with Logos (Unchecked by default) -->
+                <!-- Q1: AI Tools with Logos -->
                 <div>
                     <label id="t_q1_title" class="block text-sm font-semibold text-gray-700 mb-2.5">
                         เครื่องมือ AI ที่ต้องการใช้งานในวันนี้ (เลือกได้หลายข้อ) <span class="text-rose-500">*</span>
@@ -344,31 +344,31 @@
                     </div>
                 </div>
 
-                <!-- Q2: Expected Duration (Unchecked by default) -->
+                <!-- Q2: Expected Duration -->
                 <div>
                     <label id="t_q2_title" class="block text-sm font-semibold text-gray-700 mb-2.5">
-                        How long do you plan to use it? (คุณคาดว่าจะใช้งานนานแค่ไหน?) <span class="text-rose-500">*</span>
+                        คุณคาดว่าจะใช้งานนานแค่ไหน? <span class="text-rose-500">*</span>
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-700">
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="radio" name="planDuration" value="< 15 minutes" class="text-chula-700 focus:ring-chula-500">
-                            <span id="t_dur_1">น้อยกว่า 15 นาที (&lt; 15 mins)</span>
+                            <span id="t_dur_1">น้อยกว่า 15 นาที</span>
                         </label>
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="radio" name="planDuration" value="15 - 30 minutes" class="text-chula-700 focus:ring-chula-500">
-                            <span id="t_dur_2">15 - 30 นาที (15 - 30 mins)</span>
+                            <span id="t_dur_2">15 - 30 นาที</span>
                         </label>
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="radio" name="planDuration" value="30 - 60 minutes" class="text-chula-700 focus:ring-chula-500">
-                            <span id="t_dur_3">30 - 60 นาที (30 - 60 mins)</span>
+                            <span id="t_dur_3">30 - 60 นาที</span>
                         </label>
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="radio" name="planDuration" value="1 - 2 hours" class="text-chula-700 focus:ring-chula-500">
-                            <span id="t_dur_4">1 - 2 ชั่วโมง (1 - 2 hours)</span>
+                            <span id="t_dur_4">1 - 2 ชั่วโมง</span>
                         </label>
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition sm:col-span-2">
                             <input type="radio" name="planDuration" value="> 2 hours" class="text-chula-700 focus:ring-chula-500">
-                            <span id="t_dur_5">มากกว่า 2 ชั่วโมง (&gt; 2 hours)</span>
+                            <span id="t_dur_5">มากกว่า 2 ชั่วโมง</span>
                         </label>
                     </div>
                 </div>
@@ -380,63 +380,63 @@
             <div id="section3" class="hidden form-card space-y-5">
                 <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
                     <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">3</div>
-                    <h2 id="t_sec3_title" class="font-bold text-gray-800 text-base">วัตถุประสงค์และลักษณะงาน (Purpose & Activities)</h2>
+                    <h2 id="t_sec3_title" class="font-bold text-gray-800 text-base">วัตถุประสงค์และลักษณะงาน</h2>
                 </div>
 
-                <!-- Q3: Primary Purpose (Unchecked by default) -->
+                <!-- Q3: Primary Purpose -->
                 <div>
                     <label id="t_q3_title" class="block text-sm font-semibold text-gray-700 mb-2.5">
-                        What is your primary purpose for using AI today? (วันนี้คุณใช้งาน AI เพื่อวัตถุประสงค์ใดเป็นหลัก?) <span class="text-rose-500">*</span>
+                        วันนี้คุณใช้งาน AI เพื่อวัตถุประสงค์ใดเป็นหลัก? <span class="text-rose-500">*</span>
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-700">
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="primaryPurpose" value="การศึกษาและการเรียนการสอน" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span id="t_purp_1">การเรียนการสอน / การศึกษา (Education)</span>
+                            <span id="t_purp_1">การศึกษาและการเรียนการสอน</span>
                         </label>
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="primaryPurpose" value="การทำวิจัยและวิทยานิพนธ์" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span id="t_purp_2">การทำวิจัย / วิทยานิพนธ์ (Research)</span>
+                            <span id="t_purp_2">การทำวิจัยและวิทยานิพนธ์</span>
                         </label>
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
-                            <input type="checkbox" name="primaryPurpose" value="การปฏิบัติงานและการบริหารจัดการ" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span id="t_purp_3">การปฏิบัติงานประจำ / งานบริหาร (Work)</span>
+                            <input type="checkbox" name="primaryPurpose" value="การปฏิบัติงานประจำและงานบริหาร" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
+                            <span id="t_purp_3">การปฏิบัติงานประจำและงานบริหาร</span>
                         </label>
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="primaryPurpose" value="การพัฒนาทักษะตนเอง" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span id="t_purp_4">การพัฒนาทักษะตนเอง (Self-development)</span>
+                            <span id="t_purp_4">การพัฒนาทักษะตนเอง</span>
                         </label>
                     </div>
                 </div>
 
-                <!-- Q4: Activity Types (Unchecked by default) -->
+                <!-- Q4: Activity Types -->
                 <div>
                     <label id="t_q4_title" class="block text-sm font-semibold text-gray-700 mb-2.5">
-                        What kind of activities are you using AI for today? (ลักษณะงานหรือกิจกรรมที่คุณใช้ AI ช่วยในวันนี้คืออะไร?) <span class="text-rose-500">*</span>
+                        ลักษณะงานหรือกิจกรรมที่คุณใช้ AI ช่วยในวันนี้คืออะไร? <span class="text-rose-500">*</span>
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-700">
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="activityType" value="ค้นหาข้อมูลและสรุปเนื้อหา" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span id="t_act_1">ค้นหาข้อมูล / สรุปเนื้อหา (Search & Summary)</span>
+                            <span id="t_act_1">ค้นหาข้อมูลและสรุปเนื้อหา</span>
                         </label>
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
-                            <input type="checkbox" name="activityType" value="เขียนบทความและตรวจภาษา" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span id="t_act_2">ช่วยเขียนบทความ / ตรวจไวยากรณ์ (Writing)</span>
+                            <input type="checkbox" name="activityType" value="ช่วยเขียนบทความและตรวจไวยากรณ์" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
+                            <span id="t_act_2">ช่วยเขียนบทความและตรวจไวยากรณ์</span>
                         </label>
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="activityType" value="วิเคราะห์ข้อมูลและสถิติ" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span id="t_act_3">วิเคราะห์ข้อมูล / สถิติ (Data Analysis)</span>
+                            <span id="t_act_3">วิเคราะห์ข้อมูลและสถิติ</span>
                         </label>
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="activityType" value="เขียนโค้ดและพัฒนาโปรแกรม" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span id="t_act_4">เขียนโค้ด / พัฒนาโปรแกรม (Coding)</span>
+                            <span id="t_act_4">เขียนโค้ดและพัฒนาโปรแกรม</span>
                         </label>
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="activityType" value="สร้างรูปภาพและสื่อมัลติมีเดีย" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span id="t_act_5">สร้างรูปภาพ / มัลติมีเดีย (Image & Media)</span>
+                            <span id="t_act_5">สร้างรูปภาพและสื่อมัลติมีเดีย</span>
                         </label>
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="activityType" value="วางแผนและระดมความคิด" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span id="t_act_6">วางแผน / ระดมความคิด (Brainstorming)</span>
+                            <span id="t_act_6">วางแผนและระดมความคิด</span>
                         </label>
                     </div>
                 </div>
@@ -448,12 +448,12 @@
             <div id="section4" class="hidden form-card space-y-4 bg-purple-50/40 border-purple-200">
                 <div class="flex items-center gap-2.5 pb-2 border-b border-purple-100">
                     <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">4</div>
-                    <h2 id="t_sec4_title" class="font-bold text-gray-800 text-base">ข้อกำหนดและเงื่อนไข (Terms and Conditions)</h2>
+                    <h2 id="t_sec4_title" class="font-bold text-gray-800 text-base">ข้อกำหนดและเงื่อนไข</h2>
                 </div>
 
                 <div class="bg-white p-4 sm:p-5 rounded-2xl border border-purple-100 space-y-3">
                     <p id="t_pdpa_title" class="text-xs sm:text-sm font-bold text-gray-800">
-                        Do you agree to the terms and conditions mentioned below? (ท่านยินยอมให้ดำเนินการตามเงื่อนไขด้านล่างหรือไม่?) <span class="text-rose-500">*</span>
+                        ท่านยินยอมให้ดำเนินการตามเงื่อนไขด้านล่างหรือไม่? <span class="text-rose-500">*</span>
                     </p>
                     
                     <div id="t_pdpa_content" class="text-xs text-gray-600 leading-relaxed space-y-2.5 max-h-52 overflow-y-auto pr-1">
@@ -469,7 +469,7 @@
                         <label class="flex items-center gap-3 cursor-pointer">
                             <input type="checkbox" id="consentAgree" class="w-5 h-5 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0">
                             <span id="t_pdpa_checkbox_label" class="text-xs sm:text-sm font-bold text-chula-900">
-                                ยินยอมและยอมรับเงื่อนไข (I agree and accept the terms and conditions)
+                                ยินยอมและยอมรับเงื่อนไข
                             </span>
                         </label>
                     </div>
@@ -480,7 +480,7 @@
                     <button type="button" id="btnSubmit" onclick="submitRegistration()"
                             class="w-full py-4 rounded-2xl text-white font-bold text-base tracking-wide shadow-lg shadow-purple-500/30 transition-all flex items-center justify-center gap-2 gradient-header hover:opacity-95 active:scale-[0.99]">
                         <i data-lucide="check-circle-2" class="w-5 h-5"></i>
-                        <span id="t_btn_submit">ยืนยันการลงทะเบียน (Complete Registration)</span>
+                        <span id="t_btn_submit">ยืนยันการลงทะเบียน</span>
                     </button>
                 </div>
             </div>
@@ -496,14 +496,14 @@
             </div>
             <div>
                 <h2 id="t_success_title" class="text-2xl font-black text-gray-900">ลงทะเบียนเรียบร้อยแล้ว!</h2>
-                <p id="t_success_subtitle" class="text-gray-500 text-sm mt-1">Registration Complete! Welcome to Chula AIX</p>
+                <p id="t_success_subtitle" class="text-gray-500 text-sm mt-1">ยินดีต้อนรับสู่ Chula AIX</p>
             </div>
             <div id="t_success_desc" class="bg-purple-50 p-4 rounded-2xl border border-purple-200 text-xs text-chula-800 leading-relaxed">
                 ระบบได้บันทึกข้อมูลและปลดล็อกการเข้าใช้งานเครื่องมือ AI เรียบร้อยแล้ว<br>
                 หน้าต่างนี้จะปิดตัวลงโดยอัตโนมัติใน <span id="closeCountdown" class="font-bold text-chula-700">3</span> วินาที
             </div>
-            <button onclick="window.close()" id="t_btn_close_now" class="px-6 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-semibold text-xs hover:bg-gray-50">
-                ปิดหน้าต่างนี้ทันที (Close Window)
+            <button onclick="requestCloseModal()" id="t_btn_close_now" class="px-6 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-semibold text-xs hover:bg-gray-50">
+                ปิดหน้าต่างนี้ทันที
             </button>
         </div>
 
@@ -518,65 +518,113 @@
 
     <script>
         // ═══════════════════════════════════════════════════════════
-        // I18N DICTIONARY (TH / EN)
+        // 29 FACULTIES / INSTITUTES / DEPARTMENTS (TH & EN)
+        // ═══════════════════════════════════════════════════════════
+        const FACULTIES_DATA = [
+            { code: "21", th: "คณะวิศวกรรมศาสตร์", en: "Faculty of Engineering" },
+            { code: "22", th: "คณะอักษรศาสตร์", en: "Faculty of Arts" },
+            { code: "23", th: "คณะวิทยาศาสตร์", en: "Faculty of Science" },
+            { code: "24", th: "คณะรัฐศาสตร์", en: "Faculty of Political Science" },
+            { code: "25", th: "คณะสถาปัตยกรรมศาสตร์", en: "Faculty of Architecture" },
+            { code: "26", th: "คณะพาณิชยศาสตร์และการบัญชี", en: "Faculty of Commerce and Accountancy (CBS)" },
+            { code: "27", th: "คณะครุศาสตร์", en: "Faculty of Education" },
+            { code: "28", th: "คณะนิเทศศาสตร์", en: "Faculty of Communication Arts" },
+            { code: "29", th: "คณะเศรษฐศาสตร์", en: "Faculty of Economics" },
+            { code: "30", th: "คณะแพทยศาสตร์", en: "Faculty of Medicine" },
+            { code: "31", th: "คณะสัตวแพทยศาสตร์", en: "Faculty of Veterinary Science" },
+            { code: "32", th: "คณะทันตแพทยศาสตร์", en: "Faculty of Dentistry" },
+            { code: "33", th: "คณะเภสัชศาสตร์", en: "Faculty of Pharmaceutical Sciences" },
+            { code: "34", th: "คณะนิติศาสตร์", en: "Faculty of Law" },
+            { code: "35", th: "คณะศิลปกรรมศาสตร์", en: "Faculty of Fine and Applied Arts" },
+            { code: "36", th: "คณะพยาบาลศาสตร์", en: "Faculty of Nursing" },
+            { code: "37", th: "คณะสหเวชศาสตร์", en: "Faculty of Allied Health Sciences" },
+            { code: "38", th: "คณะจิตวิทยา", en: "Faculty of Psychology" },
+            { code: "39", th: "คณะวิทยาศาสตร์การกีฬา", en: "Faculty of Sports Science" },
+            { code: "40", th: "คณะเกษตรศาสตร์บูรณาการ", en: "School of Integrated Agricultural Sciences" },
+            { code: "20", th: "วิทยาลัยสหศาสตร์บูรณาการแห่งจุฬาลงกรณ์", en: "College of Integrated Science and Technology" },
+            { code: "51", th: "วิทยาลัยประชากรศาสตร์", en: "College of Population Studies" },
+            { code: "52", th: "วิทยาลัยปิโตรเลียมและปิโตรเคมี", en: "The Petroleum and Petrochemical College" },
+            { code: "53", th: "วิทยาลัยวิทยาศาสตร์สาธารณสุข", en: "College of Public Health Sciences" },
+            { code: "55", th: "สถาบันภาษา", en: "Chulalongkorn University Language Institute (CULI)" },
+            { code: "56", th: "สถาบันนวัตกรรมบูรณาการแห่งจุฬาลงกรณ์ (BAScii)", en: "School of Integrated Innovation (ScII / BAScii)" },
+            { code: "58", th: "สถาบันบัณฑิตบริหารธุรกิจ ศศินทร์ แห่งจุฬาลงกรณ์", en: "Sasin School of Management" },
+            { code: "01", th: "สถาบันภาษาไทยสิรินธร", en: "The Sirindhorn Thai Language Institute" },
+            { code: "02", th: "ศูนย์การศึกษาทั่วไป", en: "General Education Center" },
+            { code: "91", th: "สำนักงานมหาวิทยาลัย / สำนักบริหาร", en: "University Administration Office" },
+            { code: "92", th: "สำนักวิทยทรัพยากร (หอสมุดกลาง)", en: "Office of Academic Resources (Central Library)" },
+            { code: "93", th: "ศูนย์บริการวิชาการแห่งจุฬาลงกรณ์มหาวิทยาลัย", en: "Chulalongkorn University Academic Services Center" },
+            { code: "94", th: "สำนักบริการเทคโนโลยีสารสนเทศ (IT Chula)", en: "Office of Information Technology (IT Chula)" },
+            { code: "99", th: "หน่วยงานอื่นๆ ในจุฬาลงกรณ์มหาวิทยาลัย", en: "Other Chulalongkorn Departments & Institutes" }
+        ];
+
+        const FACULTIES_MAP_BY_CODE = {};
+        FACULTIES_DATA.forEach(item => {
+            FACULTIES_MAP_BY_CODE[item.code] = item;
+            if (item.code.startsWith('0')) {
+                FACULTIES_MAP_BY_CODE[item.code.substring(1)] = item;
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════
+        // PURE BILINGUAL DICTIONARY (TH / EN)
         // ═══════════════════════════════════════════════════════════
         let currentLang = localStorage.getItem('aix_pref_lang') || 'th';
 
         const i18n = {
             th: {
                 pageTitle: "ลงทะเบียนใช้งานเครื่องมือ AI - Chula AIX",
-                headerTitle: "แบบฟอร์มลงทะเบียนใช้งาน AI",
-                headerSubtitle: "Chulalongkorn University AI Service Registration",
-                sec1Title: "ข้อมูลผู้ใช้งาน (User Information)",
-                sec2Title: "การใช้งาน AI ในวันนี้ (AI Usage Details)",
-                sec3Title: "วัตถุประสงค์และลักษณะงาน (Purpose & Activities)",
-                sec4Title: "ข้อกำหนดและเงื่อนไข (Terms and Conditions)",
+                headerTitle: "แบบฟอร์มลงทะเบียนใช้งานเครื่องมือ AI",
+                headerSubtitle: "ระบบลงทะเบียนเข้าใช้บริการปัญญาประดิษฐ์ จุฬาลงกรณ์มหาวิทยาลัย",
+                sec1Title: "ข้อมูลผู้ใช้งาน",
+                sec2Title: "การใช้งาน AI ในวันนี้",
+                sec3Title: "วัตถุประสงค์และลักษณะงาน",
+                sec4Title: "ข้อกำหนดและเงื่อนไข",
                 lblUserType: "ประเภทผู้ใช้งาน *",
                 optStudentTitle: "นิสิตจุฬาฯ",
-                optStudentSub: "Chula Student",
+                optStudentSub: "ระดับปริญญาตรีและบัณฑิตศึกษา",
                 optPersonnelTitle: "บุคลากรจุฬาฯ",
-                optPersonnelSub: "Chula Personnel",
-                lblStudentId: "รหัสนิสิต (Student ID) 10 หลัก *",
-                studentIdPlaceholder: "Your student ID",
+                optPersonnelSub: "อาจารย์ นักวิจัย และบุคลากรสายสนับสนุน",
+                lblStudentId: "รหัสนิสิต 10 หลัก *",
+                studentIdPlaceholder: "กรอกรหัสนิสิตของคุณ",
                 studentIdError: "รหัสนิสิตไม่ถูกต้อง",
-                lblDegree: "ระดับการศึกษา (Education Level) *",
+                lblDegree: "ระดับการศึกษา *",
                 optBachelor: "ปริญญาตรี",
                 optMaster: "ปริญญาโท",
                 optDoctorate: "ปริญญาเอก",
-                lblPersonnelEmail: "อีเมลบุคลากรจุฬาฯ (Chula Email) *",
-                personnelEmailPlaceholder: "Your Chula email",
+                lblPersonnelEmail: "อีเมลจุฬาฯ *",
+                personnelEmailPlaceholder: "กรอกอีเมลจุฬาฯ ของคุณ",
                 personnelEmailError: "อีเมลไม่ถูกต้อง",
-                lblPersonnelType: "ประเภทบุคลากร (Personnel Category) *",
+                lblPersonnelType: "ประเภทบุคลากร *",
                 optTeacher: "อาจารย์",
                 optResearcher: "นักวิจัย",
-                optPostdoc: "นักวิจัย ป.เอก",
+                optPostdoc: "นักวิจัยหลังปริญญาเอก",
                 optStaff: "บุคลากรสายสนับสนุน",
-                optOtherPersonnel: "อื่น ๆ (Other)",
+                optOtherPersonnel: "อื่น ๆ",
                 lblFaculty: "คณะ / สถาบัน / หน่วยงานที่สังกัด *",
                 selectFacultyPlaceholder: "-- เลือกคณะหรือหน่วยงานที่สังกัด --",
                 q1Title: "เครื่องมือ AI ที่ต้องการใช้งานในวันนี้ (เลือกได้หลายข้อ) *",
-                q2Title: "How long do you plan to use it? (คุณคาดว่าจะใช้งานนานแค่ไหน?) *",
-                dur1: "น้อยกว่า 15 นาที (< 15 mins)",
-                dur2: "15 - 30 นาที (15 - 30 mins)",
-                dur3: "30 - 60 นาที (30 - 60 mins)",
-                dur4: "1 - 2 ชั่วโมง (1 - 2 hours)",
-                dur5: "มากกว่า 2 ชั่วโมง (> 2 hours)",
-                q3Title: "What is your primary purpose for using AI today? (วันนี้คุณใช้งาน AI เพื่อวัตถุประสงค์ใดเป็นหลัก?) *",
-                purp1: "การเรียนการสอน / การศึกษา (Education)",
-                purp2: "การทำวิจัย / วิทยานิพนธ์ (Research)",
-                purp3: "การปฏิบัติงานประจำ / งานบริหาร (Work)",
-                purp4: "การพัฒนาทักษะตนเอง (Self-development)",
-                q4Title: "What kind of activities are you using AI for today? (ลักษณะงานหรือกิจกรรมที่คุณใช้ AI ช่วยในวันนี้คืออะไร?) *",
-                act1: "ค้นหาข้อมูล / สรุปเนื้อหา (Search & Summary)",
-                act2: "ช่วยเขียนบทความ / ตรวจไวยากรณ์ (Writing)",
-                act3: "วิเคราะห์ข้อมูล / สถิติ (Data Analysis)",
-                act4: "เขียนโค้ด / พัฒนาโปรแกรม (Coding)",
-                act5: "สร้างรูปภาพ / มัลติมีเดีย (Image & Media)",
-                act6: "วางแผน / ระดมความคิด (Brainstorming)",
-                pdpaTitle: "Do you agree to the terms and conditions mentioned below? (ท่านยินยอมให้ดำเนินการตามเงื่อนไขด้านล่างหรือไม่?) *",
+                q2Title: "คุณคาดว่าจะใช้งานนานแค่ไหน? *",
+                dur1: "น้อยกว่า 15 นาที",
+                dur2: "15 - 30 นาที",
+                dur3: "30 - 60 นาที",
+                dur4: "1 - 2 ชั่วโมง",
+                dur5: "มากกว่า 2 ชั่วโมง",
+                q3Title: "วันนี้คุณใช้งาน AI เพื่อวัตถุประสงค์ใดเป็นหลัก? *",
+                purp1: "การศึกษาและการเรียนการสอน",
+                purp2: "การทำวิจัยและวิทยานิพนธ์",
+                purp3: "การปฏิบัติงานประจำและงานบริหาร",
+                purp4: "การพัฒนาทักษะตนเอง",
+                q4Title: "ลักษณะงานหรือกิจกรรมที่คุณใช้ AI ช่วยในวันนี้คืออะไร? *",
+                act1: "ค้นหาข้อมูลและสรุปเนื้อหา",
+                act2: "ช่วยเขียนบทความและตรวจไวยากรณ์",
+                act3: "วิเคราะห์ข้อมูลและสถิติ",
+                act4: "เขียนโค้ดและพัฒนาโปรแกรม",
+                act5: "สร้างรูปภาพและสื่อมัลติมีเดีย",
+                act6: "วางแผนและระดมความคิด",
+                pdpaTitle: "ท่านยินยอมให้ดำเนินการตามเงื่อนไขด้านล่างหรือไม่? *",
                 pdpaContentHtml: `<p>สำนักงานวิทยทรัพยากรให้ความสำคัญกับความเป็นส่วนตัวของท่าน โดยข้อมูลที่ระบุตัวตนจะถูกเก็บรักษาเป็นความลับ อย่างไรก็ตาม ข้อเสนอแนะและผลการประเมิน จะถูกนำไปสรุปผลและเผยแพร่เพื่อเป็นแนวทางในการพัฒนาพื้นที่ Chula AIX ต่อไป นอกจากนี้ การเข้าใช้บริการถือว่าท่านยอมรับและยินดีปฏิบัติตาม <a href="https://chula.libguides.com/c.php?g=984417&p=7176297" target="_blank" class="underline text-chula-700 font-semibold hover:text-chula-900">ระเบียบและข้อปฏิบัติในการใช้บริการพื้นที่ AIX</a> อย่างเคร่งครัด</p><p>โปรดระบุข้อมูลที่ถูกต้อง การกรอกข้อมูลเท็จจะถูกดำเนินการตาม <a href="https://chula.libguides.com/c.php?g=984417&p=7176297" target="_blank" class="underline text-chula-700 font-semibold hover:text-chula-900">ระเบียบและข้อปฏิบัติของ Chula AIX</a></p>`,
-                pdpaCheckboxLabel: "ยินยอมและยอมรับเงื่อนไข (I agree and accept the terms and conditions)",
-                btnSubmit: "ยืนยันการลงทะเบียน (Complete Registration)",
+                pdpaCheckboxLabel: "ยินยอมและยอมรับเงื่อนไข",
+                btnSubmit: "ยืนยันการลงทะเบียน",
                 alertSelectType: "กรุณาเลือกประเภทผู้ใช้งาน",
                 alertCheckStudentId: "กรุณากรอกรหัสนิสิต 10 หลักให้ถูกต้อง",
                 alertSelectDegree: "กรุณาเลือกระดับการศึกษา",
@@ -590,30 +638,30 @@
                 alertAgreeConsent: "กรุณายินยอมข้อตกลงและเงื่อนไขการใช้งาน AI",
                 savingText: "กำลังบันทึกข้อมูล...",
                 successTitle: "ลงทะเบียนเรียบร้อยแล้ว!",
-                successSubtitle: "Registration Complete! Welcome to Chula AIX",
+                successSubtitle: "ยินดีต้อนรับสู่ Chula AIX",
                 successDesc: "ระบบได้บันทึกข้อมูลและปลดล็อกการเข้าใช้งานเครื่องมือ AI เรียบร้อยแล้ว<br>หน้าต่างนี้จะปิดตัวลงโดยอัตโนมัติใน <span id='closeCountdown' class='font-bold text-chula-700'>3</span> วินาที",
-                btnCloseNow: "ปิดหน้าต่างนี้ทันที (Close Window)"
+                btnCloseNow: "ปิดหน้าต่างนี้ทันที"
             },
             en: {
                 pageTitle: "AI Service Registration - Chula AIX",
-                headerTitle: "AI Registration Form",
-                headerSubtitle: "Chulalongkorn University AI Service Registration",
+                headerTitle: "AI Service Registration Form",
+                headerSubtitle: "Chulalongkorn University Artificial Intelligence Platform",
                 sec1Title: "User Information",
                 sec2Title: "AI Usage Details",
                 sec3Title: "Purpose & Activities",
                 sec4Title: "Terms and Conditions",
                 lblUserType: "User Type *",
                 optStudentTitle: "Chula Student",
-                optStudentSub: "For undergraduate & graduate students",
+                optStudentSub: "Undergraduate and Graduate Students",
                 optPersonnelTitle: "Chula Personnel",
-                optPersonnelSub: "For faculty, researchers & staff",
+                optPersonnelSub: "Faculty Members, Researchers, and Support Staff",
                 lblStudentId: "Student ID (10 digits) *",
                 studentIdPlaceholder: "Your student ID",
                 studentIdError: "Invalid Student ID",
                 lblDegree: "Education Level *",
-                optBachelor: "Bachelor's",
-                optMaster: "Master's",
-                optDoctorate: "Doctorate",
+                optBachelor: "Bachelor's Degree",
+                optMaster: "Master's Degree",
+                optDoctorate: "Doctoral Degree",
                 lblPersonnelEmail: "Chula Email *",
                 personnelEmailPlaceholder: "Your Chula email",
                 personnelEmailError: "Invalid Chula Email",
@@ -625,17 +673,17 @@
                 optOtherPersonnel: "Other",
                 lblFaculty: "Faculty / Institute / Affiliation *",
                 selectFacultyPlaceholder: "-- Select Faculty or Department --",
-                q1Title: "Which AI tools do you plan to use today? (Multiple choice) *",
+                q1Title: "Which AI tools do you plan to use today? (Select all that apply) *",
                 q2Title: "How long do you plan to use it? *",
-                dur1: "Less than 15 minutes (< 15 mins)",
+                dur1: "Less than 15 minutes",
                 dur2: "15 - 30 minutes",
                 dur3: "30 - 60 minutes",
                 dur4: "1 - 2 hours",
-                dur5: "More than 2 hours (> 2 hours)",
+                dur5: "More than 2 hours",
                 q3Title: "What is your primary purpose for using AI today? *",
-                purp1: "Education & Study",
+                purp1: "Education & Teaching",
                 purp2: "Research & Thesis",
-                purp3: "Administrative & Work",
+                purp3: "Administrative & Daily Work",
                 purp4: "Personal Skill Development",
                 q4Title: "What kind of activities are you using AI for today? *",
                 act1: "Information Search & Summarization",
@@ -661,7 +709,7 @@
                 alertAgreeConsent: "Please agree to the terms and conditions",
                 savingText: "Submitting registration...",
                 successTitle: "Registration Complete!",
-                successSubtitle: "Welcome to Chula AIX Platform",
+                successSubtitle: "Welcome to Chula AIX",
                 successDesc: "Your registration has been saved and AI access is now unlocked.<br>This window will close automatically in <span id='closeCountdown' class='font-bold text-chula-700'>3</span> seconds",
                 btnCloseNow: "Close Window Now"
             }
@@ -718,7 +766,9 @@
             document.getElementById('t_opt_other_personnel').textContent = dict.optOtherPersonnel;
 
             document.getElementById('t_lbl_faculty').innerHTML = dict.lblFaculty.replace('*', '<span class="text-rose-500">*</span>');
-            document.getElementById('t_opt_select_faculty').textContent = dict.selectFacultyPlaceholder;
+            
+            // Re-populate faculties dropdown with pure language
+            populatePersonnelFaculties(lang);
 
             document.getElementById('t_q1_title').innerHTML = dict.q1Title.replace('*', '<span class="text-rose-500">*</span>');
             document.getElementById('t_q2_title').innerHTML = dict.q2Title.replace('*', '<span class="text-rose-500">*</span>');
@@ -752,43 +802,36 @@
             document.getElementById('t_btn_close_now').textContent = dict.btnCloseNow;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // 29 FACULTIES / INSTITUTES MAPPING TABLE
-        // ═══════════════════════════════════════════════════════════
-        const FACULTIES_MAP = {
-            "01": "สถาบันภาษาไทยสิรินธร",
-            "1":  "สถาบันภาษาไทยสิรินธร",
-            "02": "ศูนย์การศึกษาทั่วไป",
-            "2":  "ศูนย์การศึกษาทั่วไป",
-            "20": "วิทยาลัยสหศาสตร์บูรณาการแห่งจุฬาลงกรณ์",
-            "21": "คณะวิศวกรรมศาสตร์",
-            "22": "คณะอักษรศาสตร์",
-            "23": "คณะวิทยาศาสตร์",
-            "24": "คณะรัฐศาสตร์",
-            "25": "คณะสถาปัตยกรรมศาสตร์",
-            "26": "คณะพาณิชยศาสตร์และการบัญชี",
-            "27": "คณะครุศาสตร์",
-            "28": "คณะนิเทศศาสตร์",
-            "29": "คณะเศรษฐศาสตร์",
-            "30": "คณะแพทยศาสตร์",
-            "31": "คณะสัตวแพทยศาสตร์",
-            "32": "คณะทันตแพทยศาสตร์",
-            "33": "คณะเภสัชศาสตร์",
-            "34": "คณะนิติศาสตร์",
-            "35": "คณะศิลปกรรมศาสตร์",
-            "36": "คณะพยาบาลศาสตร์",
-            "37": "คณะสหเวชศาสตร์",
-            "38": "คณะจิตวิทยา",
-            "39": "คณะวิทยาศาสตร์การกีฬา",
-            "40": "คณะเกษตรศาสตร์บูรณาการ",
-            "51": "วิทยาลัยประชากรศาสตร์",
-            "52": "วิทยาลัยปิโตรเลียมและปิโตรเคมี",
-            "53": "วิทยาลัยวิทยาศาสตร์สาธารณสุข",
-            "55": "สถาบันภาษา",
-            "56": "สถาบันนวัตกรรมบูรณาการแห่งจุฬาลงกรณ์ (BAScii)",
-            "58": "สถาบันบัณฑิตบริหารธุรกิจ ศศินทร์ แห่งจุฬาลงกรณ์",
-            "99": "มหาวิทยาลัยอื่น"
-        };
+        function populatePersonnelFaculties(lang) {
+            const select = document.getElementById('personnelFaculty');
+            const prevSelected = select.value;
+            select.innerHTML = '';
+
+            const defaultOpt = document.createElement('option');
+            defaultOpt.value = "";
+            defaultOpt.disabled = true;
+            defaultOpt.selected = true;
+            defaultOpt.id = "t_opt_select_faculty";
+            defaultOpt.textContent = i18n[lang].selectFacultyPlaceholder;
+            select.appendChild(defaultOpt);
+
+            // Sort faculties by localized name
+            const list = [...FACULTIES_DATA].sort((a, b) => {
+                const nameA = a[lang] || a.th;
+                const nameB = b[lang] || b.th;
+                return nameA.localeCompare(nameB, lang === 'th' ? 'th' : 'en');
+            });
+
+            list.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item[lang] || item.th;
+                opt.textContent = item[lang] || item.th;
+                if (opt.value === prevSelected) {
+                    opt.selected = true;
+                }
+                select.appendChild(opt);
+            });
+        }
 
         // Firebase Configuration
         const activeFirebaseConfig = window.FIREBASE_CONFIG || {
@@ -814,34 +857,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('gf_unlock_status');
             lucide.createIcons();
-            populatePersonnelFaculties();
             setLanguage(currentLang);
         });
-
-        function populatePersonnelFaculties() {
-            const select = document.getElementById('personnelFaculty');
-            const uniqueNames = new Set(Object.values(FACULTIES_MAP));
-            Array.from(uniqueNames).sort().forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                select.appendChild(opt);
-            });
-            // Central offices
-            const centralOffices = [
-                "สำนักงานมหาวิทยาลัย / สำนักบริหาร",
-                "สำนักวิทยทรัพยากร (หอสมุดกลาง)",
-                "ศูนย์บริการวิชาการแห่งจุฬาลงกรณ์มหาวิทยาลัย",
-                "สำนักบริการเทคโนโลยีสารสนเทศ (IT Chula)",
-                "หน่วยงานอื่นๆ ในจุฬาลงกรณ์มหาวิทยาลัย"
-            ];
-            centralOffices.forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                select.appendChild(opt);
-            });
-        }
 
         function handleUserTypeChange(type) {
             document.getElementById('studentSection').classList.toggle('hidden', type !== 'student');
@@ -870,7 +887,7 @@
             const is10Digits = /^\d{10}$/.test(val);
             const firstDigitOk = ['5', '6', '7'].includes(val.charAt(0));
             const last2 = val.substring(8, 10);
-            const facultyOk = !!FACULTIES_MAP[last2];
+            const facultyOk = !!FACULTIES_MAP_BY_CODE[last2];
 
             if (!is10Digits || !firstDigitOk || !facultyOk) {
                 err.classList.remove('hidden');
@@ -939,7 +956,8 @@
                 studentId = document.getElementById('studentId').value.trim();
                 email = studentId + '@student.chula.ac.th';
                 const last2 = studentId.substring(8, 10);
-                facultyName = FACULTIES_MAP[last2] || 'จุฬาลงกรณ์มหาวิทยาลัย';
+                const facultyObj = FACULTIES_MAP_BY_CODE[last2];
+                facultyName = facultyObj ? (facultyObj[currentLang] || facultyObj.th) : 'จุฬาลงกรณ์มหาวิทยาลัย';
                 degree = degreeElem.value;
             } else {
                 if (!validatePersonnelEmail()) {
@@ -1019,7 +1037,7 @@
             localStorage.setItem('gf_last_heartbeat', Date.now().toString());
             localStorage.setItem('aix_registration_data', JSON.stringify(registrationData));
 
-            // Notify parent window if loaded in In-Page Modal Iframe
+            // Notify parent window (Modal / Userscript)
             try {
                 window.parent.postMessage({ type: 'AIX_UNLOCKED', email: email }, '*');
             } catch (e) {}
@@ -1030,27 +1048,32 @@
                 firebase.database().ref('registrations').push(registrationData)
                 .then(() => {
                     saved = true;
-                    showSuccessState();
+                    showSuccessState(email);
                 })
                 .catch(err => {
                     console.warn('RTDB write warning:', err);
-                    showSuccessState();
+                    showSuccessState(email);
                 });
             } catch (e) {
-                showSuccessState();
+                showSuccessState(email);
             }
 
             setTimeout(() => {
-                if (!saved) showSuccessState();
+                if (!saved) showSuccessState(email);
             }, 1200);
         }
 
-        function showSuccessState() {
+        function showSuccessState(email) {
             const dict = i18n[currentLang];
             document.title = dict.successTitle + " - Chula AIX";
             document.getElementById('formContainer').classList.add('hidden');
             document.getElementById('successContainer').classList.remove('hidden');
             lucide.createIcons();
+
+            // Notify parent immediately
+            try {
+                window.parent.postMessage({ type: 'AIX_UNLOCKED', email: email }, '*');
+            } catch (e) {}
 
             let remaining = 3;
             const timer = setInterval(() => {
@@ -1060,12 +1083,19 @@
 
                 if (remaining <= 0) {
                     clearInterval(timer);
-                    try {
-                        window.open('', '_self', '');
-                        window.close();
-                    } catch (e) {}
+                    requestCloseModal();
                 }
             }, 1000);
+        }
+
+        function requestCloseModal() {
+            // Send close message to parent window (Tampermonkey Modal)
+            try {
+                window.parent.postMessage({ type: 'AIX_CLOSE_MODAL' }, '*');
+            } catch (e) {}
+            try {
+                window.close();
+            } catch (e) {}
         }
     </script>
 </body>
