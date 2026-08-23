@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "sessionId": "session_1787447360270_h1sig",
+    "email": "kongweha.i@chula.ac.th",
+    "startTime": "2026-08-23T01:09:20.270Z",
+    "endTime": "2026-08-23T01:09:43.919Z",
+    "totalSessionSeconds": 24,
+    "activeToolsTotalSeconds": 68,
+    "tools": {
+      "ChatGPT": 18,
+      "Consensus": 15,
+      "Perplexity": 16,
+      "QuillBot": 19
+    },
+    "createdAt": "2026-08-23T01:09:43.929Z"
+  }
+]
