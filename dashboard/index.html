@@ -1503,15 +1503,20 @@
                 'การศึกษาและการเรียนการสอน': 0,
                 'การทำวิจัยและวิทยานิพนธ์': 0,
                 'การปฏิบัติงานประจำและงานบริหาร': 0,
-                'การพัฒนาทักษะตนเอง': 0
+                'การพัฒนาทักษะตนเอง': 0,
+                'อื่น ๆ': 0
             };
 
             rawRegistrations.forEach(r => {
                 if (Array.isArray(r.primaryPurposes)) {
                     r.primaryPurposes.forEach(p => {
-                        Object.keys(counts).forEach(k => {
-                            if (p.includes(k) || k.includes(p)) counts[k]++;
+                        let matched = false;
+                        ['การศึกษาและการเรียนการสอน', 'การทำวิจัยและวิทยานิพนธ์', 'การปฏิบัติงานประจำและงานบริหาร', 'การพัฒนาทักษะตนเอง'].forEach(k => {
+                            if (p.includes(k) || k.includes(p)) { counts[k]++; matched = true; }
                         });
+                        if (!matched && (p.includes('อื่น') || p.includes('Other'))) {
+                            counts['อื่น ๆ']++;
+                        }
                     });
                 }
             });
@@ -1548,7 +1553,8 @@
                 'วิเคราะห์ข้อมูล / สถิติ': 0,
                 'เขียนโค้ด / พัฒนาโปรแกรม': 0,
                 'สร้างรูปภาพ / มัลติมีเดีย': 0,
-                'วางแผน / ระดมความคิด': 0
+                'วางแผน / ระดมความคิด': 0,
+                'อื่น ๆ': 0
             };
 
             rawRegistrations.forEach(r => {
@@ -1560,6 +1566,7 @@
                         else if (a.includes('โค้ด') || a.includes('Coding')) counts['เขียนโค้ด / พัฒนาโปรแกรม']++;
                         else if (a.includes('รูปภาพ') || a.includes('Media')) counts['สร้างรูปภาพ / มัลติมีเดีย']++;
                         else if (a.includes('วางแผน') || a.includes('Brainstorm')) counts['วางแผน / ระดมความคิด']++;
+                        else if (a.includes('อื่น') || a.includes('Other')) counts['อื่น ๆ']++;
                     });
                 }
             });
