@@ -624,8 +624,6 @@
             }
         }
 
-        // ── Overlay (Facebook Iframe: Gate 2 Structure + CSP Safe) ──
-        // ── Overlay (Left Card: Tabs for Facebook Feed & Chula AIX Regulations) ──
         function buildLeftCard(container) {
             var RULES_ONLY_SITES = ['chatgpt.com', 'openai.com', 'claude.ai', 'runwayml.com'];
             var isRulesOnly = RULES_ONLY_SITES.some(function(d){ return hostMatches(host, d); });
@@ -696,7 +694,10 @@
 
             // 1. FB Pane
             var fbPane = document.createElement('div');
-            fbPane.style.cssText = 'flex:1;width:100%;height:100%;display:' + (activeTab === 'fb' ? 'flex' : 'none') + ';flex-direction:column;align-items:center;justify-content:space-between;background:white;overflow:hidden;';
+            fbPane.style.cssText = 'flex:1;width:100%;height:100%;display:' + (activeTab === 'fb' ? 'flex' : 'none') + ';flex-direction:column;align-items:center;justify-content:space-between;background:white;overflow:hidden;position:relative;';
+
+            var fbFrameWrap = document.createElement('div');
+            fbFrameWrap.style.cssText = 'flex:1;width:100%;height:100%;overflow:hidden;position:relative;background:white;';
 
             var fbFrame = document.createElement('iframe');
             var fbSrc = 'https://www.facebook.com/plugins/page.php?href=' + encodeURIComponent(FB_PAGE) + '&tabs=timeline&width=500&height=500&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=false';
@@ -705,8 +706,30 @@
             fbFrame.setAttribute('scrolling', 'no');
             fbFrame.setAttribute('frameborder', '0');
             fbFrame.setAttribute('allowfullscreen', 'true');
-            fbFrame.style.cssText = 'width:100%;height:100%;flex:1;border:none;background:white;';
-            fbPane.appendChild(fbFrame);
+            fbFrame.style.cssText = 'border:none;background:white;position:absolute;top:0;left:0;width:500px;height:500px;transform-origin:top left;';
+            fbFrameWrap.appendChild(fbFrame);
+            fbPane.appendChild(fbFrameWrap);
+
+            function updateFbIframeScale() {
+                if (!fbFrameWrap || !fbFrame) return;
+                var w = fbFrameWrap.clientWidth;
+                var h = fbFrameWrap.clientHeight;
+                if (!w || w <= 0) return;
+                var s = w / 500;
+                fbFrame.style.width = '500px';
+                fbFrame.style.height = (h / s) + 'px';
+                fbFrame.style.transform = 'scale(' + s + ')';
+            }
+
+            if (window.ResizeObserver) {
+                var ro = new ResizeObserver(function() {
+                    updateFbIframeScale();
+                });
+                ro.observe(fbFrameWrap);
+            }
+            window.addEventListener('resize', updateFbIframeScale);
+            setTimeout(updateFbIframeScale, 100);
+            setTimeout(updateFbIframeScale, 400);
 
             var link = document.createElement('a');
             link.href = FB_PAGE;
@@ -802,6 +825,7 @@
                     fbPane.style.display = 'flex';
                     rulesPane.style.display = 'none';
                     langGroup.style.display = 'none';
+                    setTimeout(updateFbIframeScale, 50);
                 } else {
                     btnRules.style.background = '#7b2fa0'; btnRules.style.color = 'white';
                     btnFB.style.background = 'transparent'; btnFB.style.color = '#666';
