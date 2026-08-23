@@ -734,17 +734,17 @@
             });
             buildFBCard(fbWrap);
 
-            // Character container (bottom-right) with height 120%
+            // Character container (bottom-right) with height 120% and minHeight 560px
             var charWrap = document.createElement('div');
             Object.assign(charWrap.style, {
                 flex:'1',display:'flex',alignItems:'flex-end',
-                justifyContent:'center',height:'100%',overflow:'hidden'
+                justifyContent:'center',height:'100%',minHeight:'560px',overflow:'hidden'
             });
             var charImg = document.createElement('img');
             charImg.src = CHAR_SRC;
             charImg.decoding = 'async';
             Object.assign(charImg.style, {
-                height:'120%',maxHeight:'120%',maxWidth:'100%',
+                height:'120%',maxHeight:'120%',minHeight:'560px',maxWidth:'100%',
                 objectFit:'contain',objectPosition:'bottom center',
                 display:'block'
             });
