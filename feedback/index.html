@@ -153,29 +153,35 @@
 
             <!-- Section 0: User Profile Context -->
             <div class="form-card space-y-4">
-                <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
-                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">
-                        <i data-lucide="user" class="w-4 h-4"></i>
+                <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">
+                            <i data-lucide="user" class="w-4 h-4"></i>
+                        </div>
+                        <h3 id="t_sec_user_title" class="font-bold text-gray-800 text-base">User Information</h3>
                     </div>
-                    <h3 id="t_sec_user_title" class="font-bold text-gray-800 text-base">ข้อมูลผู้ประเมิน (User Information)</h3>
+                    <span id="userAutofillBadge" class="hidden text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-100 text-purple-700 flex items-center gap-1.5 shadow-sm">
+                        <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                        <span id="t_badge_autofill">Verified from Registration</span>
+                    </span>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label id="t_lbl_usertype" class="block text-xs font-semibold text-gray-700 mb-1.5">
-                            ประเภทผู้ใช้งาน <span class="text-rose-500">*</span>
+                            User Type <span class="text-rose-500">*</span>
                         </label>
                         <select id="userType" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-gray-800 text-sm input-focus bg-white font-medium">
-                            <option value="student" id="t_opt_student">นิสิตจุฬาฯ (Chula Student)</option>
-                            <option value="personnel" id="t_opt_personnel">บุคลากรจุฬาฯ (Chula Personnel)</option>
+                            <option value="student" id="t_opt_student">Chula Student</option>
+                            <option value="personnel" id="t_opt_personnel">Chula Personnel</option>
                         </select>
                     </div>
 
                     <div>
                         <label id="t_lbl_identifier" class="block text-xs font-semibold text-gray-700 mb-1.5">
-                            รหัสนิสิต หรือ อีเมลจุฬาฯ <span class="text-rose-500">*</span>
+                            Student ID or Chula Email <span class="text-rose-500">*</span>
                         </label>
-                        <input type="text" id="userIdentifier" placeholder="กรอกรหัสนิสิต 10 หลัก หรือ อีเมล @chula.ac.th"
+                        <input type="text" id="userIdentifier" placeholder="Enter 10-digit Student ID or @chula.ac.th email"
                                class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-gray-800 text-sm input-focus font-medium">
                     </div>
 
@@ -191,7 +197,7 @@
                                    onclick="toggleFacultyDropdown(true)"
                                    oninput="filterFacultyOptions()">
                             <input type="hidden" id="selectedFaculty" value="">
-                            <button type="button" onclick="toggleFacultyDropdown()" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 focus:outline-none">
+                            <button type="button" id="facultyChevronBtn" onclick="toggleFacultyDropdown()" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 focus:outline-none">
                                 <i data-lucide="chevron-down" id="facultyChevronIcon" class="w-4 h-4 transition-transform duration-200"></i>
                             </button>
                         </div>
@@ -359,6 +365,7 @@
                 bannerTitle: "ร่วมประเมินความพึงพอใจการใช้บริการ Chula AIX",
                 bannerDesc: "ความคิดเห็นและคะแนนประเมินของท่านมีความสำคัญอย่างยิ่งต่อการปรับปรุงและพัฒนาบริการเครื่องมือ AI ของสำนักงานวิทยทรัพยากร",
                 secUserTitle: "ข้อมูลผู้ประเมิน (User Information)",
+                badgeAutofill: "ดึงข้อมูลจากการลงทะเบียนแล้ว (ล็อก)",
                 lblUserType: "ประเภทผู้ใช้งาน *",
                 optStudent: "นิสิตจุฬาฯ (Chula Student)",
                 optPersonnel: "บุคลากรจุฬาฯ (Chula Personnel)",
@@ -394,6 +401,7 @@
                 bannerTitle: "Evaluate Your Experience with Chula AIX",
                 bannerDesc: "Your feedback and satisfaction ratings are vital to help the Office of Academic Resources improve and expand our AI services.",
                 secUserTitle: "User Information",
+                badgeAutofill: "Verified from Registration (Locked)",
                 lblUserType: "User Type *",
                 optStudent: "Chula Student",
                 optPersonnel: "Chula Personnel",
@@ -424,6 +432,26 @@
             }
         };
 
+        function findFaculty(query, userIdentifier) {
+            if (userIdentifier && /^\d{10}$/.test(userIdentifier)) {
+                const sCode = userIdentifier.substring(8, 10);
+                const match = FACULTIES_DATA.find(f => f.code === sCode);
+                if (match) return match;
+            }
+            if (!query) return null;
+            const q = query.toString().trim().toLowerCase();
+            let match = FACULTIES_DATA.find(f => f.code === q || f.th.toLowerCase() === q || f.en.toLowerCase() === q);
+            if (match) return match;
+            const cleanQ = q.replace(/^(คณะ|สำนัก|วิทยาลัย|สถาบัน)/, '').replace(/[\(\)\-\s]/g, '');
+            match = FACULTIES_DATA.find(f => {
+                const cleanTh = f.th.replace(/^(คณะ|สำนัก|วิทยาลัย|สถาบัน)/, '').replace(/[\(\)\-\s]/g, '').toLowerCase();
+                const cleanEn = f.en.toLowerCase().replace(/[\(\)\-\s]/g, '');
+                return (cleanTh && cleanQ.includes(cleanTh)) || (cleanTh && cleanTh.includes(cleanQ)) ||
+                       (cleanEn && cleanQ.includes(cleanEn)) || (cleanEn && cleanEn.includes(cleanQ));
+            });
+            return match || null;
+        }
+
         function setLanguage(lang) {
             currentLang = lang;
             localStorage.setItem('aix_pref_lang', lang);
@@ -445,6 +473,9 @@
             document.getElementById('t_banner_title').textContent = d.bannerTitle;
             document.getElementById('t_banner_desc').textContent = d.bannerDesc;
             document.getElementById('t_sec_user_title').textContent = d.secUserTitle;
+            const badgeElem = document.getElementById('t_badge_autofill');
+            if (badgeElem && d.badgeAutofill) badgeElem.textContent = d.badgeAutofill;
+
             document.getElementById('t_lbl_usertype').innerHTML = d.lblUserType.replace('*', '<span class="text-rose-500">*</span>');
             document.getElementById('t_opt_student').textContent = d.optStudent;
             document.getElementById('t_opt_personnel').textContent = d.optPersonnel;
@@ -469,9 +500,11 @@
 
             // Refresh selected faculty display name
             const curVal = document.getElementById('selectedFaculty')?.value;
-            if (curVal) {
-                const found = FACULTIES_DATA.find(f => f.th === curVal || f.en === curVal || f.code === curVal);
-                if (found) document.getElementById('facultySearchInput').value = found[lang] || found.th;
+            const userIdent = document.getElementById('userIdentifier')?.value?.trim();
+            const found = findFaculty(curVal, userIdent);
+            if (found) {
+                document.getElementById('selectedFaculty').value = found.th;
+                document.getElementById('facultySearchInput').value = found[lang] || found.en;
             }
 
             renderToolRatingsCards();
@@ -618,10 +651,10 @@
 
         function selectFaculty(value, displayText) {
             document.getElementById('selectedFaculty').value = value;
-            const found = FACULTIES_DATA.find(f => f.th === value || f.en === value || f.code === value);
+            const found = findFaculty(value, document.getElementById('userIdentifier')?.value?.trim());
             if (found) {
                 const lang = currentLang || 'en';
-                document.getElementById('facultySearchInput').value = found[lang] || found.en || found.th;
+                document.getElementById('facultySearchInput').value = found[lang] || found.en;
             } else {
                 document.getElementById('facultySearchInput').value = displayText;
             }
@@ -633,51 +666,108 @@
             if (container && !container.contains(e.target)) toggleFacultyDropdown(false);
         });
 
+        function lockUserInfoFields(isLocked) {
+            const userTypeElem = document.getElementById('userType');
+            const userIdentifierElem = document.getElementById('userIdentifier');
+            const facultySearchInputElem = document.getElementById('facultySearchInput');
+            const chevronBtn = document.getElementById('facultyChevronBtn');
+            const autofillBadge = document.getElementById('userAutofillBadge');
+
+            if (isLocked) {
+                if (userTypeElem) {
+                    userTypeElem.disabled = true;
+                    userTypeElem.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-600');
+                }
+                if (userIdentifierElem) {
+                    userIdentifierElem.readOnly = true;
+                    userIdentifierElem.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-600');
+                }
+                if (facultySearchInputElem) {
+                    facultySearchInputElem.readOnly = true;
+                    facultySearchInputElem.onclick = null;
+                    facultySearchInputElem.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-600');
+                }
+                if (chevronBtn) {
+                    chevronBtn.style.display = 'none';
+                }
+                if (autofillBadge) {
+                    autofillBadge.classList.remove('hidden');
+                    autofillBadge.classList.add('inline-flex');
+                }
+            } else {
+                if (userTypeElem) {
+                    userTypeElem.disabled = false;
+                    userTypeElem.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-600');
+                }
+                if (userIdentifierElem) {
+                    userIdentifierElem.readOnly = false;
+                    userIdentifierElem.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-600');
+                }
+                if (facultySearchInputElem) {
+                    facultySearchInputElem.readOnly = false;
+                    facultySearchInputElem.onclick = () => toggleFacultyDropdown(true);
+                    facultySearchInputElem.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-600');
+                }
+                if (chevronBtn) {
+                    chevronBtn.style.display = 'block';
+                }
+                if (autofillBadge) {
+                    autofillBadge.classList.add('hidden');
+                    autofillBadge.classList.remove('inline-flex');
+                }
+            }
+        }
+
         function autoFillUserData() {
             try {
                 const regDataStr = localStorage.getItem('aix_registration_data');
                 if (regDataStr) {
                     const regData = JSON.parse(regDataStr);
-                    if (regData.userType && (regData.userType.includes('Personnel') || regData.userType === 'personnel')) {
-                        document.getElementById('userType').value = 'personnel';
-                    } else {
-                        document.getElementById('userType').value = 'student';
+                    const isPersonnel = regData.userType && (regData.userType.includes('Personnel') || regData.userType === 'personnel');
+                    document.getElementById('userType').value = isPersonnel ? 'personnel' : 'student';
+
+                    let userIdent = regData.studentId || regData.email || '';
+                    document.getElementById('userIdentifier').value = userIdent;
+
+                    const found = findFaculty(regData.facultyName, userIdent);
+                    if (found) {
+                        document.getElementById('selectedFaculty').value = found.th;
+                        const lang = currentLang || 'en';
+                        document.getElementById('facultySearchInput').value = found[lang] || found.en;
+                    } else if (regData.facultyName) {
+                        document.getElementById('selectedFaculty').value = regData.facultyName;
+                        document.getElementById('facultySearchInput').value = regData.facultyName;
                     }
-                    if (regData.studentId) {
-                        document.getElementById('userIdentifier').value = regData.studentId;
-                    } else if (regData.email) {
-                        document.getElementById('userIdentifier').value = regData.email;
-                    }
-                    if (regData.facultyName) {
-                        const found = FACULTIES_DATA.find(f => f.th === regData.facultyName || f.en === regData.facultyName || f.code === regData.facultyName);
-                        if (found) {
-                            document.getElementById('selectedFaculty').value = found.th;
-                            const lang = currentLang || 'en';
-                            document.getElementById('facultySearchInput').value = found[lang] || found.en || found.th;
-                        } else {
-                            document.getElementById('selectedFaculty').value = regData.facultyName;
-                            document.getElementById('facultySearchInput').value = regData.facultyName;
-                        }
-                    }
+
+                    // Lock fields because data is autofilled from registration
+                    lockUserInfoFields(true);
                 } else {
                     const email = localStorage.getItem('gf_user_email');
                     if (email) {
                         document.getElementById('userIdentifier').value = email;
                         if (/^\d{10}/.test(email)) {
                             document.getElementById('userType').value = 'student';
+                            const found = findFaculty('', email);
+                            if (found) {
+                                document.getElementById('selectedFaculty').value = found.th;
+                                const lang = currentLang || 'en';
+                                document.getElementById('facultySearchInput').value = found[lang] || found.en;
+                            }
                         }
                     }
+                    lockUserInfoFields(false);
                 }
             } catch (e) {
                 console.error('Error autofilling user data:', e);
+                lockUserInfoFields(false);
             }
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-            autoFillUserData();
             setLanguage(currentLang);
+            autoFillUserData();
             renderToolsGrid();
         });
 
