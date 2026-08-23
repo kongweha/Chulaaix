@@ -783,12 +783,64 @@
                 letterSpacing:'2px',cursor:'pointer',textTransform:'uppercase',
                 boxShadow:'0 4px 18px rgba(123,47,160,0.4)',width:'100%',maxWidth:'280px'
             });
-            btn.onmouseover = function() { btn.style.opacity = '0.85'; };
-            btn.onmouseout  = function() { btn.style.opacity = '1'; };
+            function openRegistrationModal() {
+                var existing = document.getElementById('gf-reg-modal');
+                if (existing) existing.remove();
+
+                var modal = document.createElement('div');
+                modal.id = 'gf-reg-modal';
+                Object.assign(modal.style, {
+                    position: 'fixed', top: '0', left: '0', width: '100vw', height: '100vh',
+                    zIndex: '2147483647', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'rgba(15, 7, 30, 0.75)', backdropFilter: 'blur(8px)',
+                    fontFamily: "'Segoe UI', Arial, sans-serif", padding: '16px', boxSizing: 'border-box'
+                });
+
+                var container = document.createElement('div');
+                Object.assign(container.style, {
+                    width: '100%', maxWidth: '720px', height: '92vh', maxHeight: '900px',
+                    background: 'white', borderRadius: '24px', overflow: 'hidden',
+                    position: 'relative', boxShadow: '0 25px 60px rgba(0,0,0,0.5)',
+                    display: 'flex', flexDirection: 'column'
+                });
+
+                var header = document.createElement('div');
+                Object.assign(header.style, {
+                    padding: '12px 20px', display: 'flex', justifyContent: 'space-between',
+                    alignItems: 'center', background: '#f8f0fc', borderBottom: '1px solid #f0defa'
+                });
+
+                var title = document.createElement('div');
+                title.innerHTML = '✨ <b style="color:#7b2fa0;">Chula AIX</b> <span style="color:#666;font-size:12px;margin-left:6px;">Registration</span>';
+                title.style.fontSize = '14px';
+
+                var closeBtn = document.createElement('button');
+                closeBtn.innerHTML = '✕';
+                Object.assign(closeBtn.style, {
+                    background: 'none', border: 'none', fontSize: '18px', fontWeight: 'bold',
+                    color: '#888', cursor: 'pointer', padding: '4px 8px', borderRadius: '8px'
+                });
+                closeBtn.onmouseover = function() { closeBtn.style.color = '#e11d48'; };
+                closeBtn.onmouseout  = function() { closeBtn.style.color = '#888'; };
+                closeBtn.onclick = function() { modal.remove(); };
+
+                header.appendChild(title);
+                header.appendChild(closeBtn);
+
+                var iframe = document.createElement('iframe');
+                iframe.src = REGISTRATION_URL;
+                Object.assign(iframe.style, {
+                    width: '100%', flex: '1', border: 'none'
+                });
+
+                container.appendChild(header);
+                container.appendChild(iframe);
+                modal.appendChild(container);
+                document.documentElement.appendChild(modal);
+            }
+
             btn.onclick = function() {
-                GM_setValue(KEY_CLOSE, false);
-                popupWin = window.open(REGISTRATION_URL, 'GatekeeperForm',
-                    'popup=yes,width=640,height=850,toolbar=no,menubar=no,location=no,status=no,scrollbars=yes,resizable=yes');
+                openRegistrationModal();
             };
 
             right.appendChild(title); right.appendChild(sub); right.appendChild(btn);
@@ -811,6 +863,8 @@
             var hiddenContext = shouldHideTopBar();
 
             if (checkAccess()) {
+                var regModal = document.getElementById('gf-reg-modal');
+                if (regModal) regModal.remove();
                 hideOverlay();
 
                 if (hiddenContext) {
