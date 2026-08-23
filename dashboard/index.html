@@ -2008,9 +2008,9 @@ function renderCurrentViewCharts() {
 
             const total = counts['ปริญญาตรี'] + counts['ปริญญาโท'] + counts['ปริญญาเอก'];
             const labelsWithPct = [
-                `ปริญญาตรี: ${counts['ปริญญาตรี']} คน (${total > 0 ? Math.round((counts['ปริญญาตรี'] / total) * 100) : 0}%)`,
-                `ปริญญาโท: ${counts['ปริญญาโท']} คน (${total > 0 ? Math.round((counts['ปริญญาโท'] / total) * 100) : 0}%)`,
-                `ปริญญาเอก: ${counts['ปริญญาเอก']} คน (${total > 0 ? Math.round((counts['ปริญญาเอก'] / total) * 100) : 0}%)`
+                `ปริญญาตรี ${counts['ปริญญาตรี']} คน (${total > 0 ? Math.round((counts['ปริญญาตรี'] / total) * 100) : 0}%)`,
+                `ปริญญาโท ${counts['ปริญญาโท']} คน (${total > 0 ? Math.round((counts['ปริญญาโท'] / total) * 100) : 0}%)`,
+                `ปริญญาเอก ${counts['ปริญญาเอก']} คน (${total > 0 ? Math.round((counts['ปริญญาเอก'] / total) * 100) : 0}%)`
             ];
 
             chartInstances['chartStudentDegrees'] = new Chart(ctx, {
@@ -2028,13 +2028,11 @@ function renderCurrentViewCharts() {
                     maintainAspectRatio: false,
                     cutout: '65%',
                     plugins: {
-                        legend: { position: 'bottom', labels: { font: { family: 'Prompt' } } },
+                        legend: { position: 'bottom', labels: { font: { family: 'Prompt', size: 11.5 } } },
                         tooltip: {
                             callbacks: {
                                 label(item) {
-                                    const val = item.raw;
-                                    const pct = total > 0 ? Math.round((val / total) * 100) : 0;
-                                    return ` ${item.label}: ${val} คน (${pct}%)`;
+                                    return ` ${item.label}`;
                                 }
                             }
                         },
@@ -2068,12 +2066,12 @@ function renderCurrentViewCharts() {
             const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
             const labelsWithPct = keys.length > 0
-                ? keys.map(k => `${k}: ${counts[k]} คน (${total > 0 ? Math.round((counts[k] / total) * 100) : 0}%)`)
-                : ['อาจารย์', 'นักวิจัย', 'สายสนับสนุน'];
+                ? keys.map(k => `${k} ${counts[k]} คน (${total > 0 ? Math.round((counts[k] / total) * 100) : 0}%)`)
+                : ['อาจารย์ 0 คน (0%)', 'นักวิจัย 0 คน (0%)', 'สายสนับสนุน 0 คน (0%)'];
             const data = keys.length > 0 ? Object.values(counts) : [0, 0, 0];
 
             chartInstances['chartPersonnelCategories'] = new Chart(ctx, {
-                type: 'pie',
+                type: 'doughnut',
                 data: {
                     labels: labelsWithPct,
                     datasets: [{
@@ -2085,16 +2083,22 @@ function renderCurrentViewCharts() {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '65%',
                     plugins: {
-                        legend: { position: 'bottom', labels: { font: { family: 'Prompt' } } },
+                        legend: { position: 'bottom', labels: { font: { family: 'Prompt', size: 11.5 } } },
                         tooltip: {
                             callbacks: {
                                 label(item) {
-                                    const val = item.raw;
-                                    const pct = total > 0 ? Math.round((val / total) * 100) : 0;
-                                    return ` ${item.label}: ${val} คน (${pct}%)`;
+                                    return ` ${item.label}`;
                                 }
                             }
+                        },
+                        centerText: {
+                            subText: 'บุคลากรทั้งหมด',
+                            text: `${total} คน`,
+                            color: '#1e293b',
+                            fontSize: 16,
+                            subFontSize: 10
                         }
                     }
                 }
