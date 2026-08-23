@@ -206,7 +206,9 @@
             <div class="form-card space-y-4">
                 <div class="flex items-center justify-between pb-2 border-b border-gray-100">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">1</div>
+                        <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        </div>
                         <h3 id="t_sec1_title" class="font-bold text-gray-800 text-base">เลือกเครื่องมือ AI ที่ท่านต้องการประเมิน</h3>
                     </div>
                     <span id="t_sec1_hint" class="text-xs text-chula-700 bg-chula-50 px-2.5 py-1 rounded-full font-semibold">เลือกได้มากกว่า 1 ตัวเลือก</span>
@@ -220,7 +222,9 @@
             <!-- Section 2: Per-Tool 5-point Likert Scale Rating -->
             <div class="form-card space-y-5" id="ratingSection">
                 <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
-                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">2</div>
+                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">
+                        <i data-lucide="star" class="w-4 h-4"></i>
+                    </div>
                     <h3 id="t_sec2_title" class="font-bold text-gray-800 text-base">ให้คะแนนความพึงพอใจแยกตามเครื่องมือ AI แต่ละตัว (1 - 5 ดาว)</h3>
                 </div>
 
@@ -239,7 +243,9 @@
             <!-- Section 3: Feedback & Comments -->
             <div class="form-card space-y-4">
                 <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
-                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">3</div>
+                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">
+                        <i data-lucide="message-square" class="w-4 h-4"></i>
+                    </div>
                     <h3 id="t_sec3_title" class="font-bold text-gray-800 text-base">ข้อเสนอแนะและความคิดเห็นเพิ่มเติม</h3>
                 </div>
 
@@ -361,12 +367,12 @@
                 lblFaculty: "คณะ / สถาบัน / หน่วยงานที่สังกัด *",
                 selectFacultyPlaceholder: "-- ค้นหาหรือเลือกคณะ / สถาบัน / หน่วยงาน --",
                 noFacultyMatch: "ไม่พบคณะหรือหน่วยงานที่ค้นหา",
-                sec1Title: "1. เลือกเครื่องมือ AI ที่ท่านต้องการประเมิน",
+                sec1Title: "เลือกเครื่องมือ AI ที่ท่านต้องการประเมิน",
                 sec1Hint: "เลือกได้มากกว่า 1 ตัวเลือก",
-                sec2Title: "2. ให้คะแนนความพึงพอใจแยกตามเครื่องมือ AI แต่ละตัว (1 - 5 ดาว)",
+                sec2Title: "ให้คะแนนความพึงพอใจแยกตามเครื่องมือ AI แต่ละตัว (1 - 5 ดาว)",
                 promptSelectTool: "กรุณาเลือกเครื่องมือ AI ในส่วนที่ 1 ด้านบน เพื่อประเมินความพึงพอใจ",
                 ratingLabels: ["ปรับปรุง (1)", "พอใช้ (2)", "ปานกลาง (3)", "ดี (4)", "ดีมาก (5)"],
-                sec3Title: "3. ข้อเสนอแนะและความคิดเห็นเพิ่มเติม",
+                sec3Title: "ข้อเสนอแนะและความคิดเห็นเพิ่มเติม",
                 lblFeedback: "ข้อเสนอแนะเพื่อการพัฒนา ปัญหาที่พบ หรือความประทับใจ",
                 feedbackPlaceholder: "ระบุข้อเสนอแนะ ความคิดเห็น หรือปัญหาในการใช้งานที่ต้องการให้ปรับปรุง...",
                 btnSubmit: "ส่งแบบประเมินความพึงพอใจ",
@@ -395,12 +401,12 @@
                 lblFaculty: "Faculty / Institute / Affiliation *",
                 selectFacultyPlaceholder: "-- Search or select faculty / department --",
                 noFacultyMatch: "No faculty or department found",
-                sec1Title: "1. Select AI Tools You Want to Evaluate",
+                sec1Title: "Select AI Tools to Evaluate",
                 sec1Hint: "Multiple selection allowed",
-                sec2Title: "2. Rate Your Satisfaction for Each Selected AI Tool (1 - 5 Stars)",
+                sec2Title: "Rate Your Satisfaction for Each Selected AI Tool (1 - 5 Stars)",
                 promptSelectTool: "Please select one or more AI tools above in Section 1 to rate them",
                 ratingLabels: ["Very Poor (1)", "Poor (2)", "Fair (3)", "Good (4)", "Excellent (5)"],
-                sec3Title: "3. Comments & Suggestions",
+                sec3Title: "Comments & Suggestions",
                 lblFeedback: "Suggestions for improvement, issues encountered, or feedback",
                 feedbackPlaceholder: "Share your thoughts, suggestions, or issues you encountered...",
                 btnSubmit: "Submit Feedback",
