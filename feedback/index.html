@@ -373,6 +373,7 @@
                 promptSelectTool: "กรุณาเลือกเครื่องมือ AI ในส่วนที่ 1 ด้านบน เพื่อประเมินความพึงพอใจ",
                 ratingLabels: ["ปรับปรุง (1)", "พอใช้ (2)", "ปานกลาง (3)", "ดี (4)", "ดีมาก (5)"],
                 sec3Title: "ข้อเสนอแนะและความคิดเห็นเพิ่มเติม",
+                ratingUnselected: "ยังไม่ได้เลือกคะแนน (โปรดเลือก 1 - 5 ดาว)",
                 lblFeedback: "ข้อเสนอแนะเพื่อการพัฒนา ปัญหาที่พบ หรือความประทับใจ",
                 feedbackPlaceholder: "ระบุข้อเสนอแนะ ความคิดเห็น หรือปัญหาในการใช้งานที่ต้องการให้ปรับปรุง...",
                 btnSubmit: "ส่งแบบประเมินความพึงพอใจ",
@@ -406,6 +407,7 @@
                 sec2Title: "Rate Your Satisfaction for Each Selected AI Tool (1 - 5 Stars)",
                 promptSelectTool: "Please select one or more AI tools above in Section 1 to rate them",
                 ratingLabels: ["Very Poor (1)", "Poor (2)", "Fair (3)", "Good (4)", "Excellent (5)"],
+                ratingUnselected: "Not rated yet (Please select 1 - 5 stars)",
                 sec3Title: "Comments & Suggestions",
                 lblFeedback: "Suggestions for improvement, issues encountered, or feedback",
                 feedbackPlaceholder: "Share your thoughts, suggestions, or issues you encountered...",
@@ -501,7 +503,7 @@
                 delete toolRatings[toolName];
             } else {
                 selectedTools.push(toolName);
-                if (!toolRatings[toolName]) toolRatings[toolName] = 5; // Default 5 stars
+                toolRatings[toolName] = 0; // Default to unrated (0 stars)
             }
             renderToolsGrid();
             renderToolRatingsCards();
@@ -523,7 +525,9 @@
 
             container.innerHTML = selectedTools.map(toolName => {
                 const toolInfo = AI_TOOLS.find(t => t.name === toolName) || { name: toolName, icon: '' };
-                const currentScore = toolRatings[toolName] || 5;
+                const currentScore = toolRatings[toolName] || 0;
+                const scoreLabel = currentScore > 0 ? d.ratingLabels[currentScore - 1] : d.ratingUnselected;
+                const labelColorClass = currentScore > 0 ? 'text-purple-700 font-semibold' : 'text-gray-400 font-normal italic';
 
                 return `
                     <div class="p-4 rounded-2xl bg-purple-50/40 border border-purple-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition">
@@ -531,17 +535,17 @@
                             <img src="${toolInfo.icon}" class="w-7 h-7 object-contain rounded-md" onerror="this.style.display='none'">
                             <div>
                                 <h4 class="font-bold text-gray-800 text-sm sm:text-base">${toolName}</h4>
-                                <span class="text-xs text-purple-700 font-semibold">${d.ratingLabels[currentScore - 1]}</span>
+                                <span class="text-xs ${labelColorClass}">${scoreLabel}</span>
                             </div>
                         </div>
 
                         <!-- 5 Star Buttons -->
                         <div class="flex items-center gap-1.5 self-end sm:self-auto bg-white px-3 py-1.5 rounded-xl border border-purple-100 shadow-sm">
                             ${[1, 2, 3, 4, 5].map(star => {
-                                const isFilled = star <= currentScore;
+                                const isFilled = currentScore > 0 && star <= currentScore;
                                 return `
                                     <button type="button" onclick="setToolRating('${toolName}', ${star})"
-                                            class="star-btn p-1 focus:outline-none" title="${d.ratingLabels[star - 1]}">
+                                            class="star-btn p-1 focus:outline-none hover:scale-110 transition-transform" title="${d.ratingLabels[star - 1]}">
                                         <i data-lucide="star" class="w-6 h-6 ${isFilled ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}"></i>
                                     </button>
                                 `;
@@ -665,6 +669,12 @@
             }
             if (selectedTools.length === 0) {
                 alert(d.alertSelectTool);
+                return;
+            }
+
+            const hasUnrated = selectedTools.some(tool => !toolRatings[tool] || toolRatings[tool] < 1);
+            if (hasUnrated) {
+                alert(d.alertRateAll);
                 return;
             }
 
