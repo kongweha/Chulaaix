@@ -1288,6 +1288,9 @@
                         });
                     }
                     updateAllStats();
+                }, err => {
+                    console.warn('Realtime registrations listener warning, fallback to fetch:', err);
+                    fetchAllData();
                 });
 
                 db.ref('usage_logs').on('value', snapshot => {
@@ -1299,6 +1302,9 @@
                         });
                     }
                     updateAllStats();
+                }, err => {
+                    console.warn('Realtime usage_logs listener warning, fallback to fetch:', err);
+                    fetchAllData();
                 });
 
                 db.ref('suggestions').on('value', snapshot => {
@@ -1323,6 +1329,13 @@
                     updateFeedbacksView();
                 });
 
+                // Also trigger an immediate REST fetch as guaranteed fallback
+                setTimeout(() => {
+                    if (rawRegistrations.length === 0) {
+                        fetchAllData();
+                    }
+                }, 1000);
+
             } catch (e) {
                 console.error('Firebase realtime listener error:', e);
                 fetchAllData();
@@ -1332,18 +1345,33 @@
         async function fetchAllData() {
             const dbUrl = activeFirebaseConfig.databaseURL || 'https://chula-aix-default-rtdb.asia-southeast1.firebasedatabase.app';
             try {
-                const [regRes, usageRes] = await Promise.all([
+                const [regRes, usageRes, sugRes, fbRes] = await Promise.allSettled([
                     fetch(`${dbUrl}/registrations.json`),
-                    fetch(`${dbUrl}/usage_logs.json`)
+                    fetch(`${dbUrl}/usage_logs.json`),
+                    fetch(`${dbUrl}/suggestions.json`),
+                    fetch(`${dbUrl}/feedbacks.json`)
                 ]);
 
-                const regData = await regRes.json();
-                const usageData = await usageRes.json();
-
-                rawRegistrations = regData ? Object.keys(regData).map(k => ({ id: k, ...regData[k] })) : [];
-                rawUsageLogs = usageData ? Object.keys(usageData).map(k => ({ id: k, ...usageData[k] })) : [];
+                if (regRes.status === 'fulfilled') {
+                    const regData = await regRes.value.json();
+                    if (regData) rawRegistrations = Object.keys(regData).map(k => ({ id: k, ...regData[k] }));
+                }
+                if (usageRes.status === 'fulfilled') {
+                    const usageData = await usageRes.value.json();
+                    if (usageData) rawUsageLogs = Object.keys(usageData).map(k => ({ id: k, ...usageData[k] }));
+                }
+                if (sugRes.status === 'fulfilled') {
+                    const sugData = await sugRes.value.json();
+                    if (sugData) rawSuggestions = Object.keys(sugData).map(k => ({ id: k, ...sugData[k] }));
+                }
+                if (fbRes.status === 'fulfilled') {
+                    const fbData = await fbRes.value.json();
+                    if (fbData) rawFeedbacks = Object.keys(fbData).map(k => ({ id: k, ...fbData[k] }));
+                }
 
                 updateAllStats();
+                updateSuggestionsView();
+                updateFeedbacksView();
             } catch (e) {
                 console.error('Fetch error:', e);
             }
@@ -1548,11 +1576,15 @@ function renderCurrentViewCharts() {
             } else if (currentActiveView === 'tools-duration') {
                 renderToolsRankingChart();
                 renderExpectedDurationChart();
+                renderToolBadgesGrid();
                 renderToolsFormVsActualChart();
             } else if (currentActiveView === 'survey-responses') {
                 renderPrimaryPurposesChart();
                 renderActivityTypesChart();
                 renderRelationshipMatrix();
+                renderCrossAnalysisTable();
+            } else if (currentActiveView === 'registrations') {
+                renderRegistrationsManagementTable();
             }
         }
 
@@ -2826,23 +2858,28 @@ function renderCurrentViewCharts() {
             const container = document.getElementById('toolBadgesGrid');
             if (!container) return;
 
+            const tools = ["ChatGPT", "Claude", "Grammarly", "Connected Papers", "Runway", "Consensus", "SciSpace", "Perplexity", "QuillBot"];
             const toolCounts = {};
+            tools.forEach(t => toolCounts[t] = 0);
+
             rawRegistrations.forEach(r => {
                 if (Array.isArray(r.selectedAITools)) {
-                    r.selectedAITools.forEach(t => toolCounts[t] = (toolCounts[t] || 0) + 1);
+                    r.selectedAITools.forEach(t => {
+                        const matched = tools.find(tk => tk.toLowerCase() === (t || '').toLowerCase() || (t || '').includes(tk));
+                        if (matched) toolCounts[matched]++;
+                    });
                 }
             });
 
-            const tools = ["ChatGPT", "Claude", "Grammarly", "Connected Papers", "Runway", "Consensus", "SciSpace", "Perplexity", "QuillBot"];
             container.innerHTML = tools.map(t => {
                 const count = toolCounts[t] || 0;
-                const icon = AI_TOOL_ICONS[t];
+                const icon = AI_TOOL_ICONS[t] || 'https://cdn.simpleicons.org/openai';
                 return `
-                    <div class="p-3 rounded-2xl border border-slate-100 bg-slate-50/60 flex items-center gap-2.5">
-                        <img src="${icon}" alt="${t}" class="w-6 h-6 object-contain shrink-0" onerror="this.style.display='none'">
+                    <div class="p-3.5 rounded-2xl border border-slate-100 bg-slate-50/70 hover:bg-white hover:shadow-sm transition flex items-center gap-3">
+                        <img src="${icon}" alt="${t}" class="w-7 h-7 object-contain shrink-0 rounded-lg p-0.5 bg-white border border-slate-100" onerror="this.style.display='none'">
                         <div class="truncate">
                             <div class="font-bold text-slate-800 text-xs truncate">${t}</div>
-                            <div class="text-[11px] text-brand-700 font-semibold">${count} คน</div>
+                            <div class="text-[11px] text-brand-700 font-bold">${count} คน</div>
                         </div>
                     </div>
                 `;
