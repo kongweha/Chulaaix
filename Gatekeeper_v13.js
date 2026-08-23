@@ -68,8 +68,7 @@
         {name:'Consensus', url:'https://consensus.app/', icon:'https://consensus.app/favicon.ico', gateHosts:['consensus.app']},
         {name:'SciSpace', url:'https://scispace.com/', icon:'https://scispace.com/favicon.ico', gateHosts:['scispace.com']},
         {name:'Perplexity', url:'https://www.perplexity.ai/', icon:'https://www.perplexity.ai/favicon.ico', gateHosts:['perplexity.ai']},
-        {name:'QuillBot', url:'https://quillbot.com/', icon:'https://quillbot.com/favicon.ico', gateHosts:['quillbot.com']},
-        {name:'Gemini', url:'https://gemini.google.com/', icon:'https://gemini.google.com/favicon.ico', gateHosts:['gemini.google.com']}
+        {name:'QuillBot', url:'https://quillbot.com/', icon:'https://quillbot.com/favicon.ico', gateHosts:['quillbot.com']}
     ];
 
     var LOGIN_HOSTS = [
