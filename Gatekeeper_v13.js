@@ -788,64 +788,21 @@
                 boxShadow:'0 clamp(4px, 0.8vh, 12px) clamp(18px, 2vh, 36px) rgba(123,47,160,0.4)',
                 width:'100%',maxWidth:'clamp(260px, 18vw, 400px)'
             });
-            function openRegistrationModal() {
-                var existing = document.getElementById('gf-reg-modal');
-                if (existing) existing.remove();
-
-                var modal = document.createElement('div');
-                modal.id = 'gf-reg-modal';
-                Object.assign(modal.style, {
-                    position: 'fixed', top: '0', left: '0', width: '100vw', height: '100vh',
-                    zIndex: '2147483647', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: 'rgba(15, 7, 30, 0.75)', backdropFilter: 'blur(8px)',
-                    fontFamily: "'Segoe UI', Arial, sans-serif", padding: '16px', boxSizing: 'border-box'
-                });
-
-                var container = document.createElement('div');
-                Object.assign(container.style, {
-                    width: '100%', maxWidth: '720px', height: '92vh', maxHeight: '900px',
-                    background: 'white', borderRadius: '24px', overflow: 'hidden',
-                    position: 'relative', boxShadow: '0 25px 60px rgba(0,0,0,0.5)',
-                    display: 'flex', flexDirection: 'column'
-                });
-
-                var header = document.createElement('div');
-                Object.assign(header.style, {
-                    padding: '12px 20px', display: 'flex', justifyContent: 'space-between',
-                    alignItems: 'center', background: '#f8f0fc', borderBottom: '1px solid #f0defa'
-                });
-
-                var title = document.createElement('div');
-                title.innerHTML = '✨ <b style="color:#7b2fa0;">Chula AIX</b> <span style="color:#666;font-size:12px;margin-left:6px;">Registration</span>';
-                title.style.fontSize = '14px';
-
-                var closeBtn = document.createElement('button');
-                closeBtn.innerHTML = '✕';
-                Object.assign(closeBtn.style, {
-                    background: 'none', border: 'none', fontSize: '18px', fontWeight: 'bold',
-                    color: '#888', cursor: 'pointer', padding: '4px 8px', borderRadius: '8px'
-                });
-                closeBtn.onmouseover = function() { closeBtn.style.color = '#e11d48'; };
-                closeBtn.onmouseout  = function() { closeBtn.style.color = '#888'; };
-                closeBtn.onclick = function() { modal.remove(); };
-
-                header.appendChild(title);
-                header.appendChild(closeBtn);
-
-                var iframe = document.createElement('iframe');
-                iframe.src = REGISTRATION_URL;
-                Object.assign(iframe.style, {
-                    width: '100%', flex: '1', border: 'none'
-                });
-
-                container.appendChild(header);
-                container.appendChild(iframe);
-                modal.appendChild(container);
-                document.documentElement.appendChild(modal);
+            var popupWin = null;
+            function openRegistrationPopup() {
+                var w = 680, h = 840;
+                var left = (window.screen.width / 2) - (w / 2);
+                var top = (window.screen.height / 2) - (h / 2);
+                popupWin = window.open(
+                    REGISTRATION_URL,
+                    'ChulaAIX_Register',
+                    'width=' + w + ',height=' + h + ',top=' + top + ',left=' + left + ',resizable=yes,scrollbars=yes,status=no,toolbar=no'
+                );
+                if (popupWin && popupWin.focus) popupWin.focus();
             }
 
             btn.onclick = function() {
-                openRegistrationModal();
+                openRegistrationPopup();
             };
 
             right.appendChild(title); right.appendChild(sub); right.appendChild(btn);
@@ -861,16 +818,37 @@
 
         window.addEventListener('message', function(e) {
             if (e.data && (e.data.type === 'AIX_UNLOCKED' || e.data.type === 'AIX_CLOSE_MODAL')) {
-                var m = document.getElementById('gf-reg-modal');
-                if (m) m.remove();
+                if (popupWin && !popupWin.closed) popupWin.close();
                 if (e.data.email) {
                     var now = Date.now();
                     GM_setValue(KEY_STATUS, 'active');
                     GM_setValue(KEY_EMAIL, e.data.email);
                     GM_setValue(KEY_HEARTBEAT, now);
                     GM_setValue(KEY_LAST_ACTIVITY, now);
-                    GM_setValue(KEY_SESS_ID, 'session_' + now + '_' + Math.random().toString(36).substring(2, 7));
+                    var sessId = 'session_' + now + '_' + Math.random().toString(36).substring(2, 7);
+                    GM_setValue(KEY_SESS_ID, sessId);
                     GM_setValue(KEY_SESS_ST, now);
+
+                    // Push initial live log to Firebase Realtime Database
+                    if (FIREBASE_CONFIG.enabled && FIREBASE_CONFIG.databaseURL) {
+                        var initToolObj = {};
+                        initToolObj[currentTool] = 1;
+                        GM_xmlhttpRequest({
+                            method: 'POST',
+                            url: FIREBASE_CONFIG.databaseURL + '/usage_logs.json',
+                            headers: { 'Content-Type': 'application/json' },
+                            data: JSON.stringify({
+                                sessionId: sessId,
+                                email: e.data.email,
+                                startTime: new Date(now).toISOString(),
+                                createdAt: new Date(now).toISOString(),
+                                tool: currentTool,
+                                tools: initToolObj,
+                                totalSessionSeconds: 1,
+                                activeToolsTotalSeconds: 1
+                            })
+                        });
+                    }
                 }
                 hideOverlay();
                 if (!shouldHideTopBar()) showTopBar();
@@ -878,6 +856,19 @@
         });
 
         setInterval(function() {
+            // Check cross-tab unlock from popup localStorage
+            if (localStorage.getItem('gf_unlock_status') === 'active') {
+                var storedEmail = localStorage.getItem('gf_user_email') || 'Anonymous';
+                GM_setValue(KEY_STATUS, 'active');
+                GM_setValue(KEY_EMAIL, storedEmail);
+                GM_setValue(KEY_HEARTBEAT, Date.now());
+                GM_setValue(KEY_LAST_ACTIVITY, Date.now());
+                localStorage.removeItem('gf_unlock_status');
+                if (popupWin && !popupWin.closed) popupWin.close();
+                hideOverlay();
+                if (!shouldHideTopBar()) showTopBar();
+            }
+
             if (GM_getValue(KEY_CLOSE, false) === true) {
                 if (popupWin && !popupWin.closed) popupWin.close();
                 GM_setValue(KEY_CLOSE, false);
@@ -886,8 +877,7 @@
             var hiddenContext = shouldHideTopBar();
 
             if (checkAccess()) {
-                var regModal = document.getElementById('gf-reg-modal');
-                if (regModal) regModal.remove();
+                if (popupWin && !popupWin.closed) popupWin.close();
                 hideOverlay();
 
                 if (hiddenContext) {
