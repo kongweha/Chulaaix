@@ -517,6 +517,26 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <script>
+        // Firebase Initialization
+        const activeFirebaseConfig = window.FIREBASE_CONFIG || {
+            apiKey: "AIzaSyCLQkUz59m3twJMQFoBL5xO9_VmZZHwU0c",
+            authDomain: "chula-aix.firebaseapp.com",
+            databaseURL: "https://chula-aix-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "chula-aix",
+            storageBucket: "chula-aix.firebasestorage.app",
+            messagingSenderId: "692837434850",
+            appId: "1:692837434850:web:44867ec5fa00b01d5525bb",
+            measurementId: "G-TP02CWZWY2"
+        };
+
+        try {
+            if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+                firebase.initializeApp(activeFirebaseConfig);
+            }
+        } catch (e) {
+            console.warn('Firebase init:', e);
+        }
+
         // ═══════════════════════════════════════════════════════════
         // 29 FACULTIES / INSTITUTES / DEPARTMENTS (TH & EN)
         // ═══════════════════════════════════════════════════════════
@@ -1035,32 +1055,39 @@
             localStorage.setItem('gf_unlock_status', 'active');
             localStorage.setItem('gf_user_email', email);
             localStorage.setItem('gf_last_heartbeat', Date.now().toString());
+            localStorage.setItem('gf_auto_close', 'true');
             localStorage.setItem('aix_registration_data', JSON.stringify(registrationData));
 
-            // Notify parent window (Modal / Userscript)
+            // Notify opener window (Popup) and parent (Iframe)
             try {
+                if (window.opener && !window.opener.closed) {
+                    window.opener.postMessage({ type: 'AIX_UNLOCKED', email: email }, '*');
+                }
                 window.parent.postMessage({ type: 'AIX_UNLOCKED', email: email }, '*');
             } catch (e) {}
 
-            // Save to Firebase Realtime Database
-            let saved = false;
-            try {
-                firebase.database().ref('registrations').push(registrationData)
-                .then(() => {
-                    saved = true;
-                    showSuccessState(email);
-                })
-                .catch(err => {
-                    console.warn('RTDB write warning:', err);
-                    showSuccessState(email);
-                });
-            } catch (e) {
+            // Save to Firebase Realtime Database via REST fetch (100% Reliable & Fast)
+            const dbUrl = (activeFirebaseConfig && activeFirebaseConfig.databaseURL) || 'https://chula-aix-default-rtdb.asia-southeast1.firebasedatabase.app';
+            
+            fetch(`${dbUrl}/registrations.json`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(registrationData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log('✅ Registration successfully saved to Firebase RTDB:', data);
                 showSuccessState(email);
-            }
-
-            setTimeout(() => {
-                if (!saved) showSuccessState(email);
-            }, 1200);
+            })
+            .catch(err => {
+                console.warn('REST save error, trying SDK:', err);
+                try {
+                    firebase.database().ref('registrations').push(registrationData)
+                    .finally(() => showSuccessState(email));
+                } catch (e) {
+                    showSuccessState(email);
+                }
+            });
         }
 
         function showSuccessState(email) {
@@ -1070,8 +1097,11 @@
             document.getElementById('successContainer').classList.remove('hidden');
             lucide.createIcons();
 
-            // Notify parent immediately
+            // Notify opener/parent immediately
             try {
+                if (window.opener && !window.opener.closed) {
+                    window.opener.postMessage({ type: 'AIX_UNLOCKED', email: email }, '*');
+                }
                 window.parent.postMessage({ type: 'AIX_UNLOCKED', email: email }, '*');
             } catch (e) {}
 
@@ -1089,8 +1119,10 @@
         }
 
         function requestCloseModal() {
-            // Send close message to parent window (Tampermonkey Modal)
             try {
+                if (window.opener && !window.opener.closed) {
+                    window.opener.postMessage({ type: 'AIX_CLOSE_MODAL' }, '*');
+                }
                 window.parent.postMessage({ type: 'AIX_CLOSE_MODAL' }, '*');
             } catch (e) {}
             try {
