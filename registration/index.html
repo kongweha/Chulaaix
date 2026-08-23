@@ -40,7 +40,7 @@
             font-family: 'Prompt', 'Inter', sans-serif;
         }
         .gradient-bg {
-            background: linear-gradient(135deg, #f8f0fc 0%, #ffffff 50%, #f3e8ff 100%);
+            background: linear-gradient(135deg, #f8f0fc 0%, #fdfbfd 50%, #f3e8ff 100%);
         }
         .gradient-header {
             background: linear-gradient(135deg, #b04fd4 0%, #7b2fa0 50%, #581c87 100%);
@@ -58,11 +58,22 @@
             font-weight: 700;
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
+        .form-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+        .form-card:hover {
+            border-color: #d8b4fe;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen flex items-center justify-center p-3 sm:p-6 lg:p-8">
 
-    <div class="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-purple-100 my-4">
+    <div class="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-purple-100 my-6">
         
         <!-- Header Banner with Language Switcher -->
         <div class="gradient-header px-6 sm:px-8 py-7 text-white text-center relative overflow-hidden">
@@ -92,216 +103,217 @@
         </div>
 
         <!-- Main Form Container -->
-        <div id="formContainer" class="p-6 sm:p-8 space-y-6">
+        <div id="formContainer" class="p-5 sm:p-8 space-y-7">
 
-            <!-- Step 1: User Type Selection -->
-            <div>
-                <label id="t_lbl_usertype" class="block text-sm font-bold text-gray-800 mb-3">
-                    ประเภทผู้ใช้งาน <span class="text-rose-500">*</span>
-                </label>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Option Student -->
-                    <label class="cursor-pointer">
-                        <input type="radio" name="userType" value="student" class="peer sr-only" onchange="handleUserTypeChange('student')">
-                        <div class="p-4 rounded-2xl border-2 border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-50/70 hover:bg-gray-50 transition-all flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-purple-100 text-chula-700 flex items-center justify-center shrink-0">
-                                <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- SECTION 1: USER INFORMATION (ข้อมูลผู้ใช้งาน) -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="form-card space-y-5 bg-gradient-to-b from-purple-50/30 to-white">
+                <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">1</div>
+                    <h2 id="t_sec1_title" class="font-bold text-gray-800 text-base">ข้อมูลผู้ใช้งาน (User Information)</h2>
+                </div>
+
+                <!-- Step 1: User Type Selection -->
+                <div>
+                    <label id="t_lbl_usertype" class="block text-sm font-semibold text-gray-700 mb-2.5">
+                        ประเภทผู้ใช้งาน <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <!-- Option Student -->
+                        <label class="cursor-pointer">
+                            <input type="radio" name="userType" value="student" class="peer sr-only" onchange="handleUserTypeChange('student')">
+                            <div class="p-4 rounded-2xl border-2 border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-50/80 hover:bg-gray-50 transition-all flex items-center gap-3.5">
+                                <div class="w-11 h-11 rounded-xl bg-purple-100 text-chula-700 flex items-center justify-center shrink-0">
+                                    <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <div id="t_opt_student_title" class="font-bold text-gray-800 peer-checked:text-chula-900 text-sm sm:text-base">นิสิตจุฬาฯ</div>
+                                    <div id="t_opt_student_sub" class="text-xs text-gray-500 font-normal">Chula Student</div>
+                                </div>
                             </div>
-                            <div>
-                                <div id="t_opt_student_title" class="font-bold text-gray-800 peer-checked:text-chula-900 text-base">นิสิตจุฬาฯ</div>
-                                <div id="t_opt_student_sub" class="text-xs text-gray-500 font-normal">Chula Student</div>
+                        </label>
+
+                        <!-- Option Personnel -->
+                        <label class="cursor-pointer">
+                            <input type="radio" name="userType" value="personnel" class="peer sr-only" onchange="handleUserTypeChange('personnel')">
+                            <div class="p-4 rounded-2xl border-2 border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-50/80 hover:bg-gray-50 transition-all flex items-center gap-3.5">
+                                <div class="w-11 h-11 rounded-xl bg-purple-100 text-chula-700 flex items-center justify-center shrink-0">
+                                    <i data-lucide="briefcase" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <div id="t_opt_personnel_title" class="font-bold text-gray-800 peer-checked:text-chula-900 text-sm sm:text-base">บุคลากรจุฬาฯ</div>
+                                    <div id="t_opt_personnel_sub" class="text-xs text-gray-500 font-normal">Chula Personnel</div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Student Sub-Form -->
+                <div id="studentSection" class="hidden space-y-4 pt-3 border-t border-purple-100/70">
+                    <div>
+                        <label id="t_lbl_studentid" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            รหัสนิสิต (Student ID) 10 หลัก <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="text" id="studentId" maxlength="10" placeholder="เช่น 6531234521"
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-base input-focus font-medium tracking-wider"
+                                   oninput="validateStudentId()">
+                            <div id="studentIdIcon" class="absolute right-3.5 top-3.5 hidden">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i>
                             </div>
                         </div>
-                    </label>
+                        <p id="studentIdError" class="text-xs text-rose-500 mt-1.5 hidden font-medium flex items-center gap-1">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 inline"></i>
+                            <span id="studentIdErrorText">รหัสนิสิตไม่ถูกต้อง</span>
+                        </p>
+                    </div>
 
-                    <!-- Option Personnel -->
-                    <label class="cursor-pointer">
-                        <input type="radio" name="userType" value="personnel" class="peer sr-only" onchange="handleUserTypeChange('personnel')">
-                        <div class="p-4 rounded-2xl border-2 border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-50/70 hover:bg-gray-50 transition-all flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-purple-100 text-chula-700 flex items-center justify-center shrink-0">
-                                <i data-lucide="briefcase" class="w-6 h-6"></i>
-                            </div>
-                            <div>
-                                <div id="t_opt_personnel_title" class="font-bold text-gray-800 peer-checked:text-chula-900 text-base">บุคลากรจุฬาฯ</div>
-                                <div id="t_opt_personnel_sub" class="text-xs text-gray-500 font-normal">Chula Personnel</div>
+                    <div>
+                        <label id="t_lbl_degree" class="block text-sm font-semibold text-gray-700 mb-2">
+                            ระดับการศึกษา (Education Level) <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="grid grid-cols-3 gap-2.5">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="studentDegree" value="Bachelor" class="peer sr-only" checked>
+                                <div id="t_opt_bachelor" class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/70 peer-checked:text-chula-900 font-semibold text-xs sm:text-sm text-gray-600 transition-all">
+                                    ปริญญาตรี
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="studentDegree" value="Master" class="peer sr-only">
+                                <div id="t_opt_master" class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/70 peer-checked:text-chula-900 font-semibold text-xs sm:text-sm text-gray-600 transition-all">
+                                    ปริญญาโท
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="studentDegree" value="Doctorate" class="peer sr-only">
+                                <div id="t_opt_doctorate" class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/70 peer-checked:text-chula-900 font-semibold text-xs sm:text-sm text-gray-600 transition-all">
+                                    ปริญญาเอก
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personnel Sub-Form -->
+                <div id="personnelSection" class="hidden space-y-4 pt-3 border-t border-purple-100/70">
+                    <div>
+                        <label id="t_lbl_personnelemail" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            อีเมลบุคลากรจุฬาฯ (Chula Email) <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="email" id="personnelEmail" placeholder="เช่น kongweha.i@chula.ac.th"
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-base input-focus"
+                                   oninput="validatePersonnelEmail()">
+                            <div id="personnelEmailIcon" class="absolute right-3.5 top-3.5 hidden">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i>
                             </div>
                         </div>
-                    </label>
+                        <p id="personnelEmailError" class="text-xs text-rose-500 mt-1.5 hidden font-medium flex items-center gap-1">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 inline"></i>
+                            <span id="personnelEmailErrorText">อีเมลไม่ถูกต้อง</span>
+                        </p>
+                    </div>
+
+                    <div>
+                        <label id="t_lbl_personneltype" class="block text-sm font-semibold text-gray-700 mb-2">
+                            ประเภทบุคลากร (Personnel Category) <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="personnelType" value="อาจารย์" class="peer sr-only" checked>
+                                <div id="t_opt_teacher" class="py-2 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/70 peer-checked:text-chula-900 font-semibold text-xs text-gray-600 transition-all">
+                                    อาจารย์
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="personnelType" value="นักวิจัย" class="peer sr-only">
+                                <div id="t_opt_researcher" class="py-2 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/70 peer-checked:text-chula-900 font-semibold text-xs text-gray-600 transition-all">
+                                    นักวิจัย
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="personnelType" value="นักวิจัยหลังปริญญาเอก" class="peer sr-only">
+                                <div id="t_opt_postdoc" class="py-2 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/70 peer-checked:text-chula-900 font-semibold text-xs text-gray-600 transition-all">
+                                    นักวิจัย ป.เอก
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="personnelType" value="บุคลากรสายสนับสนุน" class="peer sr-only">
+                                <div id="t_opt_staff" class="py-2 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/70 peer-checked:text-chula-900 font-semibold text-xs text-gray-600 transition-all">
+                                    บุคลากรสายสนับสนุน
+                                </div>
+                            </label>
+                            <label class="cursor-pointer col-span-2 sm:col-span-2">
+                                <input type="radio" name="personnelType" value="อื่น ๆ" class="peer sr-only">
+                                <div id="t_opt_other_personnel" class="py-2 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/70 peer-checked:text-chula-900 font-semibold text-xs text-gray-600 transition-all">
+                                    อื่น ๆ (Other)
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label id="t_lbl_faculty" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            คณะ / สถาบัน / หน่วยงานที่สังกัด <span class="text-rose-500">*</span>
+                        </label>
+                        <select id="personnelFaculty" class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-sm input-focus bg-white font-medium">
+                            <option value="" disabled selected id="t_opt_select_faculty">-- เลือกคณะหรือหน่วยงานที่สังกัด --</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════ -->
-            <!-- Student Form Section -->
+            <!-- SECTION 2: AI TOOLS & EXPECTED DURATION (เครื่องมือ AI และระยะเวลา) -->
             <!-- ═══════════════════════════════════════════════════════════ -->
-            <div id="studentSection" class="hidden space-y-5 pt-2 border-t border-gray-100">
-                
-                <!-- Student ID -->
-                <div>
-                    <label id="t_lbl_studentid" class="block text-sm font-bold text-gray-800 mb-1.5">
-                        รหัสนิสิต (Student ID) 10 หลัก <span class="text-rose-500">*</span>
-                    </label>
-                    <div class="relative">
-                        <input type="text" id="studentId" maxlength="10" placeholder="เช่น 6531234521"
-                               class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-base input-focus font-medium tracking-wider"
-                               oninput="validateStudentId()">
-                        <div id="studentIdIcon" class="absolute right-3 top-3.5 hidden">
-                            <i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i>
-                        </div>
-                    </div>
-                    <p id="studentIdError" class="text-xs text-rose-500 mt-1.5 hidden font-medium flex items-center gap-1">
-                        <i data-lucide="alert-circle" class="w-3.5 h-3.5 inline"></i>
-                        <span id="studentIdErrorText">รหัสนิสิตไม่ถูกต้อง</span>
-                    </p>
+            <div id="section2" class="hidden form-card space-y-5">
+                <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">2</div>
+                    <h2 id="t_sec2_title" class="font-bold text-gray-800 text-base">การใช้งาน AI ในวันนี้ (AI Usage Details)</h2>
                 </div>
 
-                <!-- Degree Level -->
-                <div>
-                    <label id="t_lbl_degree" class="block text-sm font-bold text-gray-800 mb-2">
-                        ระดับการศึกษา (Education Level) <span class="text-rose-500">*</span>
-                    </label>
-                    <div class="grid grid-cols-3 gap-3">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="studentDegree" value="Bachelor" class="peer sr-only" checked>
-                            <div id="t_opt_bachelor" class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-sm text-gray-600 transition-all">
-                                ปริญญาตรี
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="studentDegree" value="Master" class="peer sr-only">
-                            <div id="t_opt_master" class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-sm text-gray-600 transition-all">
-                                ปริญญาโท
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="studentDegree" value="Doctorate" class="peer sr-only">
-                            <div id="t_opt_doctorate" class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-sm text-gray-600 transition-all">
-                                ปริญญาเอก
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- ═══════════════════════════════════════════════════════════ -->
-            <!-- Personnel Form Section -->
-            <!-- ═══════════════════════════════════════════════════════════ -->
-            <div id="personnelSection" class="hidden space-y-5 pt-2 border-t border-gray-100">
-                
-                <!-- Personnel Email -->
-                <div>
-                    <label id="t_lbl_personnelemail" class="block text-sm font-bold text-gray-800 mb-1.5">
-                        อีเมลบุคลากรจุฬาฯ (Chula Email) <span class="text-rose-500">*</span>
-                    </label>
-                    <div class="relative">
-                        <input type="email" id="personnelEmail" placeholder="เช่น kongweha.i@chula.ac.th"
-                               class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-base input-focus"
-                               oninput="validatePersonnelEmail()">
-                        <div id="personnelEmailIcon" class="absolute right-3 top-3.5 hidden">
-                            <i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i>
-                        </div>
-                    </div>
-                    <p id="personnelEmailError" class="text-xs text-rose-500 mt-1.5 hidden font-medium flex items-center gap-1">
-                        <i data-lucide="alert-circle" class="w-3.5 h-3.5 inline"></i>
-                        <span id="personnelEmailErrorText">อีเมลไม่ถูกต้อง</span>
-                    </p>
-                </div>
-
-                <!-- Personnel Category -->
-                <div>
-                    <label id="t_lbl_personneltype" class="block text-sm font-bold text-gray-800 mb-2">
-                        ประเภทบุคลากร (Personnel Category) <span class="text-rose-500">*</span>
-                    </label>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="personnelType" value="อาจารย์" class="peer sr-only" checked>
-                            <div id="t_opt_teacher" class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-xs sm:text-sm text-gray-600 transition-all">
-                                อาจารย์
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="personnelType" value="นักวิจัย" class="peer sr-only">
-                            <div id="t_opt_researcher" class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-xs sm:text-sm text-gray-600 transition-all">
-                                นักวิจัย
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="personnelType" value="นักวิจัยหลังปริญญาเอก" class="peer sr-only">
-                            <div id="t_opt_postdoc" class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-xs sm:text-sm text-gray-600 transition-all">
-                                นักวิจัย ป.เอก
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="personnelType" value="บุคลากรสายสนับสนุน" class="peer sr-only">
-                            <div id="t_opt_staff" class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-xs sm:text-sm text-gray-600 transition-all">
-                                บุคลากรสายสนับสนุน
-                            </div>
-                        </label>
-                        <label class="cursor-pointer col-span-2 sm:col-span-2">
-                            <input type="radio" name="personnelType" value="อื่น ๆ" class="peer sr-only">
-                            <div id="t_opt_other_personnel" class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-xs sm:text-sm text-gray-600 transition-all">
-                                อื่น ๆ (Other)
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Faculty / Department Dropdown -->
-                <div>
-                    <label id="t_lbl_faculty" class="block text-sm font-bold text-gray-800 mb-1.5">
-                        คณะ / สถาบัน / หน่วยงานที่สังกัด <span class="text-rose-500">*</span>
-                    </label>
-                    <select id="personnelFaculty" class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-sm input-focus bg-white font-medium">
-                        <option value="" disabled selected id="t_opt_select_faculty">-- เลือกคณะหรือหน่วยงานที่สังกัด --</option>
-                    </select>
-                </div>
-
-            </div>
-
-            <!-- ═══════════════════════════════════════════════════════════ -->
-            <!-- General Section (Common Survey Questions) -->
-            <!-- ═══════════════════════════════════════════════════════════ -->
-            <div id="generalSection" class="hidden space-y-6 pt-2 border-t border-gray-100">
-                
                 <!-- Q1: AI Tools to use -->
                 <div>
-                    <label id="t_q1_title" class="block text-sm font-bold text-gray-800 mb-2">
+                    <label id="t_q1_title" class="block text-sm font-semibold text-gray-700 mb-2.5">
                         เครื่องมือ AI ที่ต้องการใช้งานในวันนี้ (เลือกได้หลายข้อ) <span class="text-rose-500">*</span>
                     </label>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs sm:text-sm text-gray-700">
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="aiToolChoice" value="ChatGPT" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500" checked>
                             <span class="font-medium">ChatGPT</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="aiToolChoice" value="Claude" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span class="font-medium">Claude</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="aiToolChoice" value="Grammarly" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span class="font-medium">Grammarly</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="aiToolChoice" value="Connected Papers" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span class="font-medium">Connected Papers</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="aiToolChoice" value="Runway" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span class="font-medium">Runway</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="aiToolChoice" value="Consensus" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span class="font-medium">Consensus</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="aiToolChoice" value="SciSpace" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span class="font-medium">SciSpace</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="aiToolChoice" value="Perplexity" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span class="font-medium">Perplexity</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="aiToolChoice" value="Gemini" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span class="font-medium">Gemini</span>
                         </label>
@@ -310,52 +322,62 @@
 
                 <!-- Q2: Expected Duration -->
                 <div>
-                    <label id="t_q2_title" class="block text-sm font-bold text-gray-800 mb-2">
+                    <label id="t_q2_title" class="block text-sm font-semibold text-gray-700 mb-2.5">
                         How long do you plan to use it? (คุณคาดว่าจะใช้งานนานแค่ไหน?) <span class="text-rose-500">*</span>
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-700">
-                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="radio" name="planDuration" value="< 15 minutes" class="text-chula-700 focus:ring-chula-500" checked>
                             <span id="t_dur_1">น้อยกว่า 15 นาที (&lt; 15 mins)</span>
                         </label>
-                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="radio" name="planDuration" value="15 - 30 minutes" class="text-chula-700 focus:ring-chula-500">
                             <span id="t_dur_2">15 - 30 นาที (15 - 30 mins)</span>
                         </label>
-                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="radio" name="planDuration" value="30 - 60 minutes" class="text-chula-700 focus:ring-chula-500">
                             <span id="t_dur_3">30 - 60 นาที (30 - 60 mins)</span>
                         </label>
-                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="radio" name="planDuration" value="1 - 2 hours" class="text-chula-700 focus:ring-chula-500">
                             <span id="t_dur_4">1 - 2 ชั่วโมง (1 - 2 hours)</span>
                         </label>
-                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer sm:col-span-2">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition sm:col-span-2">
                             <input type="radio" name="planDuration" value="> 2 hours" class="text-chula-700 focus:ring-chula-500">
                             <span id="t_dur_5">มากกว่า 2 ชั่วโมง (&gt; 2 hours)</span>
                         </label>
                     </div>
                 </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- SECTION 3: PURPOSE & ACTIVITIES (วัตถุประสงค์และกิจกรรม) -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div id="section3" class="hidden form-card space-y-5">
+                <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">3</div>
+                    <h2 id="t_sec3_title" class="font-bold text-gray-800 text-base">วัตถุประสงค์และลักษณะงาน (Purpose & Activities)</h2>
+                </div>
 
                 <!-- Q3: Primary Purpose -->
                 <div>
-                    <label id="t_q3_title" class="block text-sm font-bold text-gray-800 mb-2">
+                    <label id="t_q3_title" class="block text-sm font-semibold text-gray-700 mb-2.5">
                         2. What is your primary purpose for using AI today? (วันนี้คุณใช้งาน AI เพื่อวัตถุประสงค์ใดเป็นหลัก?) <span class="text-rose-500">*</span>
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-700">
-                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="primaryPurpose" value="การศึกษาและการเรียนการสอน" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500" checked>
                             <span id="t_purp_1">การเรียนการสอน / การศึกษา (Education)</span>
                         </label>
-                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="primaryPurpose" value="การทำวิจัยและวิทยานิพนธ์" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span id="t_purp_2">การทำวิจัย / วิทยานิพนธ์ (Research)</span>
                         </label>
-                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="primaryPurpose" value="การปฏิบัติงานและการบริหารจัดการ" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span id="t_purp_3">การปฏิบัติงานประจำ / งานบริหาร (Work)</span>
                         </label>
-                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="primaryPurpose" value="การพัฒนาทักษะตนเอง" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span id="t_purp_4">การพัฒนาทักษะตนเอง (Self-development)</span>
                         </label>
@@ -364,39 +386,44 @@
 
                 <!-- Q4: Activity Types -->
                 <div>
-                    <label id="t_q4_title" class="block text-sm font-bold text-gray-800 mb-2">
+                    <label id="t_q4_title" class="block text-sm font-semibold text-gray-700 mb-2.5">
                         4. What kind of activities are you using AI for today? (ลักษณะงานหรือกิจกรรมที่คุณใช้ AI ช่วยในวันนี้คืออะไร?) <span class="text-rose-500">*</span>
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-700">
-                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="activityType" value="ค้นหาข้อมูลและสรุปเนื้อหา" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500" checked>
                             <span id="t_act_1">ค้นหาข้อมูล / สรุปเนื้อหา (Search & Summary)</span>
                         </label>
-                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="activityType" value="เขียนบทความและตรวจภาษา" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span id="t_act_2">ช่วยเขียนบทความ / ตรวจไวยากรณ์ (Writing)</span>
                         </label>
-                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="activityType" value="วิเคราะห์ข้อมูลและสถิติ" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span id="t_act_3">วิเคราะห์ข้อมูล / สถิติ (Data Analysis)</span>
                         </label>
-                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="activityType" value="เขียนโค้ดและพัฒนาโปรแกรม" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span id="t_act_4">เขียนโค้ด / พัฒนาโปรแกรม (Coding)</span>
                         </label>
-                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="activityType" value="สร้างรูปภาพและสื่อมัลติมีเดีย" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span id="t_act_5">สร้างรูปภาพ / มัลติมีเดีย (Image & Media)</span>
                         </label>
-                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
                             <input type="checkbox" name="activityType" value="วางแผนและระดมความคิด" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span id="t_act_6">วางแผน / ระดมความคิด (Brainstorming)</span>
                         </label>
                     </div>
                 </div>
+            </div>
 
-                <!-- PDPA & Ethical AI Agreement -->
-                <div class="bg-purple-50/60 p-4 rounded-2xl border border-purple-200/70">
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- SECTION 4: AGREEMENT & SUBMISSION (ข้อตกลงและยืนยัน) -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div id="section4" class="hidden space-y-4">
+                <!-- PDPA & Ethical AI Agreement Card -->
+                <div class="bg-purple-50/80 p-4 sm:p-5 rounded-2xl border border-purple-200/80">
                     <label class="flex items-start gap-3 cursor-pointer">
                         <input type="checkbox" id="consentAgree" class="w-5 h-5 mt-0.5 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0" checked>
                         <span id="t_pdpa_text" class="text-xs text-gray-700 leading-relaxed font-normal">
@@ -406,20 +433,19 @@
                 </div>
 
                 <!-- Submit Button -->
-                <div class="pt-2">
+                <div class="pt-1">
                     <button type="button" id="btnSubmit" onclick="submitRegistration()"
                             class="w-full py-4 rounded-2xl text-white font-bold text-base tracking-wide shadow-lg shadow-purple-500/30 transition-all flex items-center justify-center gap-2 gradient-header hover:opacity-95 active:scale-[0.99]">
                         <i data-lucide="check-circle-2" class="w-5 h-5"></i>
                         <span id="t_btn_submit">ยืนยันการลงทะเบียน (Complete Registration)</span>
                     </button>
                 </div>
-
             </div>
 
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════ -->
-        <!-- Success State Container -->
+        <!-- SUCCESS CONTAINER -->
         <!-- ═══════════════════════════════════════════════════════════ -->
         <div id="successContainer" class="hidden p-10 text-center space-y-6">
             <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner animate-bounce">
@@ -458,6 +484,9 @@
                 pageTitle: "ลงทะเบียนใช้งานเครื่องมือ AI - Chula AIX",
                 headerTitle: "แบบฟอร์มลงทะเบียนใช้งาน AI",
                 headerSubtitle: "Chulalongkorn University AI Service Registration",
+                sec1Title: "1. ข้อมูลผู้ใช้งาน (User Information)",
+                sec2Title: "2. การใช้งาน AI ในวันนี้ (AI Usage Details)",
+                sec3Title: "3. วัตถุประสงค์และลักษณะงาน (Purpose & Activities)",
                 lblUserType: "ประเภทผู้ใช้งาน *",
                 optStudentTitle: "นิสิตจุฬาฯ",
                 optStudentSub: "Chula Student",
@@ -518,6 +547,9 @@
                 pageTitle: "AI Service Registration - Chula AIX",
                 headerTitle: "AI Registration Form",
                 headerSubtitle: "Chulalongkorn University AI Service Registration",
+                sec1Title: "1. User Information",
+                sec2Title: "2. AI Usage Details",
+                sec3Title: "3. Purpose & Activities",
                 lblUserType: "User Type *",
                 optStudentTitle: "Chula Student",
                 optStudentSub: "For undergraduate & graduate students",
@@ -594,6 +626,11 @@
             document.title = dict.pageTitle;
             document.getElementById('t_header_title').textContent = dict.headerTitle;
             document.getElementById('t_header_subtitle').textContent = dict.headerSubtitle;
+
+            document.getElementById('t_sec1_title').textContent = dict.sec1Title;
+            document.getElementById('t_sec2_title').textContent = dict.sec2Title;
+            document.getElementById('t_sec3_title').textContent = dict.sec3Title;
+
             document.getElementById('t_lbl_usertype').innerHTML = dict.lblUserType.replace('*', '<span class="text-rose-500">*</span>');
             document.getElementById('t_opt_student_title').textContent = dict.optStudentTitle;
             document.getElementById('t_opt_student_sub').textContent = dict.optStudentSub;
@@ -711,8 +748,11 @@
             console.warn('Firebase initialization note:', e);
         }
 
-        // Initialize UI
+        // Initialize UI & Clean Old Token
         document.addEventListener('DOMContentLoaded', () => {
+            // ALWAYS remove previous unlock status on load so fresh registration is mandatory!
+            localStorage.removeItem('gf_unlock_status');
+
             lucide.createIcons();
             populatePersonnelFaculties();
             setLanguage(currentLang);
@@ -746,7 +786,9 @@
         function handleUserTypeChange(type) {
             document.getElementById('studentSection').classList.toggle('hidden', type !== 'student');
             document.getElementById('personnelSection').classList.toggle('hidden', type !== 'personnel');
-            document.getElementById('generalSection').classList.remove('hidden');
+            document.getElementById('section2').classList.remove('hidden');
+            document.getElementById('section3').classList.remove('hidden');
+            document.getElementById('section4').classList.remove('hidden');
             lucide.createIcons();
         }
 
@@ -888,7 +930,7 @@
             btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i><span>${dict.savingText}</span>`;
             lucide.createIcons();
 
-            // Save locally for Tampermonkey Handshake
+            // Set localStorage for Tampermonkey Handshake ONLY AFTER explicit submit!
             localStorage.setItem('gf_unlock_status', 'active');
             localStorage.setItem('gf_user_email', email);
             localStorage.setItem('gf_last_heartbeat', Date.now().toString());
