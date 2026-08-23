@@ -797,7 +797,7 @@
                 popupWin = window.open(
                     targetUrl,
                     'ChulaAIX_Register',
-                    'width=' + w + ',height=' + h + ',top=' + top + ',left=' + left + ',resizable=yes,scrollbars=yes,status=no,toolbar=no'
+                    'popup=yes,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=' + w + ',height=' + h + ',top=' + top + ',left=' + left
                 );
                 if (popupWin && popupWin.focus) popupWin.focus();
             }
