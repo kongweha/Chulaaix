@@ -854,6 +854,24 @@
             if (e) { e.remove(); if (document.body) document.body.style.overflow = 'auto'; }
         }
 
+        window.addEventListener('message', function(e) {
+            if (e.data && (e.data.type === 'AIX_UNLOCKED' || e.data.type === 'AIX_CLOSE_MODAL')) {
+                var m = document.getElementById('gf-reg-modal');
+                if (m) m.remove();
+                if (e.data.email) {
+                    var now = Date.now();
+                    GM_setValue(KEY_STATUS, 'active');
+                    GM_setValue(KEY_EMAIL, e.data.email);
+                    GM_setValue(KEY_HEARTBEAT, now);
+                    GM_setValue(KEY_LAST_ACTIVITY, now);
+                    GM_setValue(KEY_SESS_ID, 'session_' + now + '_' + Math.random().toString(36).substring(2, 7));
+                    GM_setValue(KEY_SESS_ST, now);
+                }
+                hideOverlay();
+                if (!shouldHideTopBar()) showTopBar();
+            }
+        });
+
         setInterval(function() {
             if (GM_getValue(KEY_CLOSE, false) === true) {
                 if (popupWin && !popupWin.closed) popupWin.close();
