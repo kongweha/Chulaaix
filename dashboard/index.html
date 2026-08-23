@@ -2793,39 +2793,76 @@ function renderCurrentViewCharts() {
         }
 
         // ───────────────────────────────────────────────────────────
-        // BUILD REGISTRATION → SESSION USAGE MAP (แยกแต่ละเซสชัน ไม่รวมกัน)
+        // BUILD REGISTRATION → SESSION USAGE MAP
+        // จับคู่ usage log กับ registration ที่ถูกต้องตามลำดับเวลา
+        // ถ้าคนเดียวกัน register หลายครั้ง → แยกเวลาให้ถูกรอบ
+        // ภายใน register-logout เดียวกัน → รวมเวลาปกติ
         // ───────────────────────────────────────────────────────────
         function buildRegistrationSessionUsageMap() {
             const map = {};
-            // Build a lookup from rawRegistrations keyed by email/studentId
-            const regLookup = {};
+
+            // Group registrations by user key (email / studentId)
+            const userRegs = {};
             rawRegistrations.forEach(r => {
                 const email = (r.email || '').toLowerCase().trim();
                 const sid = (r.studentId || '').trim();
-                if (email) regLookup[email] = r.id;
-                if (sid) regLookup[sid] = r.id;
+                const regTime = new Date(r.registeredAt || 0).getTime();
+                const entry = { regId: r.id, registeredAt: regTime };
+
+                if (email) {
+                    if (!userRegs[email]) userRegs[email] = [];
+                    userRegs[email].push(entry);
+                }
+                if (sid) {
+                    if (!userRegs[sid]) userRegs[sid] = [];
+                    userRegs[sid].push(entry);
+                }
+            });
+
+            // Sort each user's registrations ascending by date
+            Object.values(userRegs).forEach(regs => {
+                regs.sort((a, b) => a.registeredAt - b.registeredAt);
             });
 
             rawUsageLogs.forEach(l => {
+                // 1) Try direct registrationId first
+                if (l.registrationId) {
+                    const regId = l.registrationId;
+                    if (!map[regId]) map[regId] = {};
+                    const logTools = getLogToolDurations(l);
+                    Object.entries(logTools).forEach(([tool, secs]) => {
+                        map[regId][tool] = (map[regId][tool] || 0) + secs;
+                    });
+                    return;
+                }
+
+                // 2) Match by email/studentId + timestamp
                 const userEmail = (l.userEmail || l.email || '').toLowerCase().trim();
                 const userId = (l.studentId || l.userId || '').trim();
-                let regId = regLookup[userEmail] || regLookup[userId] || null;
+                const userKey = userEmail || userId;
 
-                // Fallback: try matching by registrationId field
-                if (!regId && l.registrationId) {
-                    regId = l.registrationId;
+                if (!userKey || !userRegs[userKey]) return;
+
+                const regs = userRegs[userKey];
+                const logTime = new Date(l.startedAt || l.timestamp || l.createdAt || 0).getTime();
+
+                // Find the correct registration for this log:
+                // The most recent registration that started BEFORE this usage log
+                let matchedRegId = null;
+                for (let i = regs.length - 1; i >= 0; i--) {
+                    if (logTime >= regs[i].registeredAt) {
+                        matchedRegId = regs[i].regId;
+                        break;
+                    }
                 }
+                // Fallback: if log is before all registrations, assign to first
+                if (!matchedRegId) matchedRegId = regs[0].regId;
 
-                if (!regId) return;
-
-                if (!map[regId]) map[regId] = [];
-
+                if (!map[matchedRegId]) map[matchedRegId] = {};
                 const logTools = getLogToolDurations(l);
-                // เก็บแต่ละ session แยกกัน ไม่รวมเวลา
-                if (Object.keys(logTools).length > 0) {
-                    const timestamp = l.startedAt || l.timestamp || l.createdAt || '';
-                    map[regId].push({ tools: logTools, timestamp: timestamp });
-                }
+                Object.entries(logTools).forEach(([tool, secs]) => {
+                    map[matchedRegId][tool] = (map[matchedRegId][tool] || 0) + secs;
+                });
             });
 
             return map;
@@ -2869,19 +2906,14 @@ function renderCurrentViewCharts() {
                     ? r.selectedAITools.map(t => `<span class="inline-block bg-purple-50 text-purple-700 text-[10px] px-1.5 py-0.5 rounded border border-purple-200 mr-1 mb-1">${t}</span>`).join('')
                     : '-';
 
-                const sessions = regUsageMap[r.id] || [];
+                const actualMap = regUsageMap[r.id] || null;
 
                 let actualUsageHtml = '';
-                if (sessions.length > 0) {
-                    actualUsageHtml = sessions.map((session, sIdx) => {
-                        const sessionBadges = Object.entries(session.tools).map(([tool, secs]) => {
-                            const durText = formatRealtimeDuration(secs);
-                            return `<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 text-[10px] px-2 py-0.5 rounded-md border border-emerald-200 font-semibold mr-1 mb-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${tool}: ${durText}</span>`;
-                        }).join('');
-                        const timeLabel = session.timestamp ? new Date(session.timestamp).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }) : '';
-                        const sessionLabel = sessions.length > 1 ? `<div class="text-[9px] text-slate-400 font-mono mb-0.5">${timeLabel ? timeLabel : 'เซสชัน ' + (sIdx + 1)}</div>` : '';
-                        return sessionLabel + sessionBadges;
-                    }).join(sessions.length > 1 ? '<hr class="border-slate-200 my-1">' : '');
+                if (actualMap && Object.keys(actualMap).length > 0) {
+                    actualUsageHtml = Object.entries(actualMap).map(([tool, secs]) => {
+                        const durText = formatRealtimeDuration(secs);
+                        return `<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 text-[10px] px-2 py-0.5 rounded-md border border-emerald-200 font-semibold mr-1 mb-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${tool}: ${durText}</span>`;
+                    }).join('');
                 } else {
                     actualUsageHtml = `<span class="text-slate-400 text-[11px] italic">ยังไม่มีประวัติการใช้งาน</span>`;
                 }
