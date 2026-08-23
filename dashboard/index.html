@@ -530,16 +530,16 @@
                         </div>
                         <div class="flex flex-wrap items-center bg-slate-100 p-1 rounded-xl gap-1">
                             <button type="button" onclick="setFacultyChartMode('all')" id="btnFacultyMode_all"
-                                    class="faculty-mode-btn active px-3 py-1 text-xs font-semibold rounded-lg transition bg-white text-brand-700 shadow-sm">
-                                ทั้งหมด (Total: นิสิต vs บุคลากร)
+                                    class="faculty-mode-btn active px-3.5 py-1.5 text-xs font-bold rounded-lg transition bg-white text-brand-700 shadow-sm">
+                                ทั้งหมด
                             </button>
                             <button type="button" onclick="setFacultyChartMode('student')" id="btnFacultyMode_student"
-                                    class="faculty-mode-btn px-3 py-1 text-xs font-semibold rounded-lg transition text-slate-600 hover:text-slate-900">
-                                เฉพาะนิสิต (จำแนก ตรี / โท / เอก)
+                                    class="faculty-mode-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-slate-600 hover:text-slate-900">
+                                เฉพาะนิสิต
                             </button>
                             <button type="button" onclick="setFacultyChartMode('personnel')" id="btnFacultyMode_personnel"
-                                    class="faculty-mode-btn px-3 py-1 text-xs font-semibold rounded-lg transition text-slate-600 hover:text-slate-900">
-                                เฉพาะบุคลากร (จำแนกตามประเภทบุคลากร)
+                                    class="faculty-mode-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-slate-600 hover:text-slate-900">
+                                เฉพาะบุคลากร
                             </button>
                         </div>
                     </div>
@@ -1900,69 +1900,6 @@ function renderCurrentViewCharts() {
         // ───────────────────────────────────────────────────────────
         // OTHER VIEWS' CHARTS (Views 2, 3, 4)
         // ───────────────────────────────────────────────────────────
-        function renderStudentDegreesChart() {
-            destroyChart('chartStudentDegrees');
-            const ctx = document.getElementById('chartStudentDegrees')?.getContext('2d');
-            if (!ctx) return;
-
-            const counts = { 'ปริญญาตรี': 0, 'ปริญญาโท': 0, 'ปริญญาเอก': 0 };
-            rawRegistrations.forEach(r => {
-                if (r.degree) {
-                    if (r.degree.includes('Bachelor') || r.degree === 'ปริญญาตรี') counts['ปริญญาตรี']++;
-                    else if (r.degree.includes('Master') || r.degree === 'ปริญญาโท') counts['ปริญญาโท']++;
-                    else if (r.degree.includes('Doctor') || r.degree === 'ปริญญาเอก') counts['ปริญญาเอก']++;
-                }
-            });
-
-            chartInstances['chartStudentDegrees'] = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['ปริญญาตรี', 'ปริญญาโท', 'ปริญญาเอก'],
-                    datasets: [{
-                        data: [counts['ปริญญาตรี'], counts['ปริญญาโท'], counts['ปริญญาเอก']],
-                        backgroundColor: ['#c084fc', '#9333ea', '#581c87'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { font: { family: 'Prompt' } } } }
-                }
-            });
-        }
-
-        function renderPersonnelCategoriesChart() {
-            destroyChart('chartPersonnelCategories');
-            const ctx = document.getElementById('chartPersonnelCategories')?.getContext('2d');
-            if (!ctx) return;
-
-            const counts = {};
-            rawRegistrations.forEach(r => {
-                if (r.personnelType) counts[r.personnelType] = (counts[r.personnelType] || 0) + 1;
-            });
-
-            const labels = Object.keys(counts).length > 0 ? Object.keys(counts) : ['อาจารย์', 'นักวิจัย', 'สายสนับสนุน'];
-            const data = Object.keys(counts).length > 0 ? Object.values(counts) : [0, 0, 0];
-
-            chartInstances['chartPersonnelCategories'] = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: ['#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#8b5cf6'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { font: { family: 'Prompt' } } } }
-                }
-            });
-        }
-
 
         // ───────────────────────────────────────────────────────────
         // DEMOGRAPHICS DATE FILTER & PERCENTAGE CALCULATIONS
@@ -2059,18 +1996,21 @@ function renderCurrentViewCharts() {
             const filtered = getFilteredDemographicsRegistrations();
             const counts = { 'ปริญญาตรี': 0, 'ปริญญาโท': 0, 'ปริญญาเอก': 0 };
             filtered.forEach(r => {
-                if (r.degree) {
-                    if (r.degree.includes('Bachelor') || r.degree === 'ปริญญาตรี') counts['ปริญญาตรี']++;
-                    else if (r.degree.includes('Master') || r.degree === 'ปริญญาโท') counts['ปริญญาโท']++;
-                    else if (r.degree.includes('Doctor') || r.degree === 'ปริญญาเอก') counts['ปริญญาเอก']++;
+                const isStudent = (r.userType || '').includes('นิสิต') || !!r.studentId;
+                if (isStudent) {
+                    const deg = r.degree || '';
+                    if (deg.includes('Bachelor') || deg === 'ปริญญาตรี') counts['ปริญญาตรี']++;
+                    else if (deg.includes('Master') || deg === 'ปริญญาโท') counts['ปริญญาโท']++;
+                    else if (deg.includes('Doctor') || deg === 'ปริญญาเอก') counts['ปริญญาเอก']++;
+                    else counts['ปริญญาตรี']++;
                 }
             });
 
             const total = counts['ปริญญาตรี'] + counts['ปริญญาโท'] + counts['ปริญญาเอก'];
             const labelsWithPct = [
-                `ปริญญาตรี (${total > 0 ? Math.round((counts['ปริญญาตรี'] / total) * 100) : 0}%)`,
-                `ปริญญาโท (${total > 0 ? Math.round((counts['ปริญญาโท'] / total) * 100) : 0}%)`,
-                `ปริญญาเอก (${total > 0 ? Math.round((counts['ปริญญาเอก'] / total) * 100) : 0}%)`
+                `ปริญญาตรี: ${counts['ปริญญาตรี']} คน (${total > 0 ? Math.round((counts['ปริญญาตรี'] / total) * 100) : 0}%)`,
+                `ปริญญาโท: ${counts['ปริญญาโท']} คน (${total > 0 ? Math.round((counts['ปริญญาโท'] / total) * 100) : 0}%)`,
+                `ปริญญาเอก: ${counts['ปริญญาเอก']} คน (${total > 0 ? Math.round((counts['ปริญญาเอก'] / total) * 100) : 0}%)`
             ];
 
             chartInstances['chartStudentDegrees'] = new Chart(ctx, {
@@ -2118,14 +2058,17 @@ function renderCurrentViewCharts() {
             const filtered = getFilteredDemographicsRegistrations();
             const counts = {};
             filtered.forEach(r => {
-                if (r.personnelType) counts[r.personnelType] = (counts[r.personnelType] || 0) + 1;
+                const isStudent = (r.userType || '').includes('นิสิต') || !!r.studentId;
+                if (!isStudent && r.personnelType) {
+                    counts[r.personnelType] = (counts[r.personnelType] || 0) + 1;
+                }
             });
 
             const keys = Object.keys(counts);
             const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
             const labelsWithPct = keys.length > 0
-                ? keys.map(k => `${k} (${total > 0 ? Math.round((counts[k] / total) * 100) : 0}%)`)
+                ? keys.map(k => `${k}: ${counts[k]} คน (${total > 0 ? Math.round((counts[k] / total) * 100) : 0}%)`)
                 : ['อาจารย์', 'นักวิจัย', 'สายสนับสนุน'];
             const data = keys.length > 0 ? Object.values(counts) : [0, 0, 0];
 
@@ -2163,11 +2106,11 @@ function renderCurrentViewCharts() {
         function setFacultyChartMode(mode) {
             currentFacultyChartMode = mode;
             document.querySelectorAll('.faculty-mode-btn').forEach(btn => {
-                btn.className = "faculty-mode-btn px-3 py-1 text-xs font-semibold rounded-lg transition text-slate-600 hover:text-slate-900";
+                btn.className = "faculty-mode-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg transition text-slate-600 hover:text-slate-900";
             });
             const activeBtn = document.getElementById(`btnFacultyMode_${mode}`);
             if (activeBtn) {
-                activeBtn.className = "faculty-mode-btn active px-3 py-1 text-xs font-semibold rounded-lg transition bg-white text-brand-700 shadow-sm";
+                activeBtn.className = "faculty-mode-btn active px-3.5 py-1.5 text-xs font-bold rounded-lg transition bg-white text-brand-700 shadow-sm";
             }
             renderFacultiesRankingChart();
         }
@@ -2268,7 +2211,7 @@ function renderCurrentViewCharts() {
                     }
                 ];
             } else if (currentFacultyChartMode === 'student') {
-                // Student mode: Breakdown into ตรี / โท / เอก
+                // Student mode: 3 separate bars (ตรี, โท, เอก)
                 datasets = [
                     {
                         label: 'ปริญญาตรี (Bachelor)',
@@ -2299,7 +2242,7 @@ function renderCurrentViewCharts() {
                     }
                 ];
             } else if (currentFacultyChartMode === 'personnel') {
-                // Personnel mode: Breakdown into categories
+                // Personnel mode: 4 separate bars (อาจารย์, นักวิจัย, สายสนับสนุน, อื่นๆ)
                 datasets = [
                     {
                         label: 'อาจารย์ (Faculty/Lecturer)',
@@ -2335,401 +2278,6 @@ function renderCurrentViewCharts() {
                         borderRadius: 6,
                         borderSkipped: false,
                         barPercentage: 0.85,
-                        categoryPercentage: 0.75
-                    }
-                ];
-            }
-
-            chartInstances['chartFacultiesRanking'] = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ALL_29_FACULTIES,
-                    datasets: datasets
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: { font: { family: 'Prompt', size: 12 }, boxWidth: 14 }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label(item) {
-                                    return ` ${item.dataset.label}: ${item.raw} คน`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { precision: 0, font: { family: 'Prompt' } },
-                            grid: { color: '#f1f5f9' }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: {
-                                font: { family: 'Prompt', size: 10.5 },
-                                maxRotation: 60,
-                                minRotation: 45,
-                                autoSkip: false
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // ───────────────────────────────────────────────────────────
-        // VIEW 3: COMPARISON CHART (FORM VS ACTUAL USAGE)
-        // ───────────────────────────────────────────────────────────
-        function renderToolsFormVsActualChart() {
-            destroyChart('chartToolsFormVsActual');
-            const ctx = document.getElementById('chartToolsFormVsActual')?.getContext('2d');
-            if (!ctx) return;
-
-            const tools = ["ChatGPT", "Claude", "Grammarly", "Connected Papers", "Runway", "Consensus", "SciSpace", "Perplexity", "QuillBot"];
-            
-            // Form selection counts
-            const formCounts = {};
-            tools.forEach(t => formCounts[t] = 0);
-            rawRegistrations.forEach(r => {
-                if (Array.isArray(r.selectedAITools)) {
-                    r.selectedAITools.forEach(t => {
-                        if (formCounts[t] !== undefined) formCounts[t]++;
-                    });
-                }
-            });
-
-            // Actual active users count and duration
-            const actualCounts = {};
-            const actualDurations = {};
-            const toolActiveUsers = {};
-            tools.forEach(t => {
-                actualCounts[t] = 0;
-                actualDurations[t] = 0;
-                toolActiveUsers[t] = new Set();
-            });
-
-            rawUsageLogs.forEach(l => {
-                const userKey = (l.userEmail || l.email || l.studentId || l.userId || '').toLowerCase().trim();
-                const logTools = getLogToolDurations(l);
-                Object.entries(logTools).forEach(([t, s]) => {
-                    if (actualDurations[t] !== undefined) {
-                        actualDurations[t] += s;
-                        if (s > 0) {
-                            if (userKey) toolActiveUsers[t].add(userKey);
-                            else toolActiveUsers[t].add(l.id || Math.random().toString());
-                        }
-                    }
-                });
-            });
-
-            tools.forEach(t => {
-                actualCounts[t] = toolActiveUsers[t].size;
-            });
-
-            chartInstances['chartToolsFormVsActual'] = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: tools,
-                    datasets: [
-                        {
-                            label: 'เลือกในฟอร์มลงทะเบียน (Selected in Form)',
-                            data: tools.map(t => formCounts[t]),
-                            backgroundColor: '#9333ea',
-                            borderRadius: 6,
-                            borderSkipped: false,
-                            barPercentage: 0.8,
-                            categoryPercentage: 0.7
-                        },
-                        {
-                            label: 'เข้าใช้งานจริง (Actually Used)',
-                            data: tools.map(t => actualCounts[t]),
-                            backgroundColor: '#10b981',
-                            borderRadius: 6,
-                            borderSkipped: false,
-                            barPercentage: 0.8,
-                            categoryPercentage: 0.7
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'top', labels: { font: { family: 'Prompt', size: 12 }, boxWidth: 14 } },
-                        tooltip: {
-                            callbacks: {
-                                label(item) {
-                                    const t = item.label;
-                                    if (item.datasetIndex === 1) {
-                                        const dur = formatRealtimeDuration(actualDurations[t] || 0);
-                                        return ` ${item.dataset.label}: ${item.raw} คน (เวลารวม: ${dur})`;
-                                    }
-                                    return ` ${item.dataset.label}: ${item.raw} คน`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { precision: 0, font: { family: 'Prompt' } }, grid: { color: '#f1f5f9' } },
-                        x: { grid: { display: false }, ticks: { font: { family: 'Prompt', size: 11 }, maxRotation: 45, minRotation: 0 } }
-                    }
-                }
-            });
-        }
-
-        // ───────────────────────────────────────────────────────────
-        // VIEW 4: RELATIONSHIP MATRIX (PURPOSE/ACTIVITY × AI TOOLS)
-        // ───────────────────────────────────────────────────────────
-        let currentMatrixTab = 'purpose';
-
-        function setRelationshipMatrixTab(tab) {
-            currentMatrixTab = tab;
-            document.querySelectorAll('.matrix-tab-btn').forEach(btn => {
-                btn.className = "matrix-tab-btn px-3 py-1 text-xs font-semibold rounded-lg transition text-slate-600 hover:text-slate-900";
-            });
-            const activeBtn = document.getElementById(`btnMatrixTab_${tab}`);
-            if (activeBtn) {
-                activeBtn.className = "matrix-tab-btn active px-3 py-1 text-xs font-semibold rounded-lg transition bg-white text-brand-700 shadow-sm";
-            }
-            renderRelationshipMatrix();
-        }
-
-        function renderRelationshipMatrix() {
-            const thead = document.getElementById('relationshipMatrixThead');
-            const tbody = document.getElementById('relationshipMatrixTbody');
-            if (!thead || !tbody) return;
-
-            const tools = ["ChatGPT", "Claude", "Connected Papers", "Consensus", "Grammarly", "Runway", "SciSpace", "Perplexity", "QuillBot"];
-
-            // Header row
-            const firstColTitle = currentMatrixTab === 'purpose' ? 'วัตถุประสงค์ (Purpose)' : 'ลักษณะงาน / กิจกรรม (Activity)';
-            thead.innerHTML = `
-                <tr>
-                    <th class="py-3.5 px-4 text-slate-800 font-bold whitespace-nowrap min-w-[200px]">${firstColTitle}</th>
-                    ${tools.map(t => `<th class="py-3.5 px-3 text-center whitespace-nowrap font-bold text-slate-700">${t}</th>`).join('')}
-                </tr>
-            `;
-
-            let rowKeys = [];
-            if (currentMatrixTab === 'purpose') {
-                rowKeys = [
-                    'การศึกษาและการเรียนการสอน',
-                    'การทำวิจัยและวิทยานิพนธ์',
-                    'การปฏิบัติงานประจำและงานบริหาร',
-                    'การพัฒนาทักษะตนเอง',
-                    'อื่น ๆ'
-                ];
-            } else {
-                rowKeys = [
-                    'ค้นหาข้อมูล / สรุปเนื้อหา',
-                    'เขียนบทความ / ตรวจไวยากรณ์',
-                    'วิเคราะห์ข้อมูล / สถิติ',
-                    'เขียนโค้ด / พัฒนาโปรแกรม',
-                    'สร้างรูปภาพ / มัลติมีเดีย',
-                    'วางแผน / ระดมความคิด',
-                    'อื่น ๆ'
-                ];
-            }
-
-            // Cross-tabulate counts
-            const matrix = {};
-            rowKeys.forEach(r => {
-                matrix[r] = {};
-                tools.forEach(t => matrix[r][t] = 0);
-            });
-
-            rawRegistrations.forEach(reg => {
-                const userTools = Array.isArray(reg.selectedAITools) ? reg.selectedAITools : [];
-                if (userTools.length === 0) return;
-
-                if (currentMatrixTab === 'purpose') {
-                    const userPurposes = Array.isArray(reg.primaryPurposes) ? reg.primaryPurposes : [(reg.purpose || '')];
-                    userPurposes.forEach(p => {
-                        let matchedRow = rowKeys.find(k => p.includes(k) || k.includes(p));
-                        if (!matchedRow && p) matchedRow = 'อื่น ๆ';
-                        if (matchedRow && matrix[matchedRow]) {
-                            userTools.forEach(t => {
-                                const toolKey = tools.find(tk => tk.toLowerCase() === t.toLowerCase() || t.includes(tk));
-                                if (toolKey && matrix[matchedRow][toolKey] !== undefined) {
-                                    matrix[matchedRow][toolKey]++;
-                                }
-                            });
-                        }
-                    });
-                } else {
-                    const userActs = Array.isArray(reg.activities) ? reg.activities : [];
-                    userActs.forEach(a => {
-                        let matchedRow = rowKeys.find(k => a.includes(k) || k.includes(a));
-                        if (!matchedRow && a) matchedRow = 'อื่น ๆ';
-                        if (matchedRow && matrix[matchedRow]) {
-                            userTools.forEach(t => {
-                                const toolKey = tools.find(tk => tk.toLowerCase() === t.toLowerCase() || t.includes(tk));
-                                if (toolKey && matrix[matchedRow][toolKey] !== undefined) {
-                                    matrix[matchedRow][toolKey]++;
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-
-            // Find maximum count for heatmap color intensity
-            let maxCount = 1;
-            rowKeys.forEach(r => {
-                tools.forEach(t => {
-                    if (matrix[r][t] > maxCount) maxCount = matrix[r][t];
-                });
-            });
-
-            tbody.innerHTML = rowKeys.map(rowKey => {
-                const cells = tools.map(t => {
-                    const count = matrix[rowKey][t] || 0;
-                    if (count === 0) {
-                        return `<td class="py-3 px-3 text-center text-slate-300 font-mono">-</td>`;
-                    }
-                    const intensity = Math.max(0.15, count / maxCount);
-                    const bgAlpha = intensity > 0.6 ? 'bg-blue-600 text-white' : intensity > 0.3 ? 'bg-blue-500 text-white' : 'bg-blue-100 text-blue-900';
-                    return `
-                        <td class="py-3 px-3 text-center">
-                            <span class="inline-flex items-center justify-center min-w-[32px] px-2 py-1 rounded-lg text-xs font-bold font-mono ${bgAlpha} shadow-sm">
-                                ${count}
-                            </span>
-                        </td>
-                    `;
-                }).join('');
-
-                return `
-                    <tr class="hover:bg-slate-50/80 transition">
-                        <td class="py-3 px-4 font-semibold text-slate-800 whitespace-nowrap">${rowKey}</td>
-                        ${cells}
-                    </tr>
-                `;
-            }).join('');
-        }
-        let currentFacultyChartMode_dummy = false; // replaced
-        function setFacultyChartMode_old(mode) {
-            currentFacultyChartMode = mode;
-            document.querySelectorAll('.faculty-mode-btn').forEach(btn => {
-                btn.className = "faculty-mode-btn px-3 py-1 text-xs font-semibold rounded-lg transition text-slate-600 hover:text-slate-900";
-            });
-            const activeBtn = document.getElementById(`btnFacultyMode_${mode}`);
-            if (activeBtn) {
-                activeBtn.className = "faculty-mode-btn active px-3 py-1 text-xs font-semibold rounded-lg transition bg-white text-brand-700 shadow-sm";
-            }
-            renderFacultiesRankingChart();
-        }
-
-        function renderFacultiesRankingChart() {
-            destroyChart('chartFacultiesRanking');
-            const ctx = document.getElementById('chartFacultiesRanking')?.getContext('2d');
-            if (!ctx) return;
-
-            const ALL_29_FACULTIES = [
-                "คณะวิศวกรรมศาสตร์", "คณะอักษรศาสตร์", "คณะวิทยาศาสตร์", "คณะรัฐศาสตร์", "คณะสถาปัตยกรรมศาสตร์",
-                "คณะพาณิชยศาสตร์และการบัญชี", "คณะครุศาสตร์", "คณะนิเทศศาสตร์", "คณะเศรษฐศาสตร์", "คณะแพทยศาสตร์",
-                "คณะสัตวแพทยศาสตร์", "คณะทันตแพทยศาสตร์", "คณะเภสัชศาสตร์", "คณะนิติศาสตร์", "คณะศิลปกรรมศาสตร์",
-                "คณะพยาบาลศาสตร์", "คณะสหเวชศาสตร์", "คณะจิตวิทยา", "คณะวิทยาศาสตร์การกีฬา", "สำนักวิชาทรัพยากรการเกษตร",
-                "วิทยาลัยประชากรศาสตร์", "วิทยาลัยปิโตรเลียมและปิโตรเคมี", "วิทยาลัยวิทยาศาสตร์สาธารณสุข", "สถาบันภาษา",
-                "สถาบันนวัตกรรมบูรณาการ (BAScii)", "สถาบันบัณฑิตบริหารธุรกิจ ศศินทร์", "สำนักวิทยทรัพยากร (หอสมุดกลาง)",
-                "สำนักบริการเทคโนโลยีสารสนเทศ (IT Chula)", "หน่วยงานอื่นๆ ในจุฬาลงกรณ์มหาวิทยาลัย"
-            ];
-
-            const studentCounts = {};
-            const personnelCounts = {};
-            ALL_29_FACULTIES.forEach(f => {
-                studentCounts[f] = 0;
-                personnelCounts[f] = 0;
-            });
-
-            rawRegistrations.forEach(r => {
-                const isStudent = (r.userType || '').includes('นิสิต') || !!r.studentId;
-                const facName = (r.facultyName || '').trim();
-
-                let matchedFaculty = ALL_29_FACULTIES.find(f => f === facName);
-                if (!matchedFaculty && facName) {
-                    matchedFaculty = ALL_29_FACULTIES.find(f => facName.includes(f) || f.includes(facName));
-                }
-                if (!matchedFaculty && isStudent && r.studentId && /^\d{10}$/.test(r.studentId)) {
-                    const code = r.studentId.substring(8, 10);
-                    const foundObj = FACULTIES_DATA?.find(f => f.code === code);
-                    if (foundObj) matchedFaculty = ALL_29_FACULTIES.find(f => f === foundObj.th || f.includes(foundObj.th));
-                }
-                if (!matchedFaculty) {
-                    matchedFaculty = "หน่วยงานอื่นๆ ในจุฬาลงกรณ์มหาวิทยาลัย";
-                }
-
-                if (isStudent) {
-                    studentCounts[matchedFaculty] = (studentCounts[matchedFaculty] || 0) + 1;
-                } else {
-                    personnelCounts[matchedFaculty] = (personnelCounts[matchedFaculty] || 0) + 1;
-                }
-            });
-
-            const studentData = ALL_29_FACULTIES.map(f => studentCounts[f] || 0);
-            const personnelData = ALL_29_FACULTIES.map(f => personnelCounts[f] || 0);
-            const totalData = ALL_29_FACULTIES.map(f => (studentCounts[f] || 0) + (personnelCounts[f] || 0));
-
-            let datasets = [];
-            if (currentFacultyChartMode === 'split') {
-                datasets = [
-                    {
-                        label: 'นิสิตจุฬาฯ (Students)',
-                        data: studentData,
-                        backgroundColor: '#9333ea',
-                        borderRadius: 6,
-                        borderSkipped: false,
-                        barPercentage: 0.85,
-                        categoryPercentage: 0.75
-                    },
-                    {
-                        label: 'บุคลากรจุฬาฯ (Personnel)',
-                        data: personnelData,
-                        backgroundColor: '#3b82f6',
-                        borderRadius: 6,
-                        borderSkipped: false,
-                        barPercentage: 0.85,
-                        categoryPercentage: 0.75
-                    }
-                ];
-            } else if (currentFacultyChartMode === 'student') {
-                datasets = [
-                    {
-                        label: 'เฉพาะนิสิตจุฬาฯ (Students)',
-                        data: studentData,
-                        backgroundColor: '#9333ea',
-                        borderRadius: 6,
-                        borderSkipped: false,
-                        barPercentage: 0.65,
-                        categoryPercentage: 0.75
-                    }
-                ];
-            } else if (currentFacultyChartMode === 'personnel') {
-                datasets = [
-                    {
-                        label: 'เฉพาะบุคลากรจุฬาฯ (Personnel)',
-                        data: personnelData,
-                        backgroundColor: '#3b82f6',
-                        borderRadius: 6,
-                        borderSkipped: false,
-                        barPercentage: 0.65,
-                        categoryPercentage: 0.75
-                    }
-                ];
-            } else {
-                // 'all'
-                datasets = [
-                    {
-                        label: 'ผู้ลงทะเบียนทั้งหมด (Total)',
-                        data: totalData,
-                        backgroundColor: '#7b2fa0',
-                        borderRadius: 6,
-                        borderSkipped: false,
-                        barPercentage: 0.65,
                         categoryPercentage: 0.75
                     }
                 ];
@@ -2854,6 +2402,106 @@ function renderCurrentViewCharts() {
             });
         }
 
+        // ───────────────────────────────────────────────────────────
+        // VIEW 3: COMPARISON CHART (FORM VS ACTUAL USAGE)
+        // ───────────────────────────────────────────────────────────
+        function renderToolsFormVsActualChart() {
+            destroyChart('chartToolsFormVsActual');
+            const ctx = document.getElementById('chartToolsFormVsActual')?.getContext('2d');
+            if (!ctx) return;
+
+            const tools = ["ChatGPT", "Claude", "Grammarly", "Connected Papers", "Runway", "Consensus", "SciSpace", "Perplexity", "QuillBot"];
+            
+            // Form selection counts
+            const formCounts = {};
+            tools.forEach(t => formCounts[t] = 0);
+            rawRegistrations.forEach(r => {
+                if (Array.isArray(r.selectedAITools)) {
+                    r.selectedAITools.forEach(t => {
+                        if (formCounts[t] !== undefined) formCounts[t]++;
+                    });
+                }
+            });
+
+            // Actual active users count and duration
+            const actualCounts = {};
+            const actualDurations = {};
+            const toolActiveUsers = {};
+            tools.forEach(t => {
+                actualCounts[t] = 0;
+                actualDurations[t] = 0;
+                toolActiveUsers[t] = new Set();
+            });
+
+            rawUsageLogs.forEach(l => {
+                const userKey = (l.userEmail || l.email || l.studentId || l.userId || '').toLowerCase().trim();
+                const logTools = getLogToolDurations(l);
+                Object.entries(logTools).forEach(([t, s]) => {
+                    if (actualDurations[t] !== undefined) {
+                        actualDurations[t] += s;
+                        if (s > 0) {
+                            if (userKey) toolActiveUsers[t].add(userKey);
+                            else toolActiveUsers[t].add(l.id || Math.random().toString());
+                        }
+                    }
+                });
+            });
+
+            tools.forEach(t => {
+                actualCounts[t] = toolActiveUsers[t].size;
+            });
+
+            chartInstances['chartToolsFormVsActual'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: tools,
+                    datasets: [
+                        {
+                            label: 'เลือกในฟอร์มลงทะเบียน (Selected in Form)',
+                            data: tools.map(t => formCounts[t]),
+                            backgroundColor: '#9333ea',
+                            borderRadius: 6,
+                            borderSkipped: false,
+                            barPercentage: 0.8,
+                            categoryPercentage: 0.7
+                        },
+                        {
+                            label: 'เข้าใช้งานจริง (Actually Used)',
+                            data: tools.map(t => actualCounts[t]),
+                            backgroundColor: '#10b981',
+                            borderRadius: 6,
+                            borderSkipped: false,
+                            barPercentage: 0.8,
+                            categoryPercentage: 0.7
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { font: { family: 'Prompt', size: 12 }, boxWidth: 14 } },
+                        tooltip: {
+                            callbacks: {
+                                label(item) {
+                                    const t = item.label;
+                                    if (item.datasetIndex === 1) {
+                                        const dur = formatRealtimeDuration(actualDurations[t] || 0);
+                                        return ` ${item.dataset.label}: ${item.raw} คน (เวลารวม: ${dur})`;
+                                    }
+                                    return ` ${item.dataset.label}: ${item.raw} คน`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { precision: 0, font: { family: 'Prompt' } }, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false }, ticks: { font: { family: 'Prompt', size: 11 }, maxRotation: 45, minRotation: 0 } }
+                    }
+                }
+            });
+        }
+
         function renderPrimaryPurposesChart() {
             destroyChart('chartPrimaryPurposes');
             const ctx = document.getElementById('chartPrimaryPurposes')?.getContext('2d');
@@ -2868,17 +2516,13 @@ function renderCurrentViewCharts() {
             };
 
             rawRegistrations.forEach(r => {
-                if (Array.isArray(r.primaryPurposes)) {
-                    r.primaryPurposes.forEach(p => {
-                        let matched = false;
-                        ['การศึกษาและการเรียนการสอน', 'การทำวิจัยและวิทยานิพนธ์', 'การปฏิบัติงานประจำและงานบริหาร', 'การพัฒนาทักษะตนเอง'].forEach(k => {
-                            if (p.includes(k) || k.includes(p)) { counts[k]++; matched = true; }
-                        });
-                        if (!matched && (p.includes('อื่น') || p.includes('Other'))) {
-                            counts['อื่น ๆ']++;
-                        }
-                    });
-                }
+                const userPurposes = Array.isArray(r.primaryPurposes) ? r.primaryPurposes : (r.primaryPurpose ? [r.primaryPurpose] : (r.purpose ? [r.purpose] : []));
+                userPurposes.forEach(p => {
+                    const matched = normalizePurposeKey(p);
+                    if (matched && counts[matched] !== undefined) {
+                        counts[matched]++;
+                    }
+                });
             });
 
             chartInstances['chartPrimaryPurposes'] = new Chart(ctx, {
@@ -2908,27 +2552,23 @@ function renderCurrentViewCharts() {
             if (!ctx) return;
 
             const counts = {
-                'ค้นหาข้อมูล / สรุปเนื้อหา': 0,
-                'เขียนบทความ / ตรวจไวยากรณ์': 0,
-                'วิเคราะห์ข้อมูล / สถิติ': 0,
-                'เขียนโค้ด / พัฒนาโปรแกรม': 0,
-                'สร้างรูปภาพ / มัลติมีเดีย': 0,
-                'วางแผน / ระดมความคิด': 0,
+                'ค้นหาข้อมูลและสรุปเนื้อหา': 0,
+                'ช่วยเขียนบทความและตรวจไวยากรณ์': 0,
+                'วิเคราะห์ข้อมูลและสถิติ': 0,
+                'เขียนโค้ดและพัฒนาโปรแกรม': 0,
+                'สร้างรูปภาพและสื่อมัลติมีเดีย': 0,
+                'วางแผนและระดมความคิด': 0,
                 'อื่น ๆ': 0
             };
 
             rawRegistrations.forEach(r => {
-                if (Array.isArray(r.activities)) {
-                    r.activities.forEach(a => {
-                        if (a.includes('ค้นหา') || a.includes('Search')) counts['ค้นหาข้อมูล / สรุปเนื้อหา']++;
-                        else if (a.includes('เขียนบทความ') || a.includes('Writing')) counts['เขียนบทความ / ตรวจไวยากรณ์']++;
-                        else if (a.includes('วิเคราะห์') || a.includes('Analysis')) counts['วิเคราะห์ข้อมูล / สถิติ']++;
-                        else if (a.includes('โค้ด') || a.includes('Coding')) counts['เขียนโค้ด / พัฒนาโปรแกรม']++;
-                        else if (a.includes('รูปภาพ') || a.includes('Media')) counts['สร้างรูปภาพ / มัลติมีเดีย']++;
-                        else if (a.includes('วางแผน') || a.includes('Brainstorm')) counts['วางแผน / ระดมความคิด']++;
-                        else if (a.includes('อื่น') || a.includes('Other')) counts['อื่น ๆ']++;
-                    });
-                }
+                const userActs = Array.isArray(r.activities) ? r.activities : (r.activityType ? [r.activityType] : (r.activity ? [r.activity] : []));
+                userActs.forEach(a => {
+                    const matched = normalizeActivityKey(a);
+                    if (matched && counts[matched] !== undefined) {
+                        counts[matched]++;
+                    }
+                });
             });
 
             chartInstances['chartActivityTypes'] = new Chart(ctx, {
@@ -2951,67 +2591,168 @@ function renderCurrentViewCharts() {
             });
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // HELPER: MATCH USAGE LOGS TO SPECIFIC REGISTRATION SESSIONS
-        // ═══════════════════════════════════════════════════════════
-        function buildRegistrationSessionUsageMap() {
-            // Group registrations by user key (email or studentId)
-            const userRegsMap = {};
-            rawRegistrations.forEach(r => {
-                const emailKey = (r.email || '').toLowerCase().trim();
-                const studentIdKey = (r.studentId ? `${r.studentId}@student.chula.ac.th` : '').toLowerCase().trim();
-                const key = emailKey || studentIdKey;
-                if (!key) return;
-                if (!userRegsMap[key]) userRegsMap[key] = [];
-                userRegsMap[key].push(r);
+        // ───────────────────────────────────────────────────────────
+        // SMART NORMALIZATION HELPERS FOR PURPOSE & ACTIVITIES
+        // ───────────────────────────────────────────────────────────
+        function normalizePurposeKey(p) {
+            if (!p) return null;
+            const s = p.toString().toLowerCase();
+            if (s.includes('การศึกษา') || s.includes('เรียน') || s.includes('education') || s.includes('teaching')) return 'การศึกษาและการเรียนการสอน';
+            if (s.includes('วิจัย') || s.includes('วิทยานิพนธ์') || s.includes('research') || s.includes('thesis')) return 'การทำวิจัยและวิทยานิพนธ์';
+            if (s.includes('ปฏิบัติงาน') || s.includes('บริหาร') || s.includes('work') || s.includes('admin')) return 'การปฏิบัติงานประจำและงานบริหาร';
+            if (s.includes('พัฒนาทักษะ') || s.includes('ทักษะตนเอง') || s.includes('skill') || s.includes('self')) return 'การพัฒนาทักษะตนเอง';
+            if (s.includes('อื่น') || s.includes('other')) return 'อื่น ๆ';
+            return 'อื่น ๆ';
+        }
+
+        function normalizeActivityKey(a) {
+            if (!a) return null;
+            const s = a.toString().toLowerCase();
+            if (s.includes('ค้นหา') || s.includes('สรุป') || s.includes('search') || s.includes('summar')) return 'ค้นหาข้อมูลและสรุปเนื้อหา';
+            if (s.includes('เขียน') || s.includes('บทความ') || s.includes('ไวยากรณ์') || s.includes('writing') || s.includes('grammar')) return 'ช่วยเขียนบทความและตรวจไวยากรณ์';
+            if (s.includes('วิเคราะห์') || s.includes('สถิติ') || s.includes('analysis') || s.includes('statistic')) return 'วิเคราะห์ข้อมูลและสถิติ';
+            if (s.includes('โค้ด') || s.includes('โปรแกรม') || s.includes('coding') || s.includes('program')) return 'เขียนโค้ดและพัฒนาโปรแกรม';
+            if (s.includes('รูปภาพ') || s.includes('มัลติมีเดีย') || s.includes('สื่อ') || s.includes('image') || s.includes('media')) return 'สร้างรูปภาพและสื่อมัลติมีเดีย';
+            if (s.includes('วางแผน') || s.includes('ระดม') || s.includes('plan') || s.includes('brainstorm')) return 'วางแผนและระดมความคิด';
+            if (s.includes('อื่น') || s.includes('other')) return 'อื่น ๆ';
+            return null;
+        }
+
+        // ───────────────────────────────────────────────────────────
+        // VIEW 4: RELATIONSHIP MATRIX (PURPOSE/ACTIVITY × AI TOOLS)
+        // ───────────────────────────────────────────────────────────
+        let currentMatrixTab = 'purpose';
+
+        function setRelationshipMatrixTab(tab) {
+            currentMatrixTab = tab;
+            document.querySelectorAll('.matrix-tab-btn').forEach(btn => {
+                btn.className = "matrix-tab-btn px-3 py-1 text-xs font-semibold rounded-lg transition text-slate-600 hover:text-slate-900";
             });
+            const activeBtn = document.getElementById(`btnMatrixTab_${tab}`);
+            if (activeBtn) {
+                activeBtn.className = "matrix-tab-btn active px-3 py-1 text-xs font-semibold rounded-lg transition bg-white text-brand-700 shadow-sm";
+            }
+            renderRelationshipMatrix();
+        }
 
-            // Sort registrations for each user chronologically ascending
-            Object.keys(userRegsMap).forEach(k => {
-                userRegsMap[k].sort((a, b) => new Date(a.registeredAt || 0) - new Date(b.registeredAt || 0));
+        function renderRelationshipMatrix() {
+            const thead = document.getElementById('relationshipMatrixThead');
+            const tbody = document.getElementById('relationshipMatrixTbody');
+            if (!thead || !tbody) return;
+
+            const tools = ["ChatGPT", "Claude", "Connected Papers", "Consensus", "Grammarly", "Runway", "SciSpace", "Perplexity", "QuillBot"];
+
+            // Header row
+            const firstColTitle = currentMatrixTab === 'purpose' ? 'วัตถุประสงค์ (Purpose)' : 'ลักษณะงาน / กิจกรรม (Activity)';
+            thead.innerHTML = `
+                <tr>
+                    <th class="py-3.5 px-4 text-slate-800 font-bold whitespace-nowrap min-w-[220px]">${firstColTitle}</th>
+                    ${tools.map(t => `<th class="py-3.5 px-3 text-center whitespace-nowrap font-bold text-slate-700">${t}</th>`).join('')}
+                </tr>
+            `;
+
+            let standardRowKeys = [];
+            if (currentMatrixTab === 'purpose') {
+                standardRowKeys = [
+                    'การศึกษาและการเรียนการสอน',
+                    'การทำวิจัยและวิทยานิพนธ์',
+                    'การปฏิบัติงานประจำและงานบริหาร',
+                    'การพัฒนาทักษะตนเอง'
+                ];
+            } else {
+                standardRowKeys = [
+                    'ค้นหาข้อมูลและสรุปเนื้อหา',
+                    'ช่วยเขียนบทความและตรวจไวยากรณ์',
+                    'วิเคราะห์ข้อมูลและสถิติ',
+                    'เขียนโค้ดและพัฒนาโปรแกรม',
+                    'สร้างรูปภาพและสื่อมัลติมีเดีย',
+                    'วางแผนและระดมความคิด'
+                ];
+            }
+
+            // Cross-tabulate counts
+            const matrix = {};
+            standardRowKeys.forEach(r => {
+                matrix[r] = {};
+                tools.forEach(t => matrix[r][t] = 0);
             });
+            matrix['อื่น ๆ'] = {};
+            tools.forEach(t => matrix['อื่น ๆ'][t] = 0);
 
-            // Map: regId -> { toolName: seconds }
-            const regUsageMap = {};
-            rawRegistrations.forEach(r => {
-                regUsageMap[r.id] = {};
-            });
+            rawRegistrations.forEach(reg => {
+                const userTools = Array.isArray(reg.selectedAITools) ? reg.selectedAITools : [];
+                if (userTools.length === 0) return;
 
-            // Assign each usage log strictly to its corresponding registration session window
-            rawUsageLogs.forEach(l => {
-                const emailKey = (l.email || l.userEmail || '').toLowerCase().trim();
-                if (!emailKey) return;
-
-                const userRegs = userRegsMap[emailKey];
-                if (!userRegs || userRegs.length === 0) return;
-
-                const logTimeMs = new Date(l.startTime || l.createdAt || l.timestamp || 0).getTime();
-                const logTools = getLogToolDurations(l);
-
-                // Find the specific registration session this log belongs to:
-                // It belongs to the latest registration that started at or before this log
-                let assignedReg = userRegs[0];
-                for (let i = 0; i < userRegs.length; i++) {
-                    const regTimeMs = new Date(userRegs[i].registeredAt || 0).getTime();
-                    // Allow 2-minute buffer for client-server time differences
-                    if (logTimeMs >= regTimeMs - 120000) {
-                        assignedReg = userRegs[i];
-                    } else {
-                        break;
-                    }
-                }
-
-                if (assignedReg && assignedReg.id) {
-                    Object.entries(logTools).forEach(([tool, dur]) => {
-                        regUsageMap[assignedReg.id][tool] = (regUsageMap[assignedReg.id][tool] || 0) + dur;
+                if (currentMatrixTab === 'purpose') {
+                    const userPurposes = Array.isArray(reg.primaryPurposes) ? reg.primaryPurposes : (reg.primaryPurpose ? [reg.primaryPurpose] : (reg.purpose ? [reg.purpose] : []));
+                    userPurposes.forEach(p => {
+                        const matchedRow = normalizePurposeKey(p);
+                        if (matchedRow && matrix[matchedRow]) {
+                            userTools.forEach(t => {
+                                const toolKey = tools.find(tk => tk.toLowerCase() === t.toLowerCase() || t.toLowerCase().includes(tk.toLowerCase()));
+                                if (toolKey && matrix[matchedRow][toolKey] !== undefined) {
+                                    matrix[matchedRow][toolKey]++;
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    const userActs = Array.isArray(reg.activities) ? reg.activities : (reg.activityType ? [reg.activityType] : (reg.activity ? [reg.activity] : []));
+                    userActs.forEach(a => {
+                        const matchedRow = normalizeActivityKey(a);
+                        if (matchedRow && matrix[matchedRow]) {
+                            userTools.forEach(t => {
+                                const toolKey = tools.find(tk => tk.toLowerCase() === t.toLowerCase() || t.toLowerCase().includes(tk.toLowerCase()));
+                                if (toolKey && matrix[matchedRow][toolKey] !== undefined) {
+                                    matrix[matchedRow][toolKey]++;
+                                }
+                            });
+                        }
                     });
                 }
             });
 
-            return regUsageMap;
+            // Check if 'อื่น ๆ' has any values
+            const otherHasCount = tools.some(t => matrix['อื่น ๆ'][t] > 0);
+            const activeRowKeys = [...standardRowKeys];
+            if (otherHasCount) {
+                activeRowKeys.push('อื่น ๆ');
+            }
+
+            // Find maximum count for heatmap color intensity
+            let maxCount = 1;
+            activeRowKeys.forEach(r => {
+                tools.forEach(t => {
+                    if (matrix[r][t] > maxCount) maxCount = matrix[r][t];
+                });
+            });
+
+            tbody.innerHTML = activeRowKeys.map(rowKey => {
+                const cells = tools.map(t => {
+                    const count = matrix[rowKey][t] || 0;
+                    if (count === 0) {
+                        return `<td class="py-3 px-3 text-center text-slate-300 font-mono text-xs">-</td>`;
+                    }
+                    const intensity = Math.max(0.15, count / maxCount);
+                    const bgAlpha = intensity > 0.6 ? 'bg-blue-600 text-white' : intensity > 0.3 ? 'bg-blue-500 text-white' : 'bg-blue-100 text-blue-900';
+                    return `
+                        <td class="py-3 px-3 text-center">
+                            <span class="inline-flex items-center justify-center min-w-[32px] px-2 py-1 rounded-lg text-xs font-bold font-mono ${bgAlpha} shadow-sm">
+                                ${count}
+                            </span>
+                        </td>
+                    `;
+                }).join('');
+
+                return `
+                    <tr class="hover:bg-slate-50/80 transition">
+                        <td class="py-3 px-4 font-semibold text-slate-800 whitespace-nowrap">${rowKey}</td>
+                        ${cells}
+                    </tr>
+                `;
+            }).join('');
         }
 
-        // ═══════════════════════════════════════════════════════════
         // 3. RENDER OVERVIEW 7-COLUMN TABLE
         // ═══════════════════════════════════════════════════════════
         function renderOverviewUsersTable() {
