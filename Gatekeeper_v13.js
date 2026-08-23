@@ -788,7 +788,7 @@
             btn.onclick = function() {
                 GM_setValue(KEY_CLOSE, false);
                 popupWin = window.open(REGISTRATION_URL, 'GatekeeperForm',
-                    'width=620,height=820,toolbar=no,menubar=no,location=no,status=no,scrollbars=yes');
+                    'popup=yes,width=640,height=850,toolbar=no,menubar=no,location=no,status=no,scrollbars=yes,resizable=yes');
             };
 
             right.appendChild(title); right.appendChild(sub); right.appendChild(btn);
