@@ -625,65 +625,201 @@
         }
 
         // ── Overlay (Facebook Iframe: Gate 2 Structure + CSP Safe) ──
-        function buildFBCard(container) {
-            var fbFrame = document.createElement('iframe');
-            var fbSrc = 'https://www.facebook.com/plugins/page.php' +
-                '?href=' + encodeURIComponent(FB_PAGE) +
-                '&tabs=timeline&width=500&height=300' +
-                '&small_header=true&adapt_container_width=false' +
-                '&hide_cover=true&show_facepile=false';
+        // ── Overlay (Left Card: Tabs for Facebook Feed & Chula AIX Regulations) ──
+        function buildLeftCard(container) {
+            var RULES_ONLY_SITES = ['chatgpt.com', 'openai.com', 'claude.ai', 'runwayml.com'];
+            var isRulesOnly = RULES_ONLY_SITES.some(function(d){ return hostMatches(host, d); });
 
-            fbFrame.loading = 'lazy';
-            Object.assign(fbFrame.style, {
-                width:'500px',height:'300px',maxWidth:'100%',border:'none',
-                borderRadius:'12px',overflow:'hidden',display:'block',
-                background:'white',boxShadow:'0 8px 24px rgba(0,0,0,0.18)'
+            var cardBox = document.createElement('div');
+            Object.assign(cardBox.style, {
+                width:'500px',maxWidth:'100%',height:'330px',background:'white',
+                borderRadius:'14px',overflow:'hidden',display:'flex',flexDirection:'column',
+                boxShadow:'0 8px 24px rgba(0,0,0,0.18)',border:'1px solid rgba(255,255,255,0.4)',
+                boxSizing:'border-box'
             });
+
+            var activeTab = isRulesOnly ? 'rules' : 'fb';
+            var activeLang = 'th';
+
+            var header = document.createElement('div');
+            Object.assign(header.style, {
+                background:'#f8f0fc',borderBottom:'1px solid #f0defa',padding:'6px 12px',
+                display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:'0'
+            });
+
+            var tabGroup = document.createElement('div');
+            tabGroup.style.cssText = 'display:flex;gap:6px;align-items:center;';
+
+            var btnFB = document.createElement('button');
+            btnFB.type = 'button';
+            btnFB.innerHTML = '📢 Facebook Feed';
+            btnFB.style.cssText = 'border:none;background:#7b2fa0;color:white;padding:5px 12px;border-radius:18px;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;';
+
+            var btnRules = document.createElement('button');
+            btnRules.type = 'button';
+            btnRules.innerHTML = '📜 กฎระเบียบ / Rules';
+            btnRules.style.cssText = 'border:none;background:transparent;color:#666;padding:5px 12px;border-radius:18px;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;';
+
+            if (!isRulesOnly) {
+                tabGroup.appendChild(btnFB);
+                tabGroup.appendChild(btnRules);
+            } else {
+                var rulesTitle = document.createElement('div');
+                rulesTitle.innerHTML = '📜 <b>ระเบียบและข้อปฏิบัติ</b> <span style="font-size:11px;color:#777;">(Chula AIX)</span>';
+                rulesTitle.style.cssText = 'font-size:12.5px;color:#7b2fa0;font-weight:700;padding:2px 4px;';
+                tabGroup.appendChild(rulesTitle);
+            }
+
+            var langGroup = document.createElement('div');
+            langGroup.style.cssText = 'display:' + (isRulesOnly ? 'flex' : 'none') + ';gap:3px;background:#e9d5ff;padding:2px;border-radius:20px;';
+
+            var btnTh = document.createElement('button');
+            btnTh.type = 'button';
+            btnTh.textContent = 'ไทย';
+            btnTh.style.cssText = 'border:none;background:#7b2fa0;color:white;padding:3px 9px;border-radius:14px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;';
+
+            var btnEn = document.createElement('button');
+            btnEn.type = 'button';
+            btnEn.textContent = 'EN';
+            btnEn.style.cssText = 'border:none;background:transparent;color:#6b21a8;padding:3px 9px;border-radius:14px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;';
+
+            langGroup.appendChild(btnTh);
+            langGroup.appendChild(btnEn);
+
+            header.appendChild(tabGroup);
+            header.appendChild(langGroup);
+            cardBox.appendChild(header);
+
+            // Body container
+            var body = document.createElement('div');
+            body.style.cssText = 'flex:1;overflow:hidden;position:relative;display:flex;flex-direction:column;background:white;';
+
+            // 1. FB Pane
+            var fbPane = document.createElement('div');
+            fbPane.style.cssText = 'flex:1;width:100%;height:100%;display:' + (activeTab === 'fb' ? 'flex' : 'none') + ';flex-direction:column;align-items:center;justify-content:space-between;background:white;';
+
+            var fbFrame = document.createElement('iframe');
+            var fbSrc = 'https://www.facebook.com/plugins/page.php?href=' + encodeURIComponent(FB_PAGE) + '&tabs=timeline&width=500&height=250&small_header=true&adapt_container_width=false&hide_cover=true&show_facepile=false';
+            fbFrame.src = fbSrc;
+            fbFrame.loading = 'lazy';
             fbFrame.setAttribute('scrolling', 'no');
             fbFrame.setAttribute('frameborder', '0');
             fbFrame.setAttribute('allowfullscreen', 'true');
-            fbFrame.setAttribute('allow', 'autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share');
+            fbFrame.style.cssText = 'width:100%;height:250px;border:none;flex:1;background:white;';
+            fbPane.appendChild(fbFrame);
 
-            // Detect sites with restrictive CSP (Claude, ChatGPT, Runway)
-            var CSP_BLOCKED = ['chatgpt.com', 'openai.com', 'claude.ai', 'runwayml.com'];
-            var isBlocked = CSP_BLOCKED.some(function(d){ return hostMatches(host, d); });
-
-            if (isBlocked) {
-                // Fetch real Facebook plugin HTML via GM_xmlhttpRequest to bypass page CSP
-                GM_xmlhttpRequest({
-                    method: 'GET',
-                    url: fbSrc,
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-                    },
-                    onload: function(response) {
-                        if (response.status === 200 && response.responseText) {
-                            fbFrame.srcdoc = response.responseText;
-                        } else {
-                            fbFrame.src = fbSrc;
-                        }
-                    },
-                    onerror: function() {
-                        fbFrame.src = fbSrc;
-                    }
-                });
-            } else {
-                fbFrame.src = fbSrc;
-            }
-
-            // Fallback link below
             var link = document.createElement('a');
             link.href = FB_PAGE;
             link.target = '_blank';
             link.rel = 'noopener noreferrer';
             link.textContent = '📄 ดูโพสต์ทั้งหมดบน Facebook';
-            Object.assign(link.style, {
-                display:'block',marginTop:'8px',color:'rgba(255,255,255,0.92)',
-                fontSize:'12px',textDecoration:'none',textAlign:'center'
-            });
+            link.style.cssText = 'display:block;padding:6px 0;color:#7b2fa0;font-size:11.5px;text-decoration:none;font-weight:700;text-align:center;width:100%;background:#faf5ff;border-top:1px solid #f0defa;';
+            fbPane.appendChild(link);
 
-            container.appendChild(fbFrame);
-            container.appendChild(link);
+            // 2. Rules Pane
+            var rulesPane = document.createElement('div');
+            rulesPane.style.cssText = 'flex:1;width:100%;height:100%;overflow-y:auto;padding:12px 16px;box-sizing:border-box;font-family:\'Segoe UI\',Arial,sans-serif;display:' + (activeTab === 'rules' ? 'block' : 'none') + ';';
+
+            var THAI_RULES_HTML = '<div style="font-size:12px;color:#334155;line-height:1.65;">' +
+                '<div style="font-weight:800;color:#7b2fa0;font-size:13.5px;margin-bottom:6px;border-bottom:1.5px solid #f0defa;padding-bottom:3px;">ระเบียบและข้อปฏิบัติในการใช้บริการพื้นที่ Chula AIX</div>' +
+                '<p style="margin:0 0 10px;color:#475569;font-size:11.5px;background:#faf5ff;padding:7px 10px;border-radius:8px;border-left:3px solid #7b2fa0;">เพื่อให้การบริหารจัดการพื้นที่เป็นไปด้วยความเรียบร้อย และได้รับประโยชน์สูงสุด จึงขอความร่วมมือปฏิบัติตามกฎระเบียบดังต่อไปนี้อย่างเคร่งครัด</p>' +
+                '<div style="font-weight:700;color:#1e293b;margin:8px 0 3px;font-size:12.5px;">หมวดที่ 1: ระเบียบด้านการใช้งานเครื่องมือ AI</div>' +
+                '<ol style="margin:0 0 8px 18px;padding:0;color:#475569;">' +
+                '<li style="margin-bottom:3px;"><strong>ห้ามออกจากระบบบัญชีส่วนกลาง:</strong> ห้าม Log out บัญชีอีเมลและเครื่องมือ AI ที่ทางหอสมุดกลางเข้าสู่ระบบไว้ให้บน Firefox โดยเด็ดขาด</li>' +
+                '<li style="margin-bottom:3px;"><strong>ห้ามดัดแปลงระบบ:</strong> ไม่อนุญาตให้ปรับแต่ง แก้ไข หรือเปลี่ยนรูปแบบ Subscription ของเครื่องมือ AI</li>' +
+                '<li style="margin-bottom:3px;"><strong>ห้ามใช้อีเมลของ Chula AIX สมัครบริการ:</strong> ไม่อนุญาตให้นำบัญชีอีเมลไปใช้สมัครสมาชิกหรือสร้างบัญชีใหม่ใดๆ</li>' +
+                '<li style="margin-bottom:3px;"><strong>การบันทึกข้อมูล:</strong> ให้บันทึกผลลัพธ์ผ่านอุปกรณ์ส่วนตัวเท่านั้น เช่น Flash Drive, External HDD หรือคลาวด์ส่วนบุคคล</li>' +
+                '<li style="margin-bottom:3px;"><strong>การใช้งานบัญชีส่วนตัว:</strong> กรณีต้องการใช้งานบัญชี Google ส่วนบุคคล ให้เข้าผ่าน Google Chrome เท่านั้น</li>' +
+                '<li style="margin-bottom:3px;"><strong>จริยธรรมและข้อกฎหมาย:</strong> ต้องคำนึงถึงจริยธรรม กฎหมาย รักษาข้อมูลส่วนบุคคล และเงื่อนไขการใช้งานของ AI</li>' +
+                '</ol>' +
+                '<div style="font-weight:700;color:#1e293b;margin:8px 0 3px;font-size:12.5px;">หมวดที่ 2: ระเบียบด้านการใช้พื้นที่ Chula AIX</div>' +
+                '<ol style="margin:0 0 8px 18px;padding:0;color:#475569;">' +
+                '<li style="margin-bottom:3px;"><strong>ห้ามวางสิ่งของเพื่อจองพื้นที่:</strong> หากไม่อยู่ที่โต๊ะเกิน 30 นาที เจ้าหน้าที่จะเคลื่อนย้ายสิ่งของออกจากพื้นที่ทันที</li>' +
+                '<li style="margin-bottom:3px;"><strong>ขอบเขตเวลาการใช้งาน:</strong> การใช้งานเครื่องหรือดาวน์โหลดต้องเสร็จสิ้นในเวลาทำการ ไม่อนุญาตให้เปิดทิ้งไว้ค้างคืน</li>' +
+                '<li style="margin-bottom:3px;"><strong>การรักษาความปลอดภัยของบัญชี:</strong> ต้องรักษาข้อมูล CUNET Account และรหัสผ่านเป็นความลับ ห้ามเปิดเผยให้ผู้อื่นนำมาใช้</li>' +
+                '<li style="margin-bottom:3px;"><strong>ข้อจำกัดความรับผิดชอบ:</strong> พื้นที่ไม่รับผิดชอบต่อการสูญหายหรือเสียหายของทรัพย์สินหรือข้อมูลส่วนตัว</li>' +
+                '</ol>' +
+                '<div style="font-weight:700;color:#1e293b;margin:8px 0 3px;font-size:12.5px;">หมวดที่ 3: มาตรการดูแลการใช้บริการ</div>' +
+                '<ul style="margin:0 0 8px 18px;padding:0;color:#475569;list-style-type:disc;">' +
+                '<li style="margin-bottom:2px;"><span style="color:#e11d48;font-weight:600;">ฝ่าฝืนครั้งที่ 1:</span> ว่ากล่าวตักเตือน พร้อมบันทึกรหัสนิสิตในระบบ Libki</li>' +
+                '<li style="margin-bottom:2px;"><span style="color:#e11d48;font-weight:600;">ฝ่าฝืนครั้งที่ 2:</span> ระงับสิทธิ์การใช้เครื่องมือ AI และ Libki <strong>1 สัปดาห์</strong></li>' +
+                '<li style="margin-bottom:2px;"><span style="color:#e11d48;font-weight:600;">ฝ่าฝืนครั้งที่ 3:</span> ระงับสิทธิ์การใช้เครื่องมือ AI และ Libki <strong>1 เดือน</strong></li>' +
+                '<li style="margin-bottom:2px;"><span style="color:#e11d48;font-weight:600;">ฝ่าฝืนครั้งที่ 4:</span> ระงับสิทธิ์ <strong>1 ภาคการศึกษา</strong> พร้อมแจ้งคณะต้นสังกัดพิจารณาความผิด</li>' +
+                '</ul>' +
+                '<div style="font-size:11px;color:#64748b;font-style:italic;background:#f8fafc;padding:5px 8px;border-radius:6px;border:1px solid #e2e8f0;margin-top:6px;">หมายเหตุ: หากเกิดข้อพิพาท ให้ถือว่าดุลยพินิจของเจ้าหน้าที่ผู้ดูแลพื้นที่ Chula AIX ถือเป็นที่สิ้นสุด</div>' +
+                '</div>';
+
+            var EN_RULES_HTML = '<div style="font-size:11.5px;color:#334155;line-height:1.65;">' +
+                '<div style="font-weight:800;color:#7b2fa0;font-size:13px;margin-bottom:6px;border-bottom:1.5px solid #f0defa;padding-bottom:3px;">Chula AIX Regulations and Guidelines</div>' +
+                '<p style="margin:0 0 10px;color:#475569;font-size:11px;background:#faf5ff;padding:7px 10px;border-radius:8px;border-left:3px solid #7b2fa0;">To ensure orderly management and provide maximum benefit, Chula AIX requests your strict cooperation in following these rules:</p>' +
+                '<div style="font-weight:700;color:#1e293b;margin:8px 0 3px;font-size:12px;">Section 1: Regulations on AI Tool Usage</div>' +
+                '<ol style="margin:0 0 8px 18px;padding:0;color:#475569;">' +
+                '<li style="margin-bottom:3px;"><strong>No Logging Out:</strong> Strictly prohibited from logging out of library accounts signed in on Firefox.</li>' +
+                '<li style="margin-bottom:3px;"><strong>No Modifications:</strong> Strictly forbidden to modify settings or subscription plans of AI tools.</li>' +
+                '<li style="margin-bottom:3px;"><strong>No Account Creation:</strong> AIX email accounts must not be used to register new personal accounts.</li>' +
+                '<li style="margin-bottom:3px;"><strong>Data Saving:</strong> Save results via personal devices only (Flash Drive, External HDD, personal cloud).</li>' +
+                '<li style="margin-bottom:3px;"><strong>Personal Accounts:</strong> Use Google Chrome or other browsers to access personal Google accounts.</li>' +
+                '<li style="margin-bottom:3px;"><strong>Ethics & Compliance:</strong> Maintain ethics, comply with laws, and protect personal data.</li>' +
+                '</ol>' +
+                '<div style="font-weight:700;color:#1e293b;margin:8px 0 3px;font-size:12px;">Section 2: Space Usage Regulations</div>' +
+                '<ol style="margin:0 0 8px 18px;padding:0;color:#475569;">' +
+                '<li style="margin-bottom:3px;"><strong>No Seat Saving:</strong> Items left unattended >30 mins will be moved by staff immediately.</li>' +
+                '<li style="margin-bottom:3px;"><strong>Operating Hours:</strong> All compute and file export activities must finish within operating hours.</li>' +
+                '<li style="margin-bottom:3px;"><strong>Account Security:</strong> Keep CUNET Account credentials confidential. Do not share with others.</li>' +
+                '<li style="margin-bottom:3px;"><strong>Liability:</strong> Chula AIX is not liable for loss or damage to personal property or data.</li>' +
+                '</ol>' +
+                '<div style="font-weight:700;color:#1e293b;margin:8px 0 3px;font-size:12px;">Section 3: Monitoring & Measures</div>' +
+                '<ul style="margin:0 0 8px 18px;padding:0;color:#475569;list-style-type:disc;">' +
+                '<li style="margin-bottom:2px;"><span style="color:#e11d48;font-weight:600;">1st Violation:</span> Verbal warning + ID recorded in Libki.</li>' +
+                '<li style="margin-bottom:2px;"><span style="color:#e11d48;font-weight:600;">2nd Violation:</span> Suspended for <strong>1 week</strong>.</li>' +
+                '<li style="margin-bottom:2px;"><span style="color:#e11d48;font-weight:600;">3rd Violation:</span> Suspended for <strong>1 month</strong>.</li>' +
+                '<li style="margin-bottom:2px;"><span style="color:#e11d48;font-weight:600;">4th Violation:</span> Suspended for <strong>1 semester</strong> + faculty notified.</li>' +
+                '</ul>' +
+                '<div style="font-size:10.5px;color:#64748b;font-style:italic;background:#f8fafc;padding:5px 8px;border-radius:6px;border:1px solid #e2e8f0;margin-top:6px;">Final Authority: In disputes, the judgment of Chula AIX staff shall be final.</div>' +
+                '</div>';
+
+            function updateRulesLang(lang) {
+                activeLang = lang;
+                rulesPane.innerHTML = lang === 'th' ? THAI_RULES_HTML : EN_RULES_HTML;
+                if (lang === 'th') {
+                    btnTh.style.background = '#7b2fa0'; btnTh.style.color = 'white';
+                    btnEn.style.background = 'transparent'; btnEn.style.color = '#6b21a8';
+                } else {
+                    btnEn.style.background = '#7b2fa0'; btnEn.style.color = 'white';
+                    btnTh.style.background = 'transparent'; btnTh.style.color = '#6b21a8';
+                }
+            }
+            updateRulesLang('th');
+
+            btnTh.onclick = function() { updateRulesLang('th'); };
+            btnEn.onclick = function() { updateRulesLang('en'); };
+
+            function switchMainTab(tab) {
+                activeTab = tab;
+                if (tab === 'fb') {
+                    btnFB.style.background = '#7b2fa0'; btnFB.style.color = 'white';
+                    btnRules.style.background = 'transparent'; btnRules.style.color = '#666';
+                    fbPane.style.display = 'flex';
+                    rulesPane.style.display = 'none';
+                    langGroup.style.display = 'none';
+                } else {
+                    btnRules.style.background = '#7b2fa0'; btnRules.style.color = 'white';
+                    btnFB.style.background = 'transparent'; btnFB.style.color = '#666';
+                    fbPane.style.display = 'none';
+                    rulesPane.style.display = 'block';
+                    langGroup.style.display = 'flex';
+                }
+            }
+
+            if (!isRulesOnly) {
+                btnFB.onclick = function() { switchMainTab('fb'); };
+                btnRules.onclick = function() { switchMainTab('rules'); };
+            }
+
+            body.appendChild(fbPane);
+            body.appendChild(rulesPane);
+            cardBox.appendChild(body);
+            container.appendChild(cardBox);
         }
 
         function showOverlay() {
@@ -716,29 +852,30 @@
             logoWrap.appendChild(logoImg);
             left.appendChild(logoWrap);
 
-            // Content row: FB card (left) + Character (right)
+            // Content row: Card (left) + Character flush bottom (right)
             var contentRow = document.createElement('div');
             Object.assign(contentRow.style, {
                 flex:'1',width:'100%',display:'flex',
                 alignItems:'flex-end',justifyContent:'center',margin:'0 auto',
-                padding:'0 24px',boxSizing:'border-box',
+                padding:'0 24px 0 24px',boxSizing:'border-box',
                 gap:'24px',height:'calc(100% - 65px)'
             });
 
-            // FB Card container (bottom-left)
-            var fbWrap = document.createElement('div');
-            Object.assign(fbWrap.style, {
+            // Left Card container (bottom-left)
+            var cardWrap = document.createElement('div');
+            Object.assign(cardWrap.style, {
                 width:'500px',maxWidth:'100%',flexShrink:'0',
                 display:'flex',flexDirection:'column',alignItems:'flex-start',
-                paddingBottom:'16px'
+                marginBottom:'20px'
             });
-            buildFBCard(fbWrap);
+            buildLeftCard(cardWrap);
 
-            // Character container (bottom-right) with height 120% and minHeight 560px
+            // Character container (bottom-right) flush with bottom window edge
             var charWrap = document.createElement('div');
             Object.assign(charWrap.style, {
                 flex:'1',display:'flex',alignItems:'flex-end',
-                justifyContent:'center',height:'100%',minHeight:'560px',overflow:'hidden'
+                justifyContent:'center',height:'100%',minHeight:'560px',
+                overflow:'hidden',marginBottom:'0px',paddingBottom:'0px'
             });
             var charImg = document.createElement('img');
             charImg.src = CHAR_SRC;
@@ -746,11 +883,11 @@
             Object.assign(charImg.style, {
                 height:'120%',maxHeight:'120%',minHeight:'560px',maxWidth:'100%',
                 objectFit:'contain',objectPosition:'bottom center',
-                display:'block'
+                display:'block',verticalAlign:'bottom',marginBottom:'0px'
             });
             charWrap.appendChild(charImg);
 
-            contentRow.appendChild(fbWrap);
+            contentRow.appendChild(cardWrap);
             contentRow.appendChild(charWrap);
             left.appendChild(contentRow);
 
