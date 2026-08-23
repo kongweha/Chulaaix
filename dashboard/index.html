@@ -183,7 +183,7 @@
                     <span id="viewTitleIcon"><i data-lucide="layout-dashboard" class="w-5 h-5 text-brand-700"></i></span>
                     <span id="viewTitleText">ภาพรวมระบบ (Overview)</span>
                 </h2>
-                <p id="viewSubtitleText" class="text-xs text-slate-500 font-normal">สรุปภาพรวมการเข้าใช้งานและจำนวนผู้ลงทะเบียนทั้งหมด</p>
+                <p id="viewSubtitleText" class="text-xs text-slate-500 font-normal">สรุปภาพรวมการเข้าใช้งานและสถิติเครื่องมือ AI</p>
             </div>
 
             <!-- Header Action Buttons -->
@@ -206,116 +206,167 @@
         <main class="p-4 sm:p-6 lg:p-8 flex-1 max-w-7xl w-full mx-auto space-y-6">
 
             <!-- ═══════════════════════════════════════════════════════════ -->
-            <!-- VIEW 1: OVERVIEW (ภาพรวม) -->
+            <!-- VIEW 1: OVERVIEW (ภาพรวมระบบที่ออกแบบใหม่) -->
             <!-- ═══════════════════════════════════════════════════════════ -->
             <div id="view-overview" class="view-panel space-y-6">
                 
-                <!-- 4 KPI Summary Cards -->
+                <!-- 1. ส่วนข้างบน: 4 KPI Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-                    <!-- KPI 1 -->
+                    <!-- 1.1 ผู้ลงทะเบียนทั้งหมด -->
                     <div class="card-stat p-5 flex items-center gap-4">
                         <div class="w-12 h-12 rounded-2xl bg-purple-100 text-brand-700 flex items-center justify-center shrink-0">
-                            <i data-lucide="user-check" class="w-6 h-6"></i>
+                            <i data-lucide="users" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ผู้ลงทะเบียนทั้งหมด</p>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">1.1 ผู้ลงทะเบียนทั้งหมด</p>
                             <h3 id="statTotalUsers" class="text-2xl font-black text-slate-900 mt-0.5">0</h3>
-                            <p class="text-[11px] text-emerald-600 font-medium mt-0.5">🟢 ฐานข้อมูลพร้อมใช้งาน</p>
+                            <p class="text-[11px] text-emerald-600 font-medium mt-0.5">🟢 ฐานข้อมูลเรียลไทม์</p>
                         </div>
                     </div>
 
-                    <!-- KPI 2 -->
+                    <!-- 1.2 AI ที่มีระยะเวลาการใช้มากที่สุด -->
                     <div class="card-stat p-5 flex items-center gap-4">
                         <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
-                            <i data-lucide="activity" class="w-6 h-6"></i>
+                            <i data-lucide="flame" class="w-6 h-6"></i>
                         </div>
-                        <div>
-                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">เซสชันเข้าใช้งานทั้งหมด</p>
-                            <h3 id="statTotalSessions" class="text-2xl font-black text-slate-900 mt-0.5">0</h3>
-                            <p class="text-[11px] text-slate-400 font-normal mt-0.5">บันทึกการเปิด AI Tools</p>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider truncate">1.2 AI ที่ใช้เวลานานสุด</p>
+                            <h3 id="statTopDurationTool" class="text-xl font-black text-slate-900 mt-0.5 truncate">-</h3>
+                            <p id="statTopDurationToolSub" class="text-[11px] text-blue-600 font-medium mt-0.5">เวลารวม 0 ชม.</p>
                         </div>
                     </div>
 
-                    <!-- KPI 3 -->
+                    <!-- 1.3 คณะหน่วยงานที่มาใช้มากที่สุด -->
                     <div class="card-stat p-5 flex items-center gap-4">
                         <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-                            <i data-lucide="clock" class="w-6 h-6"></i>
+                            <i data-lucide="building-2" class="w-6 h-6"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider truncate">1.3 คณะ/หน่วยงานใช้มากสุด</p>
+                            <h3 id="statTopFaculty" class="text-base font-black text-slate-900 mt-0.5 truncate">-</h3>
+                            <p id="statTopFacultySub" class="text-[11px] text-amber-700 font-medium mt-0.5">0 คน</p>
+                        </div>
+                    </div>
+
+                    <!-- 1.4 ระยะเวลาเฉลี่ยการใช้เครื่องมือต่อคน -->
+                    <div class="card-stat p-5 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                            <i data-lucide="timer" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ระยะเวลาเฉลี่ย/เซสชัน</p>
-                            <h3 id="statAvgDuration" class="text-2xl font-black text-slate-900 mt-0.5">0 น.</h3>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">1.4 เวลาเฉลี่ยต่อคน</p>
+                            <h3 id="statAvgDurationPerPerson" class="text-2xl font-black text-slate-900 mt-0.5">0 นาที</h3>
                             <p class="text-[11px] text-slate-400 font-normal mt-0.5">Average Active Time</p>
                         </div>
                     </div>
-
-                    <!-- KPI 4 -->
-                    <div class="card-stat p-5 flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                            <i data-lucide="award" class="w-6 h-6"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">เครื่องมือยอดนิยมอันดับ 1</p>
-                            <h3 id="statTopTool" class="text-xl font-black text-slate-900 mt-0.5 truncate max-w-[140px]">-</h3>
-                            <p id="statTopToolSub" class="text-[11px] text-slate-400 font-normal mt-0.5">Most preferred tool</p>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Charts Row -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Main Trend Chart (2 Cols) -->
-                    <div class="card-stat p-6 lg:col-span-2 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                                <i data-lucide="trending-up" class="w-4 h-4 text-brand-700"></i>
-                                แนวโน้มการเข้าใช้งาน AI รายวัน (Daily Usage Trends)
-                            </h4>
-                            <span class="text-xs text-slate-400">7 วันล่าสุด</span>
+                <!-- 2. ส่วนตรงกลาง: 3 CHARTS ROW -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    
+                    <!-- 2.1 กราฟเชิงเส้นแสดงผู้มาใช้รายวัน แยก นิสิต vs บุคลากร (6 Cols) -->
+                    <div class="card-stat p-5 lg:col-span-6 space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                    <i data-lucide="trending-up" class="w-4 h-4 text-brand-700"></i>
+                                    จำนวนผู้มาใช้ในแต่ละวัน (แยกประเภท)
+                                </h4>
+                                <p class="text-[11px] text-slate-400">เปรียบเทียบแนวโน้มนิสิตจุฬาฯ และบุคลากร 7 วันย้อนหลัง</p>
+                            </div>
+                            <span class="text-[11px] bg-purple-50 text-brand-700 px-2 py-0.5 rounded-md font-semibold border border-purple-200">7 วันล่าสุด</span>
                         </div>
                         <div class="h-64 sm:h-72 w-full">
-                            <canvas id="chartOverviewTrends"></canvas>
+                            <canvas id="chartOverviewDailyTrends"></canvas>
                         </div>
                     </div>
 
-                    <!-- User Type Donut (1 Col) -->
-                    <div class="card-stat p-6 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <!-- 2.2 โดนัทชาร์ตสัดส่วนผู้ใช้งาน พร้อมจำนวน & % และจำนวนรวมตรงกลาง (3 Cols) -->
+                    <div class="card-stat p-5 lg:col-span-3 space-y-3 flex flex-col justify-between">
+                        <div class="border-b border-slate-100 pb-2.5">
+                            <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
                                 <i data-lucide="pie-chart" class="w-4 h-4 text-brand-700"></i>
                                 สัดส่วนประเภทผู้ใช้งาน
                             </h4>
+                            <p class="text-[11px] text-slate-400">จำนวนคนและร้อยละ (%)</p>
                         </div>
-                        <div class="h-64 sm:h-72 w-full flex items-center justify-center">
-                            <canvas id="chartOverviewUserTypes"></canvas>
+                        <div class="relative h-56 w-full flex items-center justify-center">
+                            <canvas id="chartOverviewUserTypesDonut"></canvas>
+                        </div>
+                        <div id="userTypesLegendDetails" class="text-xs space-y-1 pt-2 border-t border-slate-100">
+                            <!-- Populated dynamically -->
                         </div>
                     </div>
+
+                    <!-- 2.3 โดนัทชาร์ตระยะเวลาใช้ในแต่ละเครื่องมือ AI พร้อมเวลารวมชั่วโมงตรงกลาง (3 Cols) -->
+                    <div class="card-stat p-5 lg:col-span-3 space-y-3 flex flex-col justify-between">
+                        <div class="border-b border-slate-100 pb-2.5">
+                            <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                <i data-lucide="clock" class="w-4 h-4 text-blue-600"></i>
+                                ระยะเวลาการใช้ AI แต่ละตัว
+                            </h4>
+                            <p class="text-[11px] text-slate-400">เวลารวมชั่วโมงการใช้งาน</p>
+                        </div>
+                        <div class="relative h-56 w-full flex items-center justify-center">
+                            <canvas id="chartOverviewToolsDurationDonut"></canvas>
+                        </div>
+                        <div id="toolsDurationLegendDetails" class="text-xs space-y-1 pt-2 border-t border-slate-100">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- Realtime Feed / Recent Activity -->
+                <!-- 3. ส่วนล่าง: ตารางการลงทะเบียนและการใช้งาน AI รายคน (7 คอลัมน์) -->
                 <div class="card-stat p-6 space-y-4">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                        <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                            <i data-lucide="history" class="w-4 h-4 text-brand-700"></i>
-                            รายการกิจกรรมล่าสุด (Live Activity Stream)
-                        </h4>
-                        <span class="text-xs text-slate-400">อัปเดตแบบเรียลไทม์</span>
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                                <i data-lucide="table-2" class="w-5 h-5 text-brand-700"></i>
+                                ตารางการลงทะเบียนและประวัติการใช้งาน AI
+                            </h4>
+                            <p class="text-xs text-slate-500 font-normal">ข้อมูลการลงทะเบียน พร้อมรายละเอียดเครื่องมือ AI ที่เลือกและเครื่องมือที่ใช้งานจริง</p>
+                        </div>
+
+                        <!-- Search Filter -->
+                        <div class="relative w-full sm:w-72">
+                            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
+                            <input type="text" id="inputSearchOverviewTable" placeholder="ค้นหา รหัส, อีเมล, คณะ, AI..."
+                                   class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 outline-none"
+                                   oninput="renderOverviewUsersTable()">
+                        </div>
                     </div>
 
-                    <div id="overviewActivityList" class="space-y-2.5 max-h-72 overflow-y-auto custom-scrollbar pr-1">
-                        <p class="text-xs text-slate-400 text-center py-6">กำลังโหลดข้อมูลกิจกรรมล่าสุด...</p>
+                    <!-- Table Container (7 Columns) -->
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left text-xs text-slate-700 min-w-[900px]">
+                            <thead class="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
+                                <tr>
+                                    <th class="py-3 px-4 whitespace-nowrap">เวลาที่ลงทะเบียน</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">ประเภท</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">รหัสนิสิต / อีเมล</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">หน่วยงานที่สังกัด</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">ระดับ / ตำแหน่ง</th>
+                                    <th class="py-3 px-4">เครื่องมือ AI ที่เลือกในฟอร์ม</th>
+                                    <th class="py-3 px-4">เครื่องมือ AI ที่ใช้ (เวลาที่ใช้จริง)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="overviewTableBody" class="divide-y divide-slate-100">
+                                <tr>
+                                    <td colspan="7" class="text-center py-8 text-slate-400">กำลังโหลดข้อมูล...</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════ -->
-            <!-- VIEW 2: DEMOGRAPHICS & FACULTIES (นิสิต/บุคลากร & คณะ) -->
+            <!-- VIEW 2: DEMOGRAPHICS & FACULTIES -->
             <!-- ═══════════════════════════════════════════════════════════ -->
             <div id="view-demographics" class="view-panel hidden space-y-6">
-                
-                <!-- Top Demographics Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Student Degree Chart -->
                     <div class="card-stat p-6 space-y-4">
                         <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
                             <i data-lucide="graduation-cap" class="w-4 h-4 text-brand-700"></i>
@@ -326,7 +377,6 @@
                         </div>
                     </div>
 
-                    <!-- Personnel Types Chart -->
                     <div class="card-stat p-6 space-y-4">
                         <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
                             <i data-lucide="briefcase" class="w-4 h-4 text-brand-700"></i>
@@ -338,7 +388,6 @@
                     </div>
                 </div>
 
-                <!-- 29 Faculties Horizontal Bar Chart -->
                 <div class="card-stat p-6 space-y-4">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                         <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
@@ -351,57 +400,12 @@
                         <canvas id="chartFacultiesRanking"></canvas>
                     </div>
                 </div>
-
-                <!-- Registered Users Full Table -->
-                <div class="card-stat p-6 space-y-4">
-                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                                <i data-lucide="table" class="w-4 h-4 text-brand-700"></i>
-                                รายชื่อผู้ลงทะเบียน (Registered Users Database)
-                            </h4>
-                            <p class="text-xs text-slate-500 font-normal">ข้อมูลผู้ใช้ที่ลงทะเบียนผ่านระบบ Chula AIX</p>
-                        </div>
-
-                        <!-- Search Filter -->
-                        <div class="relative w-full sm:w-64">
-                            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
-                            <input type="text" id="inputSearchUsers" placeholder="ค้นหารหัส, อีเมล, คณะ..."
-                                   class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500 outline-none"
-                                   oninput="renderUsersTable()">
-                        </div>
-                    </div>
-
-                    <!-- Table Container -->
-                    <div class="overflow-x-auto custom-scrollbar">
-                        <table class="w-full text-left text-xs text-slate-700">
-                            <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
-                                <tr>
-                                    <th class="py-3 px-4">วัน-เวลาลงทะเบียน</th>
-                                    <th class="py-3 px-4">ประเภท</th>
-                                    <th class="py-3 px-4">รหัส / อีเมล</th>
-                                    <th class="py-3 px-4">คณะ / หน่วยงาน</th>
-                                    <th class="py-3 px-4">ระดับ / ตำแหน่ง</th>
-                                    <th class="py-3 px-4">เครื่องมือที่เลือก</th>
-                                </tr>
-                            </thead>
-                            <tbody id="usersTableBody" class="divide-y divide-slate-100">
-                                <tr>
-                                    <td colspan="6" class="text-center py-6 text-slate-400">กำลังโหลดรายชื่อผู้ลงทะเบียน...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════ -->
-            <!-- VIEW 3: AI TOOLS & DURATION (เครื่องมือ AI และเวลา) -->
+            <!-- VIEW 3: AI TOOLS & DURATION -->
             <!-- ═══════════════════════════════════════════════════════════ -->
             <div id="view-tools-duration" class="view-panel hidden space-y-6">
-                
-                <!-- Tool Popularity Ranking -->
                 <div class="card-stat p-6 space-y-4">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                         <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
@@ -415,9 +419,7 @@
                     </div>
                 </div>
 
-                <!-- 2 Grid: Duration Distribution & Tool Badges Grid -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Expected Duration Donut -->
                     <div class="card-stat p-6 space-y-4">
                         <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
                             <i data-lucide="hourglass" class="w-4 h-4 text-brand-700"></i>
@@ -428,26 +430,20 @@
                         </div>
                     </div>
 
-                    <!-- Individual Tools Stat Badges -->
                     <div class="card-stat p-6 space-y-4">
                         <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
                             <i data-lucide="layout-grid" class="w-4 h-4 text-brand-700"></i>
                             จำนวนผู้เลือกเครื่องมือ AI แต่ละค่าย
                         </h4>
-                        <div id="toolBadgesGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                            <!-- Populated dynamically -->
-                        </div>
+                        <div id="toolBadgesGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
                     </div>
                 </div>
-
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════ -->
-            <!-- VIEW 4: SURVEY RESPONSES (คำตอบในแต่ละส่วน) -->
+            <!-- VIEW 4: SURVEY RESPONSES -->
             <!-- ═══════════════════════════════════════════════════════════ -->
             <div id="view-survey-responses" class="view-panel hidden space-y-6">
-                
-                <!-- Q3: Primary Purposes -->
                 <div class="card-stat p-6 space-y-4">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                         <div>
@@ -463,7 +459,6 @@
                     </div>
                 </div>
 
-                <!-- Q4: Activity Types -->
                 <div class="card-stat p-6 space-y-4">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                         <div>
@@ -479,7 +474,6 @@
                     </div>
                 </div>
 
-                <!-- Cross-Analysis Insights Table -->
                 <div class="card-stat p-6 space-y-4">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                         <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
@@ -507,14 +501,13 @@
                         </table>
                     </div>
                 </div>
-
             </div>
 
         </main>
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- CONFIG MODAL (Firebase Settings) -->
+    <!-- CONFIG MODAL -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <div id="configModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-lg w-full p-6 space-y-5 shadow-2xl border border-slate-100">
@@ -567,7 +560,7 @@
         const VIEW_META = {
             'overview': {
                 title: 'ภาพรวมระบบ (Overview)',
-                subtitle: 'สรุปภาพรวมการเข้าใช้งานและจำนวนผู้ลงทะเบียนทั้งหมด',
+                subtitle: 'สรุปภาพรวมการเข้าใช้งานและสถิติเครื่องมือ AI',
                 icon: 'layout-dashboard'
             },
             'demographics': {
@@ -599,7 +592,7 @@
             "Gemini": "https://cdn.simpleicons.org/googlegemini/8E75B2"
         };
 
-        // Initialize Firebase
+        // Firebase Initialization
         const activeFirebaseConfig = window.FIREBASE_CONFIG || {
             apiKey: "AIzaSyCLQkUz59m3twJMQFoBL5xO9_VmZZHwU0c",
             authDomain: "chula-aix.firebaseapp.com",
@@ -619,6 +612,37 @@
             console.warn('Firebase init note:', e);
         }
 
+        // Custom Donut Center Text Plugin for Chart.js
+        const centerTextPlugin = {
+            id: 'centerTextPlugin',
+            beforeDraw(chart) {
+                if (chart.config.type !== 'doughnut' || !chart.options.plugins?.centerText) return;
+                const { ctx, width, height } = chart;
+                const opt = chart.options.plugins.centerText;
+                ctx.save();
+                
+                // Title Line (Small)
+                if (opt.subText) {
+                    ctx.font = `500 ${opt.subFontSize || 11}px Prompt, sans-serif`;
+                    ctx.fillStyle = opt.subColor || '#64748b';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(opt.subText, width / 2, (height / 2) - 10);
+                }
+
+                // Value Line (Large Bold)
+                ctx.font = `800 ${opt.fontSize || 18}px Prompt, sans-serif`;
+                ctx.fillStyle = opt.color || '#1e293b';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                const yOffset = opt.subText ? 10 : 0;
+                ctx.fillText(opt.text, width / 2, (height / 2) + yOffset);
+
+                ctx.restore();
+            }
+        };
+        Chart.register(centerTextPlugin);
+
         // ═══════════════════════════════════════════════════════════
         // LIFECYCLE & NAVIGATION SWITCHER
         // ═══════════════════════════════════════════════════════════
@@ -636,31 +660,23 @@
         function switchView(viewKey) {
             currentActiveView = viewKey;
 
-            // Update Nav Item styles
-            document.querySelectorAll('.nav-item').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
             const activeNav = document.getElementById(`nav-${viewKey}`);
             if (activeNav) activeNav.classList.add('active');
 
-            // Hide/Show View Panels
-            document.querySelectorAll('.view-panel').forEach(panel => {
-                panel.classList.add('hidden');
-            });
+            document.querySelectorAll('.view-panel').forEach(panel => panel.classList.add('hidden'));
             const activePanel = document.getElementById(`view-${viewKey}`);
             if (activePanel) activePanel.classList.remove('hidden');
 
-            // Update Top Header Title
             const meta = VIEW_META[viewKey] || VIEW_META['overview'];
             document.getElementById('viewTitleText').textContent = meta.title;
             document.getElementById('viewSubtitleText').textContent = meta.subtitle;
             document.getElementById('viewTitleIcon').innerHTML = `<i data-lucide="${meta.icon}" class="w-5 h-5 text-brand-700"></i>`;
             lucide.createIcons();
 
-            // Refresh charts in current view
             setTimeout(() => {
                 renderCurrentViewCharts();
-            }, 50);
+            }, 60);
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -670,7 +686,6 @@
             try {
                 const db = firebase.database();
                 
-                // Realtime Registrations Listener
                 db.ref('registrations').on('value', snapshot => {
                     const data = snapshot.val();
                     rawRegistrations = [];
@@ -682,7 +697,6 @@
                     updateAllStats();
                 });
 
-                // Realtime Usage Logs Listener
                 db.ref('usage_logs').on('value', snapshot => {
                     const data = snapshot.val();
                     rawUsageLogs = [];
@@ -720,62 +734,88 @@
             }
         }
 
+        // ═══════════════════════════════════════════════════════════
+        // CALCULATIONS & KPIS UPDATE
+        // ═══════════════════════════════════════════════════════════
         function updateAllStats() {
-            // Update Badges & KPIs
+            // 1.1 ผู้ลงทะเบียนทั้งหมด
             const totalUsers = rawRegistrations.length;
-            const totalSessions = rawUsageLogs.length;
-            
-            document.getElementById('statTotalUsers').textContent = totalUsers.toLocaleString();
-            document.getElementById('statTotalSessions').textContent = totalSessions.toLocaleString();
+            document.getElementById('statTotalUsers').textContent = `${totalUsers.toLocaleString()} คน`;
             document.getElementById('badgeTotalUsersCount').textContent = `${totalUsers} users`;
 
-            // Calculate Avg Duration
-            let totalSecs = 0;
-            let countWithDuration = 0;
-            rawUsageLogs.forEach(l => {
-                if (l.durationSeconds) {
-                    totalSecs += Number(l.durationSeconds);
-                    countWithDuration++;
+            // 1.2 AI ที่มีระยะเวลาการใช้มากที่สุด (จาก usage_logs)
+            const toolDurations = {}; // in seconds
+            let grandTotalSeconds = 0;
+            rawUsageLogs.forEach(log => {
+                const tool = log.tool || 'Other AI';
+                const dur = Number(log.durationSeconds) || 0;
+                toolDurations[tool] = (toolDurations[tool] || 0) + dur;
+                grandTotalSeconds += dur;
+            });
+
+            let topDurationTool = '-';
+            let maxDurationSec = 0;
+            Object.keys(toolDurations).forEach(t => {
+                if (toolDurations[t] > maxDurationSec) {
+                    maxDurationSec = toolDurations[t];
+                    topDurationTool = t;
                 }
             });
-            const avgMins = countWithDuration > 0 ? Math.round((totalSecs / countWithDuration) / 60) : 0;
-            document.getElementById('statAvgDuration').textContent = `${avgMins} นาที`;
 
-            // Calculate Top AI Tool
-            const toolCounts = {};
+            const topHours = (maxDurationSec / 3600).toFixed(1);
+            const topMins = Math.round(maxDurationSec / 60);
+            if (maxDurationSec > 0) {
+                document.getElementById('statTopDurationTool').textContent = topDurationTool;
+                document.getElementById('statTopDurationToolSub').textContent = `เวลารวม ${topHours >= 1 ? topHours + ' ชม.' : topMins + ' นาที'}`;
+            } else {
+                document.getElementById('statTopDurationTool').textContent = 'ChatGPT';
+                document.getElementById('statTopDurationToolSub').textContent = 'ยังไม่มีเซสชัน';
+            }
+
+            // 1.3 คณะหน่วยงานที่มาใช้มากที่สุด
+            const facultyCounts = {};
             rawRegistrations.forEach(r => {
-                if (Array.isArray(r.selectedAITools)) {
-                    r.selectedAITools.forEach(t => {
-                        toolCounts[t] = (toolCounts[t] || 0) + 1;
-                    });
+                if (r.facultyName) {
+                    facultyCounts[r.facultyName] = (facultyCounts[r.facultyName] || 0) + 1;
                 }
             });
-            let topTool = '-';
-            let maxCount = 0;
-            Object.keys(toolCounts).forEach(t => {
-                if (toolCounts[t] > maxCount) {
-                    maxCount = toolCounts[t];
-                    topTool = t;
+            let topFaculty = '-';
+            let maxFacultyCount = 0;
+            Object.keys(facultyCounts).forEach(f => {
+                if (facultyCounts[f] > maxFacultyCount) {
+                    maxFacultyCount = facultyCounts[f];
+                    topFaculty = f;
                 }
             });
-            document.getElementById('statTopTool').textContent = topTool;
-            document.getElementById('statTopToolSub').textContent = maxCount > 0 ? `เลือกใช้ ${maxCount} คน` : 'ยังไม่มีข้อมูล';
+            document.getElementById('statTopFaculty').textContent = topFaculty !== '-' ? topFaculty : 'คณะวิศวกรรมศาสตร์';
+            document.getElementById('statTopFacultySub').textContent = maxFacultyCount > 0 ? `${maxFacultyCount} คน (${Math.round((maxFacultyCount/Math.max(totalUsers,1))*100)}%)` : '0 คน';
 
-            // Render all UI components
-            renderOverviewActivityFeed();
-            renderUsersTable();
-            renderToolBadgesGrid(toolCounts);
+            // 1.4 ระยะเวลาเฉลี่ยการใช้เครื่องมือต่อคน
+            // Total seconds / total registered users (or unique active users)
+            const divisor = Math.max(totalUsers, 1);
+            const avgSecPerPerson = grandTotalSeconds / divisor;
+            const avgMinsPerPerson = Math.round(avgSecPerPerson / 60);
+            if (avgMinsPerPerson >= 60) {
+                document.getElementById('statAvgDurationPerPerson').textContent = `${(avgMinsPerPerson / 60).toFixed(1)} ชม./คน`;
+            } else {
+                document.getElementById('statAvgDurationPerPerson').textContent = `${avgMinsPerPerson} นาที/คน`;
+            }
+
+            // Render components
+            renderOverviewUsersTable();
+            renderToolBadgesGrid();
             renderCrossAnalysisTable();
             renderCurrentViewCharts();
         }
 
         // ═══════════════════════════════════════════════════════════
-        // RENDER CHARTS BY CURRENT VIEW
+        // RENDER CHARTS
         // ═══════════════════════════════════════════════════════════
         function renderCurrentViewCharts() {
             if (currentActiveView === 'overview') {
-                renderOverviewTrendsChart();
-                renderOverviewUserTypesChart();
+                renderOverviewDailyTrendsChart();
+                renderOverviewUserTypesDonut();
+                renderOverviewToolsDurationDonut();
             } else if (currentActiveView === 'demographics') {
                 renderStudentDegreesChart();
                 renderPersonnelCategoriesChart();
@@ -796,16 +836,19 @@
             }
         }
 
-        // View 1 Charts
-        function renderOverviewTrendsChart() {
-            destroyChart('chartOverviewTrends');
-            const ctx = document.getElementById('chartOverviewTrends')?.getContext('2d');
+        // ───────────────────────────────────────────────────────────
+        // OVERVIEW CHARTS (3 Charts Row)
+        // ───────────────────────────────────────────────────────────
+
+        // 2.1 กราฟเชิงเส้นแสดงผู้มาใช้รายวัน แยก นิสิต vs บุคลากร
+        function renderOverviewDailyTrendsChart() {
+            destroyChart('chartOverviewDailyTrends');
+            const ctx = document.getElementById('chartOverviewDailyTrends')?.getContext('2d');
             if (!ctx) return;
 
-            // Group registrations & logs by last 7 days
             const days = [];
-            const regCounts = [];
-            const sessionCounts = [];
+            const studentCounts = [];
+            const personnelCounts = [];
 
             for (let i = 6; i >= 0; i--) {
                 const d = new Date();
@@ -814,49 +857,77 @@
                 const displayDate = d.toLocaleDateString('th-TH', { month: 'short', day: 'numeric' });
                 days.push(displayDate);
 
-                const regsOnDay = rawRegistrations.filter(r => (r.registeredAt || '').startsWith(dateStr)).length;
-                const sessOnDay = rawUsageLogs.filter(l => (l.timestamp || '').startsWith(dateStr)).length;
-                regCounts.push(regsOnDay);
-                sessionCounts.push(sessOnDay);
+                let studentsOnDay = 0;
+                let personnelOnDay = 0;
+
+                rawRegistrations.forEach(r => {
+                    if ((r.registeredAt || '').startsWith(dateStr)) {
+                        if ((r.userType || '').includes('นิสิต') || r.studentId) studentsOnDay++;
+                        else personnelOnDay++;
+                    }
+                });
+
+                // Also count usage logs if available
+                rawUsageLogs.forEach(l => {
+                    if ((l.timestamp || '').startsWith(dateStr)) {
+                        const email = (l.userEmail || '').toLowerCase();
+                        if (email.includes('student') || /^\d{10}/.test(email)) studentsOnDay++;
+                        else personnelOnDay++;
+                    }
+                });
+
+                studentCounts.push(studentsOnDay);
+                personnelCounts.push(personnelOnDay);
             }
 
-            chartInstances['chartOverviewTrends'] = new Chart(ctx, {
+            chartInstances['chartOverviewDailyTrends'] = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: days,
                     datasets: [
                         {
-                            label: 'ผู้ลงทะเบียนใหม่',
-                            data: regCounts,
+                            label: 'นิสิตจุฬาฯ (Students)',
+                            data: studentCounts,
                             borderColor: '#9333ea',
-                            backgroundColor: 'rgba(147, 51, 234, 0.1)',
+                            backgroundColor: 'rgba(147, 51, 234, 0.12)',
                             fill: true,
                             tension: 0.35,
-                            borderWidth: 2.5
+                            borderWidth: 3,
+                            pointBackgroundColor: '#9333ea',
+                            pointRadius: 4
                         },
                         {
-                            label: 'เซสชันการใช้งาน AI',
-                            data: sessionCounts,
+                            label: 'บุคลากรจุฬาฯ (Personnel)',
+                            data: personnelCounts,
                             borderColor: '#3b82f6',
-                            backgroundColor: 'transparent',
-                            borderDash: [5, 5],
+                            backgroundColor: 'rgba(59, 130, 246, 0.08)',
+                            fill: true,
                             tension: 0.35,
-                            borderWidth: 2
+                            borderWidth: 2.5,
+                            pointBackgroundColor: '#3b82f6',
+                            pointRadius: 4
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'top', labels: { font: { family: 'Prompt' } } } },
-                    scales: { y: { beginAtZero: true, ticks: { precision: 0, font: { family: 'Prompt' } } } }
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { position: 'top', labels: { font: { family: 'Prompt' }, boxWidth: 14 } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { precision: 0, font: { family: 'Prompt' } }, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false }, ticks: { font: { family: 'Prompt' } } }
+                    }
                 }
             });
         }
 
-        function renderOverviewUserTypesChart() {
-            destroyChart('chartOverviewUserTypes');
-            const ctx = document.getElementById('chartOverviewUserTypes')?.getContext('2d');
+        // 2.2 โดนัทชาร์ตสัดส่วนผู้ใช้งาน (พร้อมจำนวน & % และจำนวนรวมตรงกลาง)
+        function renderOverviewUserTypesDonut() {
+            destroyChart('chartOverviewUserTypesDonut');
+            const ctx = document.getElementById('chartOverviewUserTypesDonut')?.getContext('2d');
             if (!ctx) return;
 
             let students = 0;
@@ -866,27 +937,157 @@
                 else personnel++;
             });
 
-            chartInstances['chartOverviewUserTypes'] = new Chart(ctx, {
+            const total = students + personnel;
+            const studentPct = total > 0 ? Math.round((students / total) * 100) : 0;
+            const personnelPct = total > 0 ? Math.round((personnel / total) * 100) : 0;
+
+            // Update details legend below chart
+            const legendContainer = document.getElementById('userTypesLegendDetails');
+            if (legendContainer) {
+                legendContainer.innerHTML = `
+                    <div class="flex items-center justify-between text-slate-700">
+                        <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span>นิสิตจุฬาฯ</span>
+                        <span class="font-bold font-mono">${students} คน (${studentPct}%)</span>
+                    </div>
+                    <div class="flex items-center justify-between text-slate-700">
+                        <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>บุคลากรจุฬาฯ</span>
+                        <span class="font-bold font-mono">${personnel} คน (${personnelPct}%)</span>
+                    </div>
+                `;
+            }
+
+            chartInstances['chartOverviewUserTypesDonut'] = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['นิสิตจุฬาฯ', 'บุคลากรจุฬาฯ'],
+                    labels: [`นิสิต (${studentPct}%)`, `บุคลากร (${personnelPct}%)`],
                     datasets: [{
-                        data: [students, personnel],
-                        backgroundColor: ['#9333ea', '#3b82f6'],
-                        borderWidth: 0
+                        data: total > 0 ? [students, personnel] : [1, 1],
+                        backgroundColor: total > 0 ? ['#9333ea', '#3b82f6'] : ['#e2e8f0', '#cbd5e1'],
+                        borderWidth: 0,
+                        hoverOffset: 4
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '72%',
                     plugins: {
-                        legend: { position: 'bottom', labels: { font: { family: 'Prompt' } } }
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label(item) {
+                                    const val = item.raw;
+                                    const pct = total > 0 ? Math.round((val / total) * 100) : 0;
+                                    return ` ${item.label}: ${val} คน (${pct}%)`;
+                                }
+                            }
+                        },
+                        centerText: {
+                            subText: 'ผู้ใช้งานทั้งหมด',
+                            text: `${total} คน`,
+                            color: '#1e293b',
+                            fontSize: 17,
+                            subFontSize: 10
+                        }
                     }
                 }
             });
         }
 
-        // View 2 Charts
+        // 2.3 โดนัทชาร์ตระยะเวลาใช้ในแต่ละเครื่องมือ AI (พร้อมเวลารวมชั่วโมงตรงกลาง)
+        function renderOverviewToolsDurationDonut() {
+            destroyChart('chartOverviewToolsDurationDonut');
+            const ctx = document.getElementById('chartOverviewToolsDurationDonut')?.getContext('2d');
+            if (!ctx) return;
+
+            const toolDurations = {
+                "ChatGPT": 0, "Claude": 0, "Grammarly": 0, "Connected Papers": 0,
+                "Runway": 0, "Consensus": 0, "SciSpace": 0, "Perplexity": 0, "Gemini": 0
+            };
+            let grandTotalSecs = 0;
+
+            rawUsageLogs.forEach(l => {
+                const t = l.tool || 'ChatGPT';
+                const s = Number(l.durationSeconds) || 0;
+                if (toolDurations[t] !== undefined) toolDurations[t] += s;
+                else toolDurations[t] = s;
+                grandTotalSecs += s;
+            });
+
+            // Filter tools with duration > 0 (or show default distribution if no data yet)
+            const labels = [];
+            const dataHours = [];
+            const colors = [];
+            const colorMap = {
+                "ChatGPT": '#10a37f', "Claude": '#d97757', "Grammarly": '#15c39a', "Connected Papers": '#3b82f6',
+                "Runway": '#ec4899', "Consensus": '#8b5cf6', "SciSpace": '#6366f1', "Perplexity": '#06b6d4', "Gemini": '#8e75b2'
+            };
+
+            Object.keys(toolDurations).forEach(t => {
+                const hours = (toolDurations[t] / 3600);
+                if (hours > 0) {
+                    labels.push(t);
+                    dataHours.push(Number(hours.toFixed(1)));
+                    colors.push(colorMap[t] || '#7b2fa0');
+                }
+            });
+
+            const totalHours = (grandTotalSecs / 3600).toFixed(1);
+
+            // Update details legend below chart
+            const legendContainer = document.getElementById('toolsDurationLegendDetails');
+            if (legendContainer) {
+                if (labels.length > 0) {
+                    legendContainer.innerHTML = labels.slice(0, 3).map((t, idx) => `
+                        <div class="flex items-center justify-between text-slate-700">
+                            <span class="flex items-center gap-1.5 truncate"><span class="w-2 h-2 rounded-full shrink-0" style="background-color:${colors[idx]}"></span>${t}</span>
+                            <span class="font-bold font-mono shrink-0">${dataHours[idx]} ชม.</span>
+                        </div>
+                    `).join('');
+                } else {
+                    legendContainer.innerHTML = `<div class="text-slate-400 text-center py-1">บันทึกเวลาเมื่อเปิด AI Tools</div>`;
+                }
+            }
+
+            chartInstances['chartOverviewToolsDurationDonut'] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels.length > 0 ? labels : ['ChatGPT', 'Claude', 'Grammarly'],
+                    datasets: [{
+                        data: labels.length > 0 ? dataHours : [1, 1, 1],
+                        backgroundColor: labels.length > 0 ? colors : ['#e2e8f0', '#cbd5e1', '#f1f5f9'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '72%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label(item) {
+                                    return ` ${item.label}: ${item.raw} ชม.`;
+                                }
+                            }
+                        },
+                        centerText: {
+                            subText: 'ระยะเวลารวม',
+                            text: `${totalHours} ชม.`,
+                            color: '#1e293b',
+                            fontSize: 17,
+                            subFontSize: 10
+                        }
+                    }
+                }
+            });
+        }
+
+        // ───────────────────────────────────────────────────────────
+        // OTHER VIEWS' CHARTS (Views 2, 3, 4)
+        // ───────────────────────────────────────────────────────────
         function renderStudentDegreesChart() {
             destroyChart('chartStudentDegrees');
             const ctx = document.getElementById('chartStudentDegrees')?.getContext('2d');
@@ -926,9 +1127,7 @@
 
             const counts = {};
             rawRegistrations.forEach(r => {
-                if (r.personnelType) {
-                    counts[r.personnelType] = (counts[r.personnelType] || 0) + 1;
-                }
+                if (r.personnelType) counts[r.personnelType] = (counts[r.personnelType] || 0) + 1;
             });
 
             const labels = Object.keys(counts).length > 0 ? Object.keys(counts) : ['อาจารย์', 'นักวิจัย', 'สายสนับสนุน'];
@@ -959,19 +1158,17 @@
 
             const counts = {};
             rawRegistrations.forEach(r => {
-                if (r.facultyName) {
-                    counts[r.facultyName] = (counts[r.facultyName] || 0) + 1;
-                }
+                if (r.facultyName) counts[r.facultyName] = (counts[r.facultyName] || 0) + 1;
             });
 
-            const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 12);
             const labels = sorted.map(s => s[0]);
             const data = sorted.map(s => s[1]);
 
             chartInstances['chartFacultiesRanking'] = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: labels.length > 0 ? labels : ['ยังไม่มีข้อมูลคณะ'],
+                    labels: labels.length > 0 ? labels : ['ยังไม่มีข้อมูล'],
                     datasets: [{
                         label: 'จำนวนผู้ลงทะเบียน',
                         data: data.length > 0 ? data : [0],
@@ -989,7 +1186,6 @@
             });
         }
 
-        // View 3 Charts
         function renderToolsRankingChart() {
             destroyChart('chartToolsRanking');
             const ctx = document.getElementById('chartToolsRanking')?.getContext('2d');
@@ -999,7 +1195,6 @@
                 "ChatGPT": 0, "Claude": 0, "Grammarly": 0, "Connected Papers": 0,
                 "Runway": 0, "Consensus": 0, "SciSpace": 0, "Perplexity": 0, "Gemini": 0
             };
-
             rawRegistrations.forEach(r => {
                 if (Array.isArray(r.selectedAITools)) {
                     r.selectedAITools.forEach(t => {
@@ -1009,16 +1204,13 @@
                 }
             });
 
-            const labels = Object.keys(toolCounts);
-            const data = Object.values(toolCounts);
-
             chartInstances['chartToolsRanking'] = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: labels,
+                    labels: Object.keys(toolCounts),
                     datasets: [{
                         label: 'จำนวนคนที่เลือกใช้',
-                        data: data,
+                        data: Object.values(toolCounts),
                         backgroundColor: [
                             '#10a37f', '#d97757', '#15c39a', '#3b82f6',
                             '#ec4899', '#8b5cf6', '#6366f1', '#06b6d4', '#8e75b2'
@@ -1071,7 +1263,6 @@
             });
         }
 
-        // View 4 Charts
         function renderPrimaryPurposesChart() {
             destroyChart('chartPrimaryPurposes');
             const ctx = document.getElementById('chartPrimaryPurposes')?.getContext('2d');
@@ -1163,97 +1354,101 @@
         }
 
         // ═══════════════════════════════════════════════════════════
-        // RENDER DATA TABLES & BADGES
+        // 3. RENDER OVERVIEW 7-COLUMN TABLE
         // ═══════════════════════════════════════════════════════════
-        function renderOverviewActivityFeed() {
-            const container = document.getElementById('overviewActivityList');
-            if (!container) return;
-
-            const combined = [
-                ...rawRegistrations.map(r => ({ type: 'reg', time: r.registeredAt, data: r })),
-                ...rawUsageLogs.map(l => ({ type: 'usage', time: l.timestamp, data: l }))
-            ].sort((a, b) => new Date(b.time || 0) - new Date(a.time || 0)).slice(0, 8);
-
-            if (combined.length === 0) {
-                container.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">ยังไม่มีประวัติกิจกรรมในระบบ</p>';
-                return;
-            }
-
-            container.innerHTML = combined.map(item => {
-                const dateFormatted = item.time ? new Date(item.time).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }) : '-';
-                if (item.type === 'reg') {
-                    return `
-                        <div class="flex items-center justify-between p-3 rounded-xl bg-purple-50/50 border border-purple-100/70 text-xs">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-purple-100 text-brand-700 flex items-center justify-center font-bold">
-                                    <i data-lucide="user-plus" class="w-4 h-4"></i>
-                                </div>
-                                <div>
-                                    <span class="font-bold text-slate-800">${item.data.email || 'ผู้ใช้ใหม่'}</span>
-                                    <span class="text-purple-600 font-medium ml-1">ลงทะเบียนสำเร็จ</span>
-                                    <div class="text-[10px] text-slate-400 font-normal">${item.data.facultyName || '-'} • ${item.data.userType || ''}</div>
-                                </div>
-                            </div>
-                            <span class="text-[11px] text-slate-400 shrink-0">${dateFormatted}</span>
-                        </div>
-                    `;
-                } else {
-                    return `
-                        <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
-                                    <i data-lucide="zap" class="w-4 h-4"></i>
-                                </div>
-                                <div>
-                                    <span class="font-bold text-slate-800">${item.data.userEmail || 'ผู้ใช้งาน'}</span>
-                                    <span class="text-blue-600 font-medium ml-1">เปิดใช้งาน ${item.data.tool || 'AI Tool'}</span>
-                                    <div class="text-[10px] text-slate-400 font-normal">ใช้งาน ${Math.round((item.data.durationSeconds || 0)/60)} นาที</div>
-                                </div>
-                            </div>
-                            <span class="text-[11px] text-slate-400 shrink-0">${dateFormatted}</span>
-                        </div>
-                    `;
-                }
-            }).join('');
-            lucide.createIcons();
-        }
-
-        function renderUsersTable() {
-            const tbody = document.getElementById('usersTableBody');
+        function renderOverviewUsersTable() {
+            const tbody = document.getElementById('overviewTableBody');
             if (!tbody) return;
 
-            const search = (document.getElementById('inputSearchUsers')?.value || '').toLowerCase();
+            const search = (document.getElementById('inputSearchOverviewTable')?.value || '').toLowerCase();
+            
+            // Map usage logs to user emails/studentIds to calculate active usage per tool
+            const userActualUsageMap = {};
+            rawUsageLogs.forEach(l => {
+                const userKey = (l.userEmail || '').toLowerCase().trim();
+                if (!userKey) return;
+                if (!userActualUsageMap[userKey]) userActualUsageMap[userKey] = {};
+                const tool = l.tool || 'AI Tool';
+                const dur = Number(l.durationSeconds) || 0;
+                userActualUsageMap[userKey][tool] = (userActualUsageMap[userKey][tool] || 0) + dur;
+            });
+
             const filtered = rawRegistrations.filter(r => {
                 if (!search) return true;
-                return (r.email || '').toLowerCase().includes(search) ||
-                       (r.studentId || '').includes(search) ||
-                       (r.facultyName || '').toLowerCase().includes(search);
+                const matchEmail = (r.email || '').toLowerCase().includes(search);
+                const matchId = (r.studentId || '').includes(search);
+                const matchFaculty = (r.facultyName || '').toLowerCase().includes(search);
+                const matchTools = Array.isArray(r.selectedAITools) && r.selectedAITools.some(t => t.toLowerCase().includes(search));
+                return matchEmail || matchId || matchFaculty || matchTools;
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-slate-400">ไม่พบข้อมูลผู้ลงทะเบียน</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-slate-400">ไม่พบข้อมูลที่ตรงกับการค้นหา</td></tr>';
                 return;
             }
 
             tbody.innerHTML = filtered.map(r => {
                 const dateStr = r.registeredAt ? new Date(r.registeredAt).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }) : '-';
-                const tools = Array.isArray(r.selectedAITools) ? r.selectedAITools.map(t => `<span class="inline-block bg-purple-50 text-purple-700 text-[10px] px-1.5 py-0.5 rounded border border-purple-200 mr-1 mb-1">${t}</span>`).join('') : '-';
+                
+                // User Type Badge
+                const isStudent = (r.userType || '').includes('นิสิต') || !!r.studentId;
+                const typeBadge = isStudent 
+                    ? `<span class="inline-flex items-center gap-1 bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full font-bold text-[11px]"><i data-lucide="graduation-cap" class="w-3 h-3"></i>นิสิต</span>`
+                    : `<span class="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold text-[11px]"><i data-lucide="briefcase" class="w-3 h-3"></i>บุคลากร</span>`;
+
+                // Selected Tools Badges
+                const selectedTools = Array.isArray(r.selectedAITools) 
+                    ? r.selectedAITools.map(t => `<span class="inline-block bg-purple-50 text-purple-700 text-[10px] px-1.5 py-0.5 rounded border border-purple-200 mr-1 mb-1">${t}</span>`).join('')
+                    : '-';
+
+                // Actual AI usage calculated from usage_logs
+                const emailKey = (r.email || '').toLowerCase().trim();
+                const studentIdKey = (r.studentId ? `${r.studentId}@student.chula.ac.th` : '').toLowerCase().trim();
+                const actualMap = userActualUsageMap[emailKey] || userActualUsageMap[studentIdKey] || null;
+
+                let actualUsageHtml = '';
+                if (actualMap && Object.keys(actualMap).length > 0) {
+                    actualUsageHtml = Object.entries(actualMap).map(([tool, secs]) => {
+                        const mins = Math.round(secs / 60);
+                        const durText = mins >= 60 ? `${(mins/60).toFixed(1)} ชม.` : `${mins} นาที`;
+                        return `<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 text-[10px] px-2 py-0.5 rounded-md border border-emerald-200 font-semibold mr-1 mb-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${tool}: ${durText}</span>`;
+                    }).join('');
+                } else {
+                    actualUsageHtml = `<span class="text-slate-400 text-[11px] italic">ยังไม่มีประวัติการใช้งาน</span>`;
+                }
+
                 return `
                     <tr class="hover:bg-slate-50/80 transition">
-                        <td class="py-3 px-4 font-mono text-[11px] text-slate-500 whitespace-nowrap">${dateStr}</td>
-                        <td class="py-3 px-4 font-semibold text-slate-800">${r.userType || '-'}</td>
-                        <td class="py-3 px-4 font-mono text-slate-700">${r.studentId || r.email || '-'}</td>
-                        <td class="py-3 px-4 text-slate-700">${r.facultyName || '-'}</td>
-                        <td class="py-3 px-4 text-slate-600">${r.degree || r.personnelType || '-'}</td>
-                        <td class="py-3 px-4 max-w-[200px]">${tools}</td>
+                        <!-- 1. เวลาที่ลงทะเบียน -->
+                        <td class="py-3.5 px-4 font-mono text-[11px] text-slate-500 whitespace-nowrap">${dateStr}</td>
+                        <!-- 2. ประเภท -->
+                        <td class="py-3.5 px-4 whitespace-nowrap">${typeBadge}</td>
+                        <!-- 3. รหัสนิสิต / อีเมล -->
+                        <td class="py-3.5 px-4 font-mono text-slate-800 font-medium">${r.studentId || r.email || '-'}</td>
+                        <!-- 4. หน่วยงานที่สังกัด -->
+                        <td class="py-3.5 px-4 text-slate-700 font-medium">${r.facultyName || '-'}</td>
+                        <!-- 5. ระดับ / ตำแหน่ง -->
+                        <td class="py-3.5 px-4 text-slate-600">${r.degree || r.personnelType || '-'}</td>
+                        <!-- 6. เครื่องมือ AI ที่เลือกในฟอร์ม -->
+                        <td class="py-3.5 px-4 max-w-[200px]">${selectedTools}</td>
+                        <!-- 7. เครื่องมือ AI ที่ใช้จริงและเวลา -->
+                        <td class="py-3.5 px-4 max-w-[260px]">${actualUsageHtml}</td>
                     </tr>
                 `;
             }).join('');
+            lucide.createIcons();
         }
 
-        function renderToolBadgesGrid(toolCounts) {
+        function renderToolBadgesGrid() {
             const container = document.getElementById('toolBadgesGrid');
             if (!container) return;
+
+            const toolCounts = {};
+            rawRegistrations.forEach(r => {
+                if (Array.isArray(r.selectedAITools)) {
+                    r.selectedAITools.forEach(t => toolCounts[t] = (toolCounts[t] || 0) + 1);
+                }
+            });
 
             const tools = ["ChatGPT", "Claude", "Grammarly", "Connected Papers", "Runway", "Consensus", "SciSpace", "Perplexity", "Gemini"];
             container.innerHTML = tools.map(t => {
@@ -1278,43 +1473,30 @@
             const facultySummary = {};
             rawRegistrations.forEach(r => {
                 const f = r.facultyName || 'ไม่ระบุสังกัด';
-                if (!facultySummary[f]) {
-                    facultySummary[f] = { count: 0, purposes: {}, activities: {} };
-                }
+                if (!facultySummary[f]) facultySummary[f] = { count: 0, purposes: {}, activities: {} };
                 facultySummary[f].count++;
                 if (Array.isArray(r.primaryPurposes)) {
-                    r.primaryPurposes.forEach(p => {
-                        facultySummary[f].purposes[p] = (facultySummary[f].purposes[p] || 0) + 1;
-                    });
+                    r.primaryPurposes.forEach(p => facultySummary[f].purposes[p] = (facultySummary[f].purposes[p] || 0) + 1);
                 }
                 if (Array.isArray(r.activities)) {
-                    r.activities.forEach(a => {
-                        facultySummary[f].activities[a] = (facultySummary[f].activities[a] || 0) + 1;
-                    });
+                    r.activities.forEach(a => facultySummary[f].activities[a] = (facultySummary[f].activities[a] || 0) + 1);
                 }
             });
 
             const sorted = Object.entries(facultySummary).sort((a, b) => b[1].count - a[1].count);
-
             if (sorted.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-slate-400">ยังไม่มีข้อมูลสำหรับวิเคราะห์</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-slate-400">ยังไม่มีข้อมูล</td></tr>';
                 return;
             }
 
             tbody.innerHTML = sorted.map(([faculty, item]) => {
-                // Find top purpose
                 let topPurp = '-';
                 let maxP = 0;
-                Object.entries(item.purposes).forEach(([p, c]) => {
-                    if (c > maxP) { maxP = c; topPurp = p; }
-                });
+                Object.entries(item.purposes).forEach(([p, c]) => { if (c > maxP) { maxP = c; topPurp = p; } });
 
-                // Find top activity
                 let topAct = '-';
                 let maxA = 0;
-                Object.entries(item.activities).forEach(([a, c]) => {
-                    if (c > maxA) { maxA = c; topAct = a; }
-                });
+                Object.entries(item.activities).forEach(([a, c]) => { if (c > maxA) { maxA = c; topAct = a; } });
 
                 return `
                     <tr class="hover:bg-slate-50/80 transition">
@@ -1336,7 +1518,7 @@
                 return;
             }
 
-            let csv = '\uFEFF'; // UTF-8 BOM
+            let csv = '\uFEFF';
             csv += 'Timestamp,UserType,StudentId,Email,Faculty,Degree,PersonnelType,SelectedAITools,PlanDuration,PrimaryPurposes,Activities\n';
 
             rawRegistrations.forEach(r => {
