@@ -793,8 +793,9 @@
                 var w = 680, h = 840;
                 var left = (window.screen.width / 2) - (w / 2);
                 var top = (window.screen.height / 2) - (h / 2);
+                var targetUrl = REGISTRATION_URL + (REGISTRATION_URL.indexOf('?') === -1 ? '?' : '&') + 'v=' + Date.now();
                 popupWin = window.open(
-                    REGISTRATION_URL,
+                    targetUrl,
                     'ChulaAIX_Register',
                     'width=' + w + ',height=' + h + ',top=' + top + ',left=' + left + ',resizable=yes,scrollbars=yes,status=no,toolbar=no'
                 );
