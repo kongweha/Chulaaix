@@ -486,6 +486,12 @@
                 localStorage.removeItem('gf_unlock_status');
 
                 var now = Date.now();
+                // Reset all tool usage duration counters to 0 for the brand new session
+                for (var d in AI_TOOLS_MAP) {
+                    var tName = AI_TOOLS_MAP[d];
+                    GM_setValue('aix_tool_sec_' + tName, 0);
+                    GM_setValue('aix_tool_tick_' + tName, 0);
+                }
                 GM_setValue(KEY_STATUS, 'active');
                 GM_setValue(KEY_EMAIL, email);
                 GM_setValue(KEY_HEARTBEAT, now);
