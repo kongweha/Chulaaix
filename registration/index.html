@@ -853,6 +853,13 @@
             });
         }
 
+        // Clean URL query string from address bar immediately
+        try {
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        } catch (e) {}
+
         // Initialize UI & Clean Old Token
         document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('gf_unlock_status');
