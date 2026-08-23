@@ -874,14 +874,14 @@
             var charWrap = document.createElement('div');
             Object.assign(charWrap.style, {
                 flex:'1',display:'flex',alignItems:'flex-end',
-                justifyContent:'center',height:'100%',minHeight:'560px',
+                justifyContent:'center',height:'100%',
                 overflow:'hidden',marginBottom:'0px',paddingBottom:'0px'
             });
             var charImg = document.createElement('img');
             charImg.src = CHAR_SRC;
             charImg.decoding = 'async';
             Object.assign(charImg.style, {
-                height:'120%',maxHeight:'120%',minHeight:'560px',maxWidth:'100%',
+                maxHeight:'100%',maxWidth:'100%',height:'auto',
                 objectFit:'contain',objectPosition:'bottom center',
                 display:'block',verticalAlign:'bottom',marginBottom:'0px'
             });
