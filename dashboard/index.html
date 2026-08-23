@@ -78,28 +78,65 @@
             background: #cbd5e1;
             border-radius: 9999px;
         }
+
+        /* ── Collapsible Sidebar Transition Rules ── */
+        #sidebar {
+            transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #sidebar.sidebar-collapsed {
+            width: 5rem !important; /* 80px */
+        }
+        #sidebar.sidebar-collapsed .sidebar-text,
+        #sidebar.sidebar-collapsed .sidebar-header-text,
+        #sidebar.sidebar-collapsed .sidebar-footer-text {
+            display: none !important;
+        }
+        #sidebar.sidebar-collapsed .nav-item {
+            justify-content: center !important;
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+        }
+        #sidebar.sidebar-collapsed .brand-header {
+            justify-content: center !important;
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+        }
+        #sidebar.sidebar-collapsed .sidebar-footer {
+            padding: 0.5rem !important;
+            text-align: center !important;
+        }
+        #sidebar.sidebar-collapsed .sidebar-footer-box {
+            padding: 0.5rem !important;
+            display: flex !important;
+            justify-content: center !important;
+        }
     </style>
 </head>
 <body class="min-h-screen text-slate-800 flex flex-col md:flex-row antialiased overflow-x-hidden">
 
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- LEFT-SIDE NAVIGATION BAR -->
+    <!-- LEFT-SIDE NAVIGATION BAR (Collapsible Sidebar) -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <aside id="sidebar" class="gradient-sidebar text-white w-full md:w-64 lg:w-72 shrink-0 md:min-h-screen flex flex-col justify-between z-40 border-r border-purple-950/40">
         
         <!-- Sidebar Top: Brand & Menu -->
         <div>
-            <!-- Brand Logo Header -->
-            <div class="px-6 py-5 flex items-center justify-between border-b border-white/10">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-300/30 flex items-center justify-center shadow-inner">
+            <!-- Brand Logo Header with Collapse Toggle -->
+            <div class="brand-header px-5 py-5 flex items-center justify-between border-b border-white/10">
+                <div class="flex items-center gap-3 overflow-hidden">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-300/30 flex items-center justify-center shrink-0 shadow-inner">
                         <i data-lucide="sparkles" class="w-5 h-5 text-purple-300"></i>
                     </div>
-                    <div>
+                    <div class="sidebar-header-text truncate">
                         <h1 class="text-lg font-extrabold tracking-wide text-white leading-tight">Chula AIX</h1>
                         <p class="text-[11px] text-purple-200/70 font-light">Analytics & Intelligence</p>
                     </div>
                 </div>
+
+                <!-- Desktop Collapse Toggle Button -->
+                <button onclick="toggleSidebarCollapse()" class="hidden md:flex text-purple-300 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition" title="ย่อ/ขยายแถบเมนู (Toggle Sidebar)">
+                    <i id="collapseIcon" data-lucide="panel-left-close" class="w-4 h-4"></i>
+                </button>
 
                 <!-- Mobile Menu Toggle Button -->
                 <button onclick="toggleMobileMenu()" class="md:hidden text-purple-200 hover:text-white p-1 rounded-lg">
@@ -109,42 +146,42 @@
 
             <!-- Navigation Links List -->
             <nav id="navLinks" class="p-3 space-y-1.5 hidden md:block">
-                <div class="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-purple-300/60">
+                <div class="sidebar-text px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-purple-300/60">
                     มุมมองข้อมูล (Analytics Views)
                 </div>
 
                 <!-- Nav 1: Overview -->
-                <button onclick="switchView('overview')" id="nav-overview"
+                <button onclick="switchView('overview')" id="nav-overview" title="ภาพรวมระบบ (Overview)"
                         class="nav-item active w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-left text-sm text-purple-200">
                     <i data-lucide="layout-dashboard" class="w-4 h-4 shrink-0 text-purple-300"></i>
-                    <span class="truncate">ภาพรวมระบบ (Overview)</span>
+                    <span class="sidebar-text truncate">ภาพรวมระบบ (Overview)</span>
                 </button>
 
                 <!-- Nav 2: Demographics & Faculty -->
-                <button onclick="switchView('demographics')" id="nav-demographics"
+                <button onclick="switchView('demographics')" id="nav-demographics" title="นิสิตและบุคลากร (Demographics & Faculties)"
                         class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-left text-sm text-purple-200">
                     <i data-lucide="users" class="w-4 h-4 shrink-0 text-purple-300"></i>
-                    <div class="truncate">
+                    <div class="sidebar-text truncate">
                         <div>นิสิตและบุคลากร</div>
                         <div class="text-[10px] opacity-70">User & Faculty Breakdown</div>
                     </div>
                 </button>
 
                 <!-- Nav 3: AI Tools & Duration -->
-                <button onclick="switchView('tools-duration')" id="nav-tools-duration"
+                <button onclick="switchView('tools-duration')" id="nav-tools-duration" title="เครื่องมือ AI และเวลา (AI Tools & Duration)"
                         class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-left text-sm text-purple-200">
                     <i data-lucide="bot" class="w-4 h-4 shrink-0 text-purple-300"></i>
-                    <div class="truncate">
+                    <div class="sidebar-text truncate">
                         <div>เครื่องมือ AI และเวลา</div>
                         <div class="text-[10px] opacity-70">AI Tools & Usage Duration</div>
                     </div>
                 </button>
 
                 <!-- Nav 4: Survey Responses -->
-                <button onclick="switchView('survey-responses')" id="nav-survey-responses"
+                <button onclick="switchView('survey-responses')" id="nav-survey-responses" title="คำตอบในแต่ละส่วน (Survey Responses)"
                         class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-left text-sm text-purple-200">
                     <i data-lucide="clipboard-list" class="w-4 h-4 shrink-0 text-purple-300"></i>
-                    <div class="truncate">
+                    <div class="sidebar-text truncate">
                         <div>คำตอบในแต่ละส่วน</div>
                         <div class="text-[10px] opacity-70">Survey Insights & Activities</div>
                     </div>
@@ -153,16 +190,16 @@
         </div>
 
         <!-- Sidebar Bottom: Status & Quick Info -->
-        <div class="p-4 border-t border-white/10 hidden md:block">
-            <div class="bg-white/5 rounded-2xl p-3.5 border border-white/10 text-xs text-purple-200/80 space-y-2">
+        <div class="sidebar-footer p-4 border-t border-white/10 hidden md:block">
+            <div class="sidebar-footer-box bg-white/5 rounded-2xl p-3.5 border border-white/10 text-xs text-purple-200/80 space-y-2">
                 <div class="flex items-center justify-between">
                     <span class="flex items-center gap-1.5 text-emerald-400 font-semibold">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        Firebase Live
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+                        <span class="sidebar-footer-text">Firebase Live</span>
                     </span>
-                    <span id="badgeTotalUsersCount" class="bg-purple-500/30 text-purple-200 px-2 py-0.5 rounded-full text-[10px] font-bold">0 users</span>
+                    <span id="badgeTotalUsersCount" class="sidebar-footer-text bg-purple-500/30 text-purple-200 px-2 py-0.5 rounded-full text-[10px] font-bold">0 users</span>
                 </div>
-                <div class="text-[11px] text-purple-300/60 leading-tight">
+                <div class="sidebar-footer-text text-[11px] text-purple-300/60 leading-tight">
                     สำนักงานวิทยทรัพยากร จุฬาฯ<br>
                     Chula AIX Data Platform
                 </div>
@@ -178,12 +215,19 @@
         
         <!-- Top App Bar Header -->
         <header class="bg-white border-b border-slate-200 px-4 sm:px-8 py-4 sticky top-0 z-30 flex items-center justify-between gap-4 shadow-sm">
-            <div>
-                <h2 id="viewTitle" class="text-lg sm:text-xl font-extrabold text-slate-800 flex items-center gap-2">
-                    <span id="viewTitleIcon"><i data-lucide="layout-dashboard" class="w-5 h-5 text-brand-700"></i></span>
-                    <span id="viewTitleText">ภาพรวมระบบ (Overview)</span>
-                </h2>
-                <p id="viewSubtitleText" class="text-xs text-slate-500 font-normal">สรุปภาพรวมการเข้าใช้งานและสถิติเครื่องมือ AI</p>
+            <div class="flex items-center gap-3">
+                <!-- Sidebar Collapse Icon in Header -->
+                <button onclick="toggleSidebarCollapse()" class="hidden md:flex items-center justify-center w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition" title="ย่อ/ขยาย Sidebar">
+                    <i data-lucide="panel-left" class="w-4 h-4"></i>
+                </button>
+
+                <div>
+                    <h2 id="viewTitle" class="text-lg sm:text-xl font-extrabold text-slate-800 flex items-center gap-2">
+                        <span id="viewTitleIcon"><i data-lucide="layout-dashboard" class="w-5 h-5 text-brand-700"></i></span>
+                        <span id="viewTitleText">ภาพรวมระบบ (Overview)</span>
+                    </h2>
+                    <p id="viewSubtitleText" class="text-xs text-slate-500 font-normal">สรุปภาพรวมการเข้าใช้งานและสถิติเครื่องมือ AI</p>
+                </div>
             </div>
 
             <!-- Header Action Buttons -->
@@ -206,7 +250,7 @@
         <main class="p-4 sm:p-6 lg:p-8 flex-1 max-w-7xl w-full mx-auto space-y-6">
 
             <!-- ═══════════════════════════════════════════════════════════ -->
-            <!-- VIEW 1: OVERVIEW (ภาพรวมระบบที่ออกแบบใหม่) -->
+            <!-- VIEW 1: OVERVIEW (ภาพรวมระบบ) -->
             <!-- ═══════════════════════════════════════════════════════════ -->
             <div id="view-overview" class="view-panel space-y-6">
                 
@@ -293,9 +337,7 @@
                         <div class="relative h-56 w-full flex items-center justify-center">
                             <canvas id="chartOverviewUserTypesDonut"></canvas>
                         </div>
-                        <div id="userTypesLegendDetails" class="text-xs space-y-1 pt-2 border-t border-slate-100">
-                            <!-- Populated dynamically -->
-                        </div>
+                        <div id="userTypesLegendDetails" class="text-xs space-y-1 pt-2 border-t border-slate-100"></div>
                     </div>
 
                     <!-- 2.3 โดนัทชาร์ตระยะเวลาใช้ในแต่ละเครื่องมือ AI พร้อมเวลารวมชั่วโมงตรงกลาง (3 Cols) -->
@@ -310,9 +352,7 @@
                         <div class="relative h-56 w-full flex items-center justify-center">
                             <canvas id="chartOverviewToolsDurationDonut"></canvas>
                         </div>
-                        <div id="toolsDurationLegendDetails" class="text-xs space-y-1 pt-2 border-t border-slate-100">
-                            <!-- Populated dynamically -->
-                        </div>
+                        <div id="toolsDurationLegendDetails" class="text-xs space-y-1 pt-2 border-t border-slate-100"></div>
                     </div>
 
                 </div>
@@ -648,9 +688,36 @@
         // ═══════════════════════════════════════════════════════════
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
+            
+            // Check saved sidebar preference
+            if (localStorage.getItem('aix_sidebar_collapsed') === '1') {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) sidebar.classList.add('sidebar-collapsed');
+                const icon = document.getElementById('collapseIcon');
+                if (icon) icon.setAttribute('data-lucide', 'panel-left-open');
+            }
+
             initFirebaseListeners();
             switchView('overview');
         });
+
+        function toggleSidebarCollapse() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('sidebar-collapsed');
+            const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+            localStorage.setItem('aix_sidebar_collapsed', isCollapsed ? '1' : '0');
+
+            const icon = document.getElementById('collapseIcon');
+            if (icon) {
+                icon.setAttribute('data-lucide', isCollapsed ? 'panel-left-open' : 'panel-left-close');
+                lucide.createIcons();
+            }
+
+            // Re-render chart sizes smoothly after width transition
+            setTimeout(() => {
+                renderCurrentViewCharts();
+            }, 260);
+        }
 
         function toggleMobileMenu() {
             const nav = document.getElementById('navLinks');
@@ -744,7 +811,7 @@
             document.getElementById('badgeTotalUsersCount').textContent = `${totalUsers} users`;
 
             // 1.2 AI ที่มีระยะเวลาการใช้มากที่สุด (จาก usage_logs)
-            const toolDurations = {}; // in seconds
+            const toolDurations = {};
             let grandTotalSeconds = 0;
             rawUsageLogs.forEach(log => {
                 const tool = log.tool || 'Other AI';
@@ -791,7 +858,6 @@
             document.getElementById('statTopFacultySub').textContent = maxFacultyCount > 0 ? `${maxFacultyCount} คน (${Math.round((maxFacultyCount/Math.max(totalUsers,1))*100)}%)` : '0 คน';
 
             // 1.4 ระยะเวลาเฉลี่ยการใช้เครื่องมือต่อคน
-            // Total seconds / total registered users (or unique active users)
             const divisor = Math.max(totalUsers, 1);
             const avgSecPerPerson = grandTotalSeconds / divisor;
             const avgMinsPerPerson = Math.round(avgSecPerPerson / 60);
@@ -837,10 +903,8 @@
         }
 
         // ───────────────────────────────────────────────────────────
-        // OVERVIEW CHARTS (3 Charts Row)
+        // OVERVIEW CHARTS
         // ───────────────────────────────────────────────────────────
-
-        // 2.1 กราฟเชิงเส้นแสดงผู้มาใช้รายวัน แยก นิสิต vs บุคลากร
         function renderOverviewDailyTrendsChart() {
             destroyChart('chartOverviewDailyTrends');
             const ctx = document.getElementById('chartOverviewDailyTrends')?.getContext('2d');
@@ -867,7 +931,6 @@
                     }
                 });
 
-                // Also count usage logs if available
                 rawUsageLogs.forEach(l => {
                     if ((l.timestamp || '').startsWith(dateStr)) {
                         const email = (l.userEmail || '').toLowerCase();
@@ -926,7 +989,6 @@
             });
         }
 
-        // 2.2 โดนัทชาร์ตสัดส่วนผู้ใช้งาน (พร้อมจำนวน & % และจำนวนรวมตรงกลาง)
         function renderOverviewUserTypesDonut() {
             destroyChart('chartOverviewUserTypesDonut');
             const ctx = document.getElementById('chartOverviewUserTypesDonut')?.getContext('2d');
@@ -943,7 +1005,6 @@
             const studentPct = total > 0 ? Math.round((students / total) * 100) : 0;
             const personnelPct = total > 0 ? Math.round((personnel / total) * 100) : 0;
 
-            // Update details legend below chart
             const legendContainer = document.getElementById('userTypesLegendDetails');
             if (legendContainer) {
                 legendContainer.innerHTML = `
@@ -996,7 +1057,6 @@
             });
         }
 
-        // 2.3 โดนัทชาร์ตระยะเวลาใช้ในแต่ละเครื่องมือ AI (พร้อมเวลารวมชั่วโมงตรงกลาง)
         function renderOverviewToolsDurationDonut() {
             destroyChart('chartOverviewToolsDurationDonut');
             const ctx = document.getElementById('chartOverviewToolsDurationDonut')?.getContext('2d');
@@ -1016,7 +1076,6 @@
                 grandTotalSecs += s;
             });
 
-            // Filter tools with duration > 0 (or show default distribution if no data yet)
             const labels = [];
             const dataHours = [];
             const colors = [];
@@ -1036,7 +1095,6 @@
 
             const totalHours = (grandTotalSecs / 3600).toFixed(1);
 
-            // Update details legend below chart
             const legendContainer = document.getElementById('toolsDurationLegendDetails');
             if (legendContainer) {
                 if (labels.length > 0) {
@@ -1364,7 +1422,6 @@
 
             const search = (document.getElementById('inputSearchOverviewTable')?.value || '').toLowerCase();
             
-            // Map usage logs to user emails/studentIds to calculate active usage per tool
             const userActualUsageMap = {};
             rawUsageLogs.forEach(l => {
                 const userKey = (l.userEmail || '').toLowerCase().trim();
@@ -1392,18 +1449,15 @@
             tbody.innerHTML = filtered.map(r => {
                 const dateStr = r.registeredAt ? new Date(r.registeredAt).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }) : '-';
                 
-                // User Type Badge
                 const isStudent = (r.userType || '').includes('นิสิต') || !!r.studentId;
                 const typeBadge = isStudent 
                     ? `<span class="inline-flex items-center gap-1 bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full font-bold text-[11px]"><i data-lucide="graduation-cap" class="w-3 h-3"></i>นิสิต</span>`
                     : `<span class="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold text-[11px]"><i data-lucide="briefcase" class="w-3 h-3"></i>บุคลากร</span>`;
 
-                // Selected Tools Badges
                 const selectedTools = Array.isArray(r.selectedAITools) 
                     ? r.selectedAITools.map(t => `<span class="inline-block bg-purple-50 text-purple-700 text-[10px] px-1.5 py-0.5 rounded border border-purple-200 mr-1 mb-1">${t}</span>`).join('')
                     : '-';
 
-                // Actual AI usage calculated from usage_logs
                 const emailKey = (r.email || '').toLowerCase().trim();
                 const studentIdKey = (r.studentId ? `${r.studentId}@student.chula.ac.th` : '').toLowerCase().trim();
                 const actualMap = userActualUsageMap[emailKey] || userActualUsageMap[studentIdKey] || null;
@@ -1421,19 +1475,12 @@
 
                 return `
                     <tr class="hover:bg-slate-50/80 transition">
-                        <!-- 1. เวลาที่ลงทะเบียน -->
                         <td class="py-3.5 px-4 font-mono text-[11px] text-slate-500 whitespace-nowrap">${dateStr}</td>
-                        <!-- 2. ประเภท -->
                         <td class="py-3.5 px-4 whitespace-nowrap">${typeBadge}</td>
-                        <!-- 3. รหัสนิสิต / อีเมล -->
                         <td class="py-3.5 px-4 font-mono text-slate-800 font-medium">${r.studentId || r.email || '-'}</td>
-                        <!-- 4. หน่วยงานที่สังกัด -->
                         <td class="py-3.5 px-4 text-slate-700 font-medium">${r.facultyName || '-'}</td>
-                        <!-- 5. ระดับ / ตำแหน่ง -->
                         <td class="py-3.5 px-4 text-slate-600">${r.degree || r.personnelType || '-'}</td>
-                        <!-- 6. เครื่องมือ AI ที่เลือกในฟอร์ม -->
                         <td class="py-3.5 px-4 max-w-[200px]">${selectedTools}</td>
-                        <!-- 7. เครื่องมือ AI ที่ใช้จริงและเวลา -->
                         <td class="py-3.5 px-4 max-w-[260px]">${actualUsageHtml}</td>
                     </tr>
                 `;
