@@ -804,6 +804,25 @@
         // ═══════════════════════════════════════════════════════════
         // CALCULATIONS & KPIS UPDATE
         // ═══════════════════════════════════════════════════════════
+        function getLogToolDurations(log) {
+            const res = {};
+            if (log.tools && typeof log.tools === 'object') {
+                Object.entries(log.tools).forEach(([t, s]) => {
+                    const sec = Number(s) || 0;
+                    if (sec > 0) res[t] = (res[t] || 0) + sec;
+                });
+            }
+            if (log.tool) {
+                const sec = Number(log.durationSeconds) || 0;
+                if (sec > 0) res[log.tool] = (res[log.tool] || 0) + sec;
+            }
+            if (Object.keys(res).length === 0) {
+                const total = Number(log.totalSessionSeconds) || Number(log.activeToolsTotalSeconds) || 0;
+                if (total > 0) res['ChatGPT'] = total;
+            }
+            return res;
+        }
+
         function updateAllStats() {
             // 1.1 ผู้ลงทะเบียนทั้งหมด
             const totalUsers = rawRegistrations.length;
@@ -814,10 +833,11 @@
             const toolDurations = {};
             let grandTotalSeconds = 0;
             rawUsageLogs.forEach(log => {
-                const tool = log.tool || 'Other AI';
-                const dur = Number(log.durationSeconds) || 0;
-                toolDurations[tool] = (toolDurations[tool] || 0) + dur;
-                grandTotalSeconds += dur;
+                const logTools = getLogToolDurations(log);
+                Object.entries(logTools).forEach(([t, sec]) => {
+                    toolDurations[t] = (toolDurations[t] || 0) + sec;
+                    grandTotalSeconds += sec;
+                });
             });
 
             let topDurationTool = '-';
@@ -1069,11 +1089,12 @@
             let grandTotalSecs = 0;
 
             rawUsageLogs.forEach(l => {
-                const t = l.tool || 'ChatGPT';
-                const s = Number(l.durationSeconds) || 0;
-                if (toolDurations[t] !== undefined) toolDurations[t] += s;
-                else toolDurations[t] = s;
-                grandTotalSecs += s;
+                const logTools = getLogToolDurations(l);
+                Object.entries(logTools).forEach(([t, s]) => {
+                    if (toolDurations[t] !== undefined) toolDurations[t] += s;
+                    else toolDurations[t] = s;
+                    grandTotalSecs += s;
+                });
             });
 
             const labels = [];
@@ -1424,12 +1445,13 @@
             
             const userActualUsageMap = {};
             rawUsageLogs.forEach(l => {
-                const userKey = (l.userEmail || '').toLowerCase().trim();
+                const userKey = (l.email || l.userEmail || '').toLowerCase().trim();
                 if (!userKey) return;
                 if (!userActualUsageMap[userKey]) userActualUsageMap[userKey] = {};
-                const tool = l.tool || 'AI Tool';
-                const dur = Number(l.durationSeconds) || 0;
-                userActualUsageMap[userKey][tool] = (userActualUsageMap[userKey][tool] || 0) + dur;
+                const logTools = getLogToolDurations(l);
+                Object.entries(logTools).forEach(([tool, dur]) => {
+                    userActualUsageMap[userKey][tool] = (userActualUsageMap[userKey][tool] || 0) + dur;
+                });
             });
 
             const filtered = rawRegistrations.filter(r => {
