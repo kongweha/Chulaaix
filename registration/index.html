@@ -69,6 +69,12 @@
         .form-card:hover {
             border-color: #d8b4fe;
         }
+        .tool-icon-img {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen flex items-center justify-center p-3 sm:p-6 lg:p-8">
@@ -106,7 +112,7 @@
         <div id="formContainer" class="p-5 sm:p-8 space-y-7">
 
             <!-- ═══════════════════════════════════════════════════════════ -->
-            <!-- SECTION 1: USER INFORMATION (ข้อมูลผู้ใช้งาน) -->
+            <!-- SECTION 1: USER INFORMATION -->
             <!-- ═══════════════════════════════════════════════════════════ -->
             <div class="form-card space-y-5 bg-gradient-to-b from-purple-50/30 to-white">
                 <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
@@ -114,7 +120,7 @@
                     <h2 id="t_sec1_title" class="font-bold text-gray-800 text-base">ข้อมูลผู้ใช้งาน (User Information)</h2>
                 </div>
 
-                <!-- Step 1: User Type Selection -->
+                <!-- User Type Selection (Unchecked by default) -->
                 <div>
                     <label id="t_lbl_usertype" class="block text-sm font-semibold text-gray-700 mb-2.5">
                         ประเภทผู้ใช้งาน <span class="text-rose-500">*</span>
@@ -157,7 +163,7 @@
                             รหัสนิสิต (Student ID) 10 หลัก <span class="text-rose-500">*</span>
                         </label>
                         <div class="relative">
-                            <input type="text" id="studentId" maxlength="10" placeholder="เช่น 6531234521"
+                            <input type="text" id="studentId" maxlength="10" placeholder="Your student ID"
                                    class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-base input-focus font-medium tracking-wider"
                                    oninput="validateStudentId()">
                             <div id="studentIdIcon" class="absolute right-3.5 top-3.5 hidden">
@@ -176,7 +182,7 @@
                         </label>
                         <div class="grid grid-cols-3 gap-2.5">
                             <label class="cursor-pointer">
-                                <input type="radio" name="studentDegree" value="Bachelor" class="peer sr-only" checked>
+                                <input type="radio" name="studentDegree" value="Bachelor" class="peer sr-only">
                                 <div id="t_opt_bachelor" class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/70 peer-checked:text-chula-900 font-semibold text-xs sm:text-sm text-gray-600 transition-all">
                                     ปริญญาตรี
                                 </div>
@@ -204,7 +210,7 @@
                             อีเมลบุคลากรจุฬาฯ (Chula Email) <span class="text-rose-500">*</span>
                         </label>
                         <div class="relative">
-                            <input type="email" id="personnelEmail" placeholder="เช่น kongweha.i@chula.ac.th"
+                            <input type="email" id="personnelEmail" placeholder="Your Chula email"
                                    class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-base input-focus"
                                    oninput="validatePersonnelEmail()">
                             <div id="personnelEmailIcon" class="absolute right-3.5 top-3.5 hidden">
@@ -223,7 +229,7 @@
                         </label>
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                             <label class="cursor-pointer">
-                                <input type="radio" name="personnelType" value="อาจารย์" class="peer sr-only" checked>
+                                <input type="radio" name="personnelType" value="อาจารย์" class="peer sr-only">
                                 <div id="t_opt_teacher" class="py-2 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/70 peer-checked:text-chula-900 font-semibold text-xs text-gray-600 transition-all">
                                     อาจารย์
                                 </div>
@@ -267,7 +273,7 @@
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════ -->
-            <!-- SECTION 2: AI TOOLS & EXPECTED DURATION (เครื่องมือ AI และระยะเวลา) -->
+            <!-- SECTION 2: AI TOOLS & EXPECTED DURATION -->
             <!-- ═══════════════════════════════════════════════════════════ -->
             <div id="section2" class="hidden form-card space-y-5">
                 <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
@@ -275,59 +281,77 @@
                     <h2 id="t_sec2_title" class="font-bold text-gray-800 text-base">การใช้งาน AI ในวันนี้ (AI Usage Details)</h2>
                 </div>
 
-                <!-- Q1: AI Tools to use -->
+                <!-- Q1: AI Tools with Logos (Unchecked by default) -->
                 <div>
                     <label id="t_q1_title" class="block text-sm font-semibold text-gray-700 mb-2.5">
                         เครื่องมือ AI ที่ต้องการใช้งานในวันนี้ (เลือกได้หลายข้อ) <span class="text-rose-500">*</span>
                     </label>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs sm:text-sm text-gray-700">
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
-                            <input type="checkbox" name="aiToolChoice" value="ChatGPT" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500" checked>
-                            <span class="font-medium">ChatGPT</span>
+                        <!-- ChatGPT -->
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
+                            <input type="checkbox" name="aiToolChoice" value="ChatGPT" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0">
+                            <img src="https://chatgpt.com/favicon.ico" alt="ChatGPT" class="tool-icon-img shrink-0" onerror="this.src='https://cdn.simpleicons.org/openai/10A37F'">
+                            <span class="font-medium truncate">ChatGPT</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
-                            <input type="checkbox" name="aiToolChoice" value="Claude" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span class="font-medium">Claude</span>
+                        <!-- Claude -->
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
+                            <input type="checkbox" name="aiToolChoice" value="Claude" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0">
+                            <img src="https://cdn.simpleicons.org/claude/D97757" alt="Claude" class="tool-icon-img shrink-0">
+                            <span class="font-medium truncate">Claude</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
-                            <input type="checkbox" name="aiToolChoice" value="Grammarly" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span class="font-medium">Grammarly</span>
+                        <!-- Grammarly -->
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
+                            <input type="checkbox" name="aiToolChoice" value="Grammarly" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0">
+                            <img src="https://cdn.simpleicons.org/grammarly/15C39A" alt="Grammarly" class="tool-icon-img shrink-0">
+                            <span class="font-medium truncate">Grammarly</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
-                            <input type="checkbox" name="aiToolChoice" value="Connected Papers" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span class="font-medium">Connected Papers</span>
+                        <!-- Connected Papers -->
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
+                            <input type="checkbox" name="aiToolChoice" value="Connected Papers" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0">
+                            <img src="https://www.connectedpapers.com/favicon.ico" alt="Connected Papers" class="tool-icon-img shrink-0" onerror="this.style.display='none'">
+                            <span class="font-medium truncate">Connected Papers</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
-                            <input type="checkbox" name="aiToolChoice" value="Runway" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span class="font-medium">Runway</span>
+                        <!-- Runway -->
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
+                            <input type="checkbox" name="aiToolChoice" value="Runway" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0">
+                            <img src="https://app.runwayml.com/favicon.ico" alt="Runway" class="tool-icon-img shrink-0" onerror="this.style.display='none'">
+                            <span class="font-medium truncate">Runway</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
-                            <input type="checkbox" name="aiToolChoice" value="Consensus" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span class="font-medium">Consensus</span>
+                        <!-- Consensus -->
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
+                            <input type="checkbox" name="aiToolChoice" value="Consensus" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0">
+                            <img src="https://consensus.app/favicon.ico" alt="Consensus" class="tool-icon-img shrink-0" onerror="this.style.display='none'">
+                            <span class="font-medium truncate">Consensus</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
-                            <input type="checkbox" name="aiToolChoice" value="SciSpace" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span class="font-medium">SciSpace</span>
+                        <!-- SciSpace -->
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
+                            <input type="checkbox" name="aiToolChoice" value="SciSpace" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0">
+                            <img src="https://typeset.io/favicon.ico" alt="SciSpace" class="tool-icon-img shrink-0" onerror="this.style.display='none'">
+                            <span class="font-medium truncate">SciSpace</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
-                            <input type="checkbox" name="aiToolChoice" value="Perplexity" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span class="font-medium">Perplexity</span>
+                        <!-- Perplexity -->
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
+                            <input type="checkbox" name="aiToolChoice" value="Perplexity" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0">
+                            <img src="https://www.perplexity.ai/favicon.ico" alt="Perplexity" class="tool-icon-img shrink-0" onerror="this.style.display='none'">
+                            <span class="font-medium truncate">Perplexity</span>
                         </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
-                            <input type="checkbox" name="aiToolChoice" value="Gemini" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
-                            <span class="font-medium">Gemini</span>
+                        <!-- Gemini -->
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
+                            <input type="checkbox" name="aiToolChoice" value="Gemini" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0">
+                            <img src="https://cdn.simpleicons.org/googlegemini/8E75B2" alt="Gemini" class="tool-icon-img shrink-0">
+                            <span class="font-medium truncate">Gemini</span>
                         </label>
                     </div>
                 </div>
 
-                <!-- Q2: Expected Duration -->
+                <!-- Q2: Expected Duration (Unchecked by default) -->
                 <div>
                     <label id="t_q2_title" class="block text-sm font-semibold text-gray-700 mb-2.5">
                         How long do you plan to use it? (คุณคาดว่าจะใช้งานนานแค่ไหน?) <span class="text-rose-500">*</span>
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-700">
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
-                            <input type="radio" name="planDuration" value="< 15 minutes" class="text-chula-700 focus:ring-chula-500" checked>
+                            <input type="radio" name="planDuration" value="< 15 minutes" class="text-chula-700 focus:ring-chula-500">
                             <span id="t_dur_1">น้อยกว่า 15 นาที (&lt; 15 mins)</span>
                         </label>
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
@@ -351,7 +375,7 @@
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════ -->
-            <!-- SECTION 3: PURPOSE & ACTIVITIES (วัตถุประสงค์และกิจกรรม) -->
+            <!-- SECTION 3: PURPOSE & ACTIVITIES -->
             <!-- ═══════════════════════════════════════════════════════════ -->
             <div id="section3" class="hidden form-card space-y-5">
                 <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
@@ -359,14 +383,14 @@
                     <h2 id="t_sec3_title" class="font-bold text-gray-800 text-base">วัตถุประสงค์และลักษณะงาน (Purpose & Activities)</h2>
                 </div>
 
-                <!-- Q3: Primary Purpose -->
+                <!-- Q3: Primary Purpose (Unchecked by default) -->
                 <div>
                     <label id="t_q3_title" class="block text-sm font-semibold text-gray-700 mb-2.5">
-                        2. What is your primary purpose for using AI today? (วันนี้คุณใช้งาน AI เพื่อวัตถุประสงค์ใดเป็นหลัก?) <span class="text-rose-500">*</span>
+                        What is your primary purpose for using AI today? (วันนี้คุณใช้งาน AI เพื่อวัตถุประสงค์ใดเป็นหลัก?) <span class="text-rose-500">*</span>
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-700">
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
-                            <input type="checkbox" name="primaryPurpose" value="การศึกษาและการเรียนการสอน" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500" checked>
+                            <input type="checkbox" name="primaryPurpose" value="การศึกษาและการเรียนการสอน" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span id="t_purp_1">การเรียนการสอน / การศึกษา (Education)</span>
                         </label>
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
@@ -384,14 +408,14 @@
                     </div>
                 </div>
 
-                <!-- Q4: Activity Types -->
+                <!-- Q4: Activity Types (Unchecked by default) -->
                 <div>
                     <label id="t_q4_title" class="block text-sm font-semibold text-gray-700 mb-2.5">
-                        4. What kind of activities are you using AI for today? (ลักษณะงานหรือกิจกรรมที่คุณใช้ AI ช่วยในวันนี้คืออะไร?) <span class="text-rose-500">*</span>
+                        What kind of activities are you using AI for today? (ลักษณะงานหรือกิจกรรมที่คุณใช้ AI ช่วยในวันนี้คืออะไร?) <span class="text-rose-500">*</span>
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-700">
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
-                            <input type="checkbox" name="activityType" value="ค้นหาข้อมูลและสรุปเนื้อหา" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500" checked>
+                            <input type="checkbox" name="activityType" value="ค้นหาข้อมูลและสรุปเนื้อหา" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span id="t_act_1">ค้นหาข้อมูล / สรุปเนื้อหา (Search & Summary)</span>
                         </label>
                         <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
@@ -419,13 +443,13 @@
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════ -->
-            <!-- SECTION 4: AGREEMENT & SUBMISSION (ข้อตกลงและยืนยัน) -->
+            <!-- SECTION 4: AGREEMENT & SUBMISSION -->
             <!-- ═══════════════════════════════════════════════════════════ -->
             <div id="section4" class="hidden space-y-4">
                 <!-- PDPA & Ethical AI Agreement Card -->
                 <div class="bg-purple-50/80 p-4 sm:p-5 rounded-2xl border border-purple-200/80">
                     <label class="flex items-start gap-3 cursor-pointer">
-                        <input type="checkbox" id="consentAgree" class="w-5 h-5 mt-0.5 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0" checked>
+                        <input type="checkbox" id="consentAgree" class="w-5 h-5 mt-0.5 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0">
                         <span id="t_pdpa_text" class="text-xs text-gray-700 leading-relaxed font-normal">
                             ข้าพเจ้ายินยอมให้ประมวลผลข้อมูลการใช้งานเพื่อการวิเคราะห์และพัฒนานวัตกรรมการศึกษาของจุฬาลงกรณ์มหาวิทยาลัย และตกลงจะใช้งานเครื่องมือปัญญาประดิษฐ์ตามหลักจริยธรรม (Chula AI Ethical Guidelines)
                         </span>
@@ -484,23 +508,23 @@
                 pageTitle: "ลงทะเบียนใช้งานเครื่องมือ AI - Chula AIX",
                 headerTitle: "แบบฟอร์มลงทะเบียนใช้งาน AI",
                 headerSubtitle: "Chulalongkorn University AI Service Registration",
-                sec1Title: "1. ข้อมูลผู้ใช้งาน (User Information)",
-                sec2Title: "2. การใช้งาน AI ในวันนี้ (AI Usage Details)",
-                sec3Title: "3. วัตถุประสงค์และลักษณะงาน (Purpose & Activities)",
+                sec1Title: "ข้อมูลผู้ใช้งาน (User Information)",
+                sec2Title: "การใช้งาน AI ในวันนี้ (AI Usage Details)",
+                sec3Title: "วัตถุประสงค์และลักษณะงาน (Purpose & Activities)",
                 lblUserType: "ประเภทผู้ใช้งาน *",
                 optStudentTitle: "นิสิตจุฬาฯ",
                 optStudentSub: "Chula Student",
                 optPersonnelTitle: "บุคลากรจุฬาฯ",
                 optPersonnelSub: "Chula Personnel",
                 lblStudentId: "รหัสนิสิต (Student ID) 10 หลัก *",
-                studentIdPlaceholder: "เช่น 6531234521",
+                studentIdPlaceholder: "Your student ID",
                 studentIdError: "รหัสนิสิตไม่ถูกต้อง",
                 lblDegree: "ระดับการศึกษา (Education Level) *",
                 optBachelor: "ปริญญาตรี",
                 optMaster: "ปริญญาโท",
                 optDoctorate: "ปริญญาเอก",
                 lblPersonnelEmail: "อีเมลบุคลากรจุฬาฯ (Chula Email) *",
-                personnelEmailPlaceholder: "เช่น kongweha.i@chula.ac.th",
+                personnelEmailPlaceholder: "Your Chula email",
                 personnelEmailError: "อีเมลไม่ถูกต้อง",
                 lblPersonnelType: "ประเภทบุคลากร (Personnel Category) *",
                 optTeacher: "อาจารย์",
@@ -517,12 +541,12 @@
                 dur3: "30 - 60 นาที (30 - 60 mins)",
                 dur4: "1 - 2 ชั่วโมง (1 - 2 hours)",
                 dur5: "มากกว่า 2 ชั่วโมง (> 2 hours)",
-                q3Title: "2. What is your primary purpose for using AI today? (วันนี้คุณใช้งาน AI เพื่อวัตถุประสงค์ใดเป็นหลัก?) *",
+                q3Title: "What is your primary purpose for using AI today? (วันนี้คุณใช้งาน AI เพื่อวัตถุประสงค์ใดเป็นหลัก?) *",
                 purp1: "การเรียนการสอน / การศึกษา (Education)",
                 purp2: "การทำวิจัย / วิทยานิพนธ์ (Research)",
                 purp3: "การปฏิบัติงานประจำ / งานบริหาร (Work)",
                 purp4: "การพัฒนาทักษะตนเอง (Self-development)",
-                q4Title: "4. What kind of activities are you using AI for today? (ลักษณะงานหรือกิจกรรมที่คุณใช้ AI ช่วยในวันนี้คืออะไร?) *",
+                q4Title: "What kind of activities are you using AI for today? (ลักษณะงานหรือกิจกรรมที่คุณใช้ AI ช่วยในวันนี้คืออะไร?) *",
                 act1: "ค้นหาข้อมูล / สรุปเนื้อหา (Search & Summary)",
                 act2: "ช่วยเขียนบทความ / ตรวจไวยากรณ์ (Writing)",
                 act3: "วิเคราะห์ข้อมูล / สถิติ (Data Analysis)",
@@ -532,11 +556,16 @@
                 pdpaText: "ข้าพเจ้ายินยอมให้ประมวลผลข้อมูลการใช้งานเพื่อการวิเคราะห์และพัฒนานวัตกรรมการศึกษาของจุฬาลงกรณ์มหาวิทยาลัย และตกลงจะใช้งานเครื่องมือปัญญาประดิษฐ์ตามหลักจริยธรรม (Chula AI Ethical Guidelines)",
                 btnSubmit: "ยืนยันการลงทะเบียน (Complete Registration)",
                 alertSelectType: "กรุณาเลือกประเภทผู้ใช้งาน",
-                alertCheckStudentId: "กรุณาตรวจสอบรหัสนิสิตให้ถูกต้อง",
-                alertCheckEmail: "กรุณาตรวจสอบอีเมลบุคลากรให้ถูกต้อง",
+                alertCheckStudentId: "กรุณากรอกรหัสนิสิต 10 หลักให้ถูกต้อง",
+                alertSelectDegree: "กรุณาเลือกระดับการศึกษา",
+                alertCheckEmail: "กรุณากรอกอีเมลบุคลากรจุฬาฯ ให้ถูกต้อง",
+                alertSelectPersonnelType: "กรุณาเลือกประเภทบุคลากร",
                 alertSelectFaculty: "กรุณาเลือกคณะหรือหน่วยงานที่สังกัด",
-                alertAgreeConsent: "กรุณายินยอมข้อตกลงการใช้งาน AI",
                 alertSelectTool: "กรุณาเลือกเครื่องมือ AI ที่ต้องการใช้งานอย่างน้อย 1 เครื่องมือ",
+                alertSelectDuration: "กรุณาเลือกระยะเวลาที่คาดว่าจะใช้งาน",
+                alertSelectPurpose: "กรุณาเลือกวัตถุประสงค์การใช้งานอย่างน้อย 1 ข้อ",
+                alertSelectActivity: "กรุณาเลือกลักษณะงานหรือกิจกรรมอย่างน้อย 1 ข้อ",
+                alertAgreeConsent: "กรุณายินยอมข้อตกลงการใช้งาน AI",
                 savingText: "กำลังบันทึกข้อมูล...",
                 successTitle: "ลงทะเบียนเรียบร้อยแล้ว!",
                 successSubtitle: "Registration Complete! Welcome to Chula AIX",
@@ -547,23 +576,23 @@
                 pageTitle: "AI Service Registration - Chula AIX",
                 headerTitle: "AI Registration Form",
                 headerSubtitle: "Chulalongkorn University AI Service Registration",
-                sec1Title: "1. User Information",
-                sec2Title: "2. AI Usage Details",
-                sec3Title: "3. Purpose & Activities",
+                sec1Title: "User Information",
+                sec2Title: "AI Usage Details",
+                sec3Title: "Purpose & Activities",
                 lblUserType: "User Type *",
                 optStudentTitle: "Chula Student",
                 optStudentSub: "For undergraduate & graduate students",
                 optPersonnelTitle: "Chula Personnel",
                 optPersonnelSub: "For faculty, researchers & staff",
                 lblStudentId: "Student ID (10 digits) *",
-                studentIdPlaceholder: "e.g. 6531234521",
+                studentIdPlaceholder: "Your student ID",
                 studentIdError: "Invalid Student ID",
                 lblDegree: "Education Level *",
                 optBachelor: "Bachelor's",
                 optMaster: "Master's",
                 optDoctorate: "Doctorate",
                 lblPersonnelEmail: "Chula Email *",
-                personnelEmailPlaceholder: "e.g. kongweha.i@chula.ac.th",
+                personnelEmailPlaceholder: "Your Chula email",
                 personnelEmailError: "Invalid Chula Email",
                 lblPersonnelType: "Personnel Category *",
                 optTeacher: "Lecturer / Professor",
@@ -580,12 +609,12 @@
                 dur3: "30 - 60 minutes",
                 dur4: "1 - 2 hours",
                 dur5: "More than 2 hours (> 2 hours)",
-                q3Title: "2. What is your primary purpose for using AI today? *",
+                q3Title: "What is your primary purpose for using AI today? *",
                 purp1: "Education & Study",
                 purp2: "Research & Thesis",
                 purp3: "Administrative & Work",
                 purp4: "Personal Skill Development",
-                q4Title: "4. What kind of activities are you using AI for today? *",
+                q4Title: "What kind of activities are you using AI for today? *",
                 act1: "Information Search & Summarization",
                 act2: "Writing & Grammar Editing",
                 act3: "Data Analysis & Statistics",
@@ -596,10 +625,15 @@
                 btnSubmit: "Complete Registration",
                 alertSelectType: "Please select your user type",
                 alertCheckStudentId: "Please provide a valid 10-digit Student ID",
+                alertSelectDegree: "Please select your education level",
                 alertCheckEmail: "Please provide a valid Chula Personnel Email",
+                alertSelectPersonnelType: "Please select your personnel category",
                 alertSelectFaculty: "Please select your faculty or department",
-                alertAgreeConsent: "Please agree to the AI Ethical & PDPA consent",
                 alertSelectTool: "Please select at least one AI tool you plan to use",
+                alertSelectDuration: "Please select your expected usage duration",
+                alertSelectPurpose: "Please select at least one primary purpose",
+                alertSelectActivity: "Please select at least one activity type",
+                alertAgreeConsent: "Please agree to the AI Ethical & PDPA consent",
                 savingText: "Submitting registration...",
                 successTitle: "Registration Complete!",
                 successSubtitle: "Welcome to Chula AIX Platform",
@@ -750,9 +784,7 @@
 
         // Initialize UI & Clean Old Token
         document.addEventListener('DOMContentLoaded', () => {
-            // ALWAYS remove previous unlock status on load so fresh registration is mandatory!
             localStorage.removeItem('gf_unlock_status');
-
             lucide.createIcons();
             populatePersonnelFaculties();
             setLanguage(currentLang);
@@ -793,7 +825,7 @@
         }
 
         // ═══════════════════════════════════════════════════════════
-        // VALIDATION LOGIC (Concise Error Feedback)
+        // VALIDATION LOGIC
         // ═══════════════════════════════════════════════════════════
         function validateStudentId() {
             const input = document.getElementById('studentId');
@@ -807,7 +839,6 @@
                 return false;
             }
 
-            // Check 10 digits, starts with 5-7, ends with valid faculty code
             const is10Digits = /^\d{10}$/.test(val);
             const firstDigitOk = ['5', '6', '7'].includes(val.charAt(0));
             const last2 = val.substring(8, 10);
@@ -836,7 +867,6 @@
                 return false;
             }
 
-            // Pattern: <name>.<1-3 letters>@chula.ac.th
             const regex = /^[a-zA-Z0-9_-]+\.[a-zA-Z]{1,3}@chula\.ac\.th$/i;
             if (!regex.test(val)) {
                 err.classList.remove('hidden');
@@ -873,25 +903,35 @@
                     document.getElementById('studentId').focus();
                     return;
                 }
+                const degreeElem = document.querySelector('input[name="studentDegree"]:checked');
+                if (!degreeElem) {
+                    alert(dict.alertSelectDegree);
+                    return;
+                }
                 studentId = document.getElementById('studentId').value.trim();
                 email = studentId + '@student.chula.ac.th';
                 const last2 = studentId.substring(8, 10);
                 facultyName = FACULTIES_MAP[last2] || 'จุฬาลงกรณ์มหาวิทยาลัย';
-                degree = document.querySelector('input[name="studentDegree"]:checked')?.value || 'Bachelor';
+                degree = degreeElem.value;
             } else {
                 if (!validatePersonnelEmail()) {
                     alert(dict.alertCheckEmail);
                     document.getElementById('personnelEmail').focus();
                     return;
                 }
-                email = document.getElementById('personnelEmail').value.trim().toLowerCase();
-                personnelType = document.querySelector('input[name="personnelType"]:checked')?.value || 'อาจารย์';
+                const typeElem = document.querySelector('input[name="personnelType"]:checked');
+                if (!typeElem) {
+                    alert(dict.alertSelectPersonnelType);
+                    return;
+                }
                 facultyName = document.getElementById('personnelFaculty').value;
                 if (!facultyName) {
                     alert(dict.alertSelectFaculty);
                     document.getElementById('personnelFaculty').focus();
                     return;
                 }
+                email = document.getElementById('personnelEmail').value.trim().toLowerCase();
+                personnelType = typeElem.value;
             }
 
             const aiTools = Array.from(document.querySelectorAll('input[name="aiToolChoice"]:checked')).map(cb => cb.value);
@@ -900,9 +940,24 @@
                 return;
             }
 
-            const planDuration = document.querySelector('input[name="planDuration"]:checked')?.value || '< 15 minutes';
+            const durationElem = document.querySelector('input[name="planDuration"]:checked');
+            if (!durationElem) {
+                alert(dict.alertSelectDuration);
+                return;
+            }
+            const planDuration = durationElem.value;
+
             const primaryPurposes = Array.from(document.querySelectorAll('input[name="primaryPurpose"]:checked')).map(cb => cb.value);
+            if (primaryPurposes.length === 0) {
+                alert(dict.alertSelectPurpose);
+                return;
+            }
+
             const activities = Array.from(document.querySelectorAll('input[name="activityType"]:checked')).map(cb => cb.value);
+            if (activities.length === 0) {
+                alert(dict.alertSelectActivity);
+                return;
+            }
 
             const consent = document.getElementById('consentAgree').checked;
             if (!consent) {
@@ -930,7 +985,7 @@
             btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i><span>${dict.savingText}</span>`;
             lucide.createIcons();
 
-            // Set localStorage for Tampermonkey Handshake ONLY AFTER explicit submit!
+            // Set localStorage for Tampermonkey Handshake
             localStorage.setItem('gf_unlock_status', 'active');
             localStorage.setItem('gf_user_email', email);
             localStorage.setItem('gf_last_heartbeat', Date.now().toString());
