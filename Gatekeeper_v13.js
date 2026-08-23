@@ -629,15 +629,15 @@
             var fbFrame = document.createElement('iframe');
             var fbSrc = 'https://www.facebook.com/plugins/page.php' +
                 '?href=' + encodeURIComponent(FB_PAGE) +
-                '&tabs=timeline&width=350&height=280' +
+                '&tabs=timeline&width=450&height=360' +
                 '&small_header=true&adapt_container_width=true' +
                 '&hide_cover=true&show_facepile=false';
 
             fbFrame.loading = 'lazy';
             Object.assign(fbFrame.style, {
-                width:'100%',maxWidth:'350px',height:'clamp(200px, 28vh, 280px)',border:'none',
-                borderRadius:'12px',overflow:'hidden',display:'block',
-                background:'white',boxShadow:'0 8px 24px rgba(0,0,0,0.18)'
+                width:'100%',maxWidth:'clamp(340px, 22vw, 460px)',height:'clamp(260px, 28vh, 360px)',border:'none',
+                borderRadius:'14px',overflow:'hidden',display:'block',
+                background:'white',boxShadow:'0 8px 24px rgba(0,0,0,0.2)'
             });
             fbFrame.setAttribute('scrolling', 'no');
             fbFrame.setAttribute('frameborder', '0');
@@ -678,8 +678,8 @@
             link.rel = 'noopener noreferrer';
             link.textContent = '📄 ดูโพสต์ทั้งหมดบน Facebook';
             Object.assign(link.style, {
-                display:'block',marginTop:'6px',color:'rgba(255,255,255,0.9)',
-                fontSize:'clamp(11px, 0.9vw, 12px)',textDecoration:'none',textAlign:'center'
+                display:'block',marginTop:'clamp(6px, 1vh, 12px)',color:'rgba(255,255,255,0.92)',
+                fontSize:'clamp(12px, 0.95vw, 14px)',textDecoration:'none',textAlign:'center'
             });
 
             container.appendChild(fbFrame);
@@ -697,47 +697,47 @@
                 fontFamily:"'Segoe UI',Arial,sans-serif",overflow:'hidden'
             });
 
-            // ── LEFT: Purple Gradient & Cohesive Grouped Content ──
+            // ── LEFT: Purple Gradient & Cohesive Grouped Content (Base Min Scale + Fluid Scale Up) ──
             var left = document.createElement('div');
             Object.assign(left.style, {
-                flex:'1.35',width:'58%',height:'100%',position:'relative',
+                flex:'1.4',width:'60%',height:'100%',position:'relative',
                 background:'linear-gradient(145deg,#c060e0 0%,#8b28b8 50%,#6a1fa0 100%)',
                 overflow:'hidden',display:'flex',flexDirection:'column',
                 alignItems:'center',justifyContent:'space-between',boxSizing:'border-box'
             });
 
-            // Logo: top center, responsive clamp
+            // Logo: top center, base 280px scaling up to 420px on 4K
             var logoWrap = document.createElement('div');
-            logoWrap.style.cssText = 'width:100%;display:flex;justify-content:center;padding:clamp(14px, 2.8vh, 32px) 0 4px;flex-shrink:0;';
+            logoWrap.style.cssText = 'width:100%;display:flex;justify-content:center;padding:clamp(16px, 3vh, 36px) 0 4px;flex-shrink:0;';
             var logoImg = document.createElement('img');
             logoImg.src = LOGO_SRC;
             logoImg.decoding = 'async';
-            logoImg.style.cssText = 'width:clamp(200px, 18vw, 300px);max-width:85%;object-fit:contain;';
+            logoImg.style.cssText = 'width:clamp(280px, 18vw, 420px);max-width:85%;object-fit:contain;';
             logoWrap.appendChild(logoImg);
             left.appendChild(logoWrap);
 
             // Content row: FB card + 3D Character grouped centrally
             var contentRow = document.createElement('div');
             Object.assign(contentRow.style, {
-                flex:'1',width:'100%',maxWidth:'820px',display:'flex',
+                flex:'1',width:'100%',maxWidth:'clamp(800px, 55vw, 1300px)',display:'flex',
                 alignItems:'flex-end',justifyContent:'center',margin:'0 auto',
-                padding:'0 clamp(12px, 2vw, 24px)',boxSizing:'border-box',
-                gap:'clamp(12px, 2vw, 32px)',height:'calc(100% - 60px)'
+                padding:'0 clamp(16px, 2vw, 36px)',boxSizing:'border-box',
+                gap:'clamp(20px, 2vw, 48px)',height:'calc(100% - 70px)'
             });
 
             // FB Card container (bottom-left)
             var fbWrap = document.createElement('div');
             Object.assign(fbWrap.style, {
-                width:'clamp(240px, 22vw, 340px)',flexShrink:'0',
+                width:'clamp(340px, 22vw, 460px)',flexShrink:'0',
                 display:'flex',flexDirection:'column',alignItems:'center',
-                paddingBottom:'clamp(10px, 2vh, 20px)'
+                paddingBottom:'clamp(14px, 2.5vh, 28px)'
             });
             buildFBCard(fbWrap);
 
             // Character container (bottom-right)
             var charWrap = document.createElement('div');
             Object.assign(charWrap.style, {
-                flex:'1',maxWidth:'400px',display:'flex',alignItems:'flex-end',
+                flex:'1',maxWidth:'clamp(340px, 25vw, 560px)',display:'flex',alignItems:'flex-end',
                 justifyContent:'center',height:'100%',overflow:'hidden'
             });
             var charImg = document.createElement('img');
@@ -754,38 +754,39 @@
             contentRow.appendChild(charWrap);
             left.appendChild(contentRow);
 
-            // ── RIGHT: Clean White Registration Panel ──
+            // ── RIGHT: Clean White Registration Panel (Base Min Scale + Fluid Scale Up) ──
             var right = document.createElement('div');
             Object.assign(right.style, {
-                flex:'1',width:'42%',maxWidth:'580px',height:'100%',background:'white',
+                flex:'1',width:'clamp(380px, 35vw, 750px)',height:'100%',background:'white',
                 display:'flex',flexDirection:'column',justifyContent:'center',
-                alignItems:'center',padding:'clamp(28px, 4vw, 56px) clamp(20px, 3vw, 44px)',
+                alignItems:'center',padding:'clamp(32px, 5vw, 64px) clamp(24px, 3vw, 48px)',
                 boxSizing:'border-box',textAlign:'center'
             });
 
             var title = document.createElement('div');
             title.innerHTML = 'WELCOME<br>TO CHULA AIX';
             Object.assign(title.style, {
-                color:'#9b3db8',fontSize:'clamp(22px,2.4vw,40px)',fontWeight:'900',
-                letterSpacing:'2.5px',lineHeight:'1.25',marginBottom:'clamp(12px, 2vh, 22px)',
+                color:'#9b3db8',fontSize:'clamp(32px, 2.5vw, 56px)',fontWeight:'900',
+                letterSpacing:'clamp(2.5px, 0.25vw, 5px)',lineHeight:'1.22',marginBottom:'clamp(18px, 2.2vh, 36px)',
                 textTransform:'uppercase'
             });
 
             var sub = document.createElement('p');
             sub.innerHTML = 'Please register to start<br>using AI tools';
             Object.assign(sub.style, {
-                color:'#666',fontSize:'clamp(13px,1.15vw,17px)',
-                lineHeight:'1.6',margin:'0 0 clamp(20px, 3.5vh, 40px) 0'
+                color:'#666',fontSize:'clamp(15px, 1.2vw, 24px)',
+                lineHeight:'1.6',margin:'0 0 clamp(28px, 3.5vh, 52px) 0'
             });
 
             var btn = document.createElement('button');
             btn.textContent = 'REGISTER HERE';
             Object.assign(btn.style, {
                 background:'linear-gradient(to right,#b04fd4,#7b2fa0)',
-                color:'white',border:'none',borderRadius:'50px',
-                padding:'clamp(13px, 1.6vh, 18px) 0',fontSize:'clamp(12px,1.05vw,15px)',fontWeight:'900',
+                color:'white',border:'none',borderRadius:'9999px',
+                padding:'clamp(16px, 1.8vh, 26px) 0',fontSize:'clamp(15px, 1.1vw, 22px)',fontWeight:'900',
                 letterSpacing:'2px',cursor:'pointer',textTransform:'uppercase',
-                boxShadow:'0 4px 18px rgba(123,47,160,0.4)',width:'100%',maxWidth:'clamp(220px, 16vw, 290px)'
+                boxShadow:'0 clamp(4px, 0.8vh, 12px) clamp(18px, 2vh, 36px) rgba(123,47,160,0.4)',
+                width:'100%',maxWidth:'clamp(260px, 18vw, 400px)'
             });
             function openRegistrationModal() {
                 var existing = document.getElementById('gf-reg-modal');
