@@ -192,7 +192,9 @@
             <!-- Section 1: AI Tool Name -->
             <div class="form-card space-y-4">
                 <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
-                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">1</div>
+                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    </div>
                     <h3 id="t_sec1_title" class="font-bold text-gray-800 text-base">ชื่อเครื่องมือ AI ที่ต้องการเสนอแนะ</h3>
                 </div>
 
@@ -208,13 +210,15 @@
             <!-- Section 2: AI Tool Link URL -->
             <div class="form-card space-y-4">
                 <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
-                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">2</div>
+                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">
+                        <i data-lucide="globe" class="w-4 h-4"></i>
+                    </div>
                     <h3 id="t_sec2_title" class="font-bold text-gray-800 text-base">ลิงก์เข้าถึงเครื่องมือ AI</h3>
                 </div>
 
                 <div>
                     <label id="t_lbl_tool_url" class="block text-sm font-semibold text-gray-700 mb-1.5">
-                        เว็บไซต์หรือลิงก์เข้าใช้งาน / Website URL <span class="text-rose-500">*</span>
+                        AI Tool Access Link / Website <span class="text-rose-500">*</span>
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
@@ -229,13 +233,15 @@
             <!-- Section 3: Reason & Use Case -->
             <div class="form-card space-y-4">
                 <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
-                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">3</div>
-                    <h3 id="t_sec3_title" class="font-bold text-gray-800 text-base">เหตุผลและลักษณะงานในการเสนอแนะ</h3>
+                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                    </div>
+                    <h3 id="t_sec3_title" class="font-bold text-gray-800 text-base">เหตุผลที่คุณเสนอแนะเครื่องมือ AI นี้</h3>
                 </div>
 
                 <div>
                     <label id="t_lbl_tool_reason" class="block text-sm font-semibold text-gray-700 mb-1.5">
-                        เหตุผล ความจำเป็น หรือลักษณะงานที่ต้องการนำเครื่องมือนี้มาช่วย <span class="text-rose-500">*</span>
+                        เหตุผลที่คุณเสนอแนะเครื่องมือ AI นี้ <span class="text-rose-500">*</span>
                     </label>
                     <textarea id="toolReason" rows="4" placeholder="โปรดระบุรายละเอียด เช่น ประโยชน์ต่องานวิจัย การเรียนการสอน ฟีเจอร์ที่น่าสนใจ หรือกลุ่มนิสิต/บุคลากรที่จะได้ประโยชน์..."
                               class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-sm input-focus leading-relaxed font-medium"></textarea>
@@ -337,14 +343,14 @@
                 lblFaculty: "คณะ / สถาบัน / หน่วยงานที่สังกัด *",
                 selectFacultyPlaceholder: "-- ค้นหาหรือเลือกคณะ / สถาบัน / หน่วยงาน --",
                 noFacultyMatch: "ไม่พบคณะหรือหน่วยงานที่ค้นหา",
-                sec1Title: "1. ชื่อเครื่องมือ AI ที่ต้องการเสนอแนะ",
+                sec1Title: "ชื่อเครื่องมือ AI ที่ต้องการเสนอแนะ",
                 lblToolName: "ชื่อโปรแกรม / AI Tool Name *",
                 toolNamePlaceholder: "เช่น Midjourney, Notion AI, NotebookLM, DeepL Write, GitHub Copilot...",
-                sec2Title: "2. ลิงก์เข้าถึงเครื่องมือ AI",
-                lblToolUrl: "เว็บไซต์หรือลิงก์เข้าใช้งาน / Website URL *",
+                sec2Title: "ลิงก์เข้าถึงเครื่องมือ AI",
+                lblToolUrl: "AI Tool Access Link / Website *",
                 toolUrlPlaceholder: "https://www.example.com",
-                sec3Title: "3. เหตุผลและลักษณะงานในการเสนอแนะ",
-                lblToolReason: "เหตุผล ความจำเป็น หรือลักษณะงานที่ต้องการนำเครื่องมือนี้มาช่วย *",
+                sec3Title: "เหตุผลที่คุณเสนอแนะเครื่องมือ AI นี้",
+                lblToolReason: "เหตุผลที่คุณเสนอแนะเครื่องมือ AI นี้ *",
                 toolReasonPlaceholder: "โปรดระบุรายละเอียด เช่น ประโยชน์ต่องานวิจัย การเรียนการสอน ฟีเจอร์ที่น่าสนใจ หรือกลุ่มนิสิต/บุคลากรที่จะได้ประโยชน์...",
                 btnSubmit: "ยืนยันการเสนอแนะเครื่องมือ AI",
                 savingText: "กำลังบันทึกข้อมูล...",
@@ -373,14 +379,14 @@
                 lblFaculty: "Faculty / Institute / Affiliation *",
                 selectFacultyPlaceholder: "-- Search or select faculty / department --",
                 noFacultyMatch: "No faculty or department found",
-                sec1Title: "1. Proposed AI Tool Name",
+                sec1Title: "Proposed AI Tool Name",
                 lblToolName: "Program / AI Tool Name *",
                 toolNamePlaceholder: "e.g., Midjourney, Notion AI, NotebookLM, DeepL Write, GitHub Copilot...",
-                sec2Title: "2. Tool Access Link / Website",
-                lblToolUrl: "Access URL / Website *",
+                sec2Title: "AI Tool Access Link / Website",
+                lblToolUrl: "AI Tool Access Link / Website *",
                 toolUrlPlaceholder: "https://www.example.com",
-                sec3Title: "3. Reason & Use Case",
-                lblToolReason: "Why should we provide this tool? (Use cases, benefits) *",
+                sec3Title: "Reason for Proposing this AI Tool",
+                lblToolReason: "Reason for proposing this AI tool *",
                 toolReasonPlaceholder: "Please describe how this tool assists your research, study, work, or unique features...",
                 btnSubmit: "Submit AI Tool Suggestion",
                 savingText: "Submitting...",
