@@ -264,15 +264,15 @@
                 <!-- 2. ส่วนตรงกลาง: 3 CHARTS ROW -->
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     
-                    <!-- 2.1 กราฟเชิงเส้นแสดงผู้มาใช้รายวัน แยก นิสิต vs บุคลากร (6 Cols) -->
+                    <!-- 2.1 แผนภูมิแท่งแสดงผู้มาใช้รายวัน แยก นิสิต vs บุคลากร (6 Cols) -->
                     <div class="card-stat p-5 lg:col-span-6 space-y-3">
                         <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
                             <div>
                                 <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                                    <i data-lucide="trending-up" class="w-4 h-4 text-brand-700"></i>
-                                    จำนวนผู้มาใช้ในแต่ละวัน (แยกประเภท)
+                                    <i data-lucide="bar-chart-3" class="w-4 h-4 text-brand-700"></i>
+                                    แผนภูมิแสดงจำนวนผู้มาใช้ในแต่ละวัน (แยกประเภท)
                                 </h4>
-                                <p class="text-[11px] text-slate-400">เปรียบเทียบแนวโน้มนิสิตจุฬาฯ และบุคลากร 7 วันย้อนหลัง</p>
+                                <p class="text-[11px] text-slate-400">เปรียบเทียบจำนวนนิสิตจุฬาฯ และบุคลากร 7 วันย้อนหลัง</p>
                             </div>
                             <span class="text-[11px] bg-purple-50 text-brand-700 px-2 py-0.5 rounded-md font-semibold border border-purple-200">7 วันล่าสุด</span>
                         </div>
@@ -881,40 +881,42 @@
             }
 
             chartInstances['chartOverviewDailyTrends'] = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
                     labels: days,
                     datasets: [
                         {
                             label: 'นิสิตจุฬาฯ (Students)',
                             data: studentCounts,
-                            borderColor: '#9333ea',
-                            backgroundColor: 'rgba(147, 51, 234, 0.12)',
-                            fill: true,
-                            tension: 0.35,
-                            borderWidth: 3,
-                            pointBackgroundColor: '#9333ea',
-                            pointRadius: 4
+                            backgroundColor: '#9333ea',
+                            borderRadius: 6,
+                            borderSkipped: false,
+                            barPercentage: 0.7,
+                            categoryPercentage: 0.6
                         },
                         {
                             label: 'บุคลากรจุฬาฯ (Personnel)',
                             data: personnelCounts,
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.08)',
-                            fill: true,
-                            tension: 0.35,
-                            borderWidth: 2.5,
-                            pointBackgroundColor: '#3b82f6',
-                            pointRadius: 4
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 6,
+                            borderSkipped: false,
+                            barPercentage: 0.7,
+                            categoryPercentage: 0.6
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
                     plugins: {
-                        legend: { position: 'top', labels: { font: { family: 'Prompt' }, boxWidth: 14 } }
+                        legend: { position: 'top', labels: { font: { family: 'Prompt' }, boxWidth: 14 } },
+                        tooltip: {
+                            callbacks: {
+                                label(item) {
+                                    return ` ${item.dataset.label}: ${item.raw} คน`;
+                                }
+                            }
+                        }
                     },
                     scales: {
                         y: { beginAtZero: true, ticks: { precision: 0, font: { family: 'Prompt' } }, grid: { color: '#f1f5f9' } },
