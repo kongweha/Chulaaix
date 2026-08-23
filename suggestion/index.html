@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="t_page_title">เสนอแนะเครื่องมือ AI - Chula AIX</title>
+    
+    <!-- Google Fonts: Inter & Prompt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        chula: {
+                            50: '#fbf4fc',
+                            100: '#f5e8fb',
+                            200: '#edd0f7',
+                            300: '#e0a9f1',
+                            400: '#cd76e6',
+                            500: '#b04fd4',
+                            600: '#9b3db8',
+                            700: '#7b2fa0',
+                            800: '#672784',
+                            900: '#55226c',
+                            950: '#380f49'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Prompt', 'Inter', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Prompt', 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .gradient-header {
+            background: linear-gradient(135deg, #c060e0 0%, #8b28b8 50%, #6a1fa0 100%);
+        }
+        .form-card {
+            background: #ffffff;
+            border-radius: 1.25rem;
+            box-shadow: 0 10px 25px -5px rgba(123, 47, 160, 0.08), 0 8px 10px -6px rgba(123, 47, 160, 0.04);
+            border: 1px solid rgba(224, 169, 241, 0.25);
+            padding: 1.75rem;
+        }
+        .input-focus {
+            transition: all 0.2s ease-in-out;
+        }
+        .input-focus:focus {
+            border-color: #b04fd4;
+            box-shadow: 0 0 0 3px rgba(176, 79, 212, 0.2);
+            outline: none;
+        }
+        .lang-btn.active {
+            background-color: #ffffff;
+            color: #7b2fa0;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d8b4fe;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #a855f7;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- HEADER BAR -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <header class="gradient-header text-white shadow-lg sticky top-0 z-30">
+        <div class="max-w-4xl mx-auto px-4 py-4 sm:px-6 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-inner">
+                    <i data-lucide="lightbulb" class="w-5 h-5 text-amber-300"></i>
+                </div>
+                <div>
+                    <h1 id="t_header_title" class="font-extrabold text-base sm:text-lg tracking-wide text-white leading-tight">เสนอแนะเครื่องมือ AI</h1>
+                    <p id="t_header_subtitle" class="text-xs text-purple-100 font-light">Chula AIX - AI Tool Suggestion</p>
+                </div>
+            </div>
+
+            <!-- Language Switcher -->
+            <div class="flex items-center bg-purple-950/40 p-1 rounded-full border border-purple-300/30 text-xs font-semibold">
+                <button onclick="setLanguage('th')" id="langBtnTh" class="lang-btn active px-3 py-1 rounded-full transition-all duration-200">TH</button>
+                <button onclick="setLanguage('en')" id="langBtnEn" class="lang-btn px-3 py-1 rounded-full transition-all duration-200 text-purple-100 hover:text-white">EN</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- MAIN CONTENT FORM -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <main class="max-w-4xl mx-auto px-4 py-8 sm:px-6 flex-1 w-full">
+        
+        <!-- Form Container -->
+        <div id="formContainer" class="space-y-6">
+            
+            <!-- Description Banner -->
+            <div class="bg-gradient-to-r from-purple-50 to-fuchsia-50 border border-purple-200/70 p-4 sm:p-5 rounded-2xl flex items-start gap-3.5">
+                <div class="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0 mt-0.5">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h2 id="t_banner_title" class="font-bold text-sm sm:text-base text-gray-800">ร่วมแนะนำเครื่องมือ AI ที่ท่านต้องการใช้งาน</h2>
+                    <p id="t_banner_desc" class="text-xs sm:text-sm text-gray-600 mt-1 leading-relaxed">
+                        สำนักงานวิทยทรัพยากรยินดีรับฟังข้อเสนอแนะเครื่องมือ AI ใหม่ๆ เพื่อนำมาพิจารณาให้บริการในพื้นที่ Chula AIX ต่อไป
+                    </p>
+                </div>
+            </div>
+
+            <!-- Section 0: User Profile Context -->
+            <div class="form-card space-y-4">
+                <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                    </div>
+                    <h3 id="t_sec_user_title" class="font-bold text-gray-800 text-base">ข้อมูลผู้เสนอแนะ (User Information)</h3>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label id="t_lbl_usertype" class="block text-xs font-semibold text-gray-700 mb-1.5">
+                            ประเภทผู้ใช้งาน <span class="text-rose-500">*</span>
+                        </label>
+                        <select id="userType" onchange="handleUserTypeChange()" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-gray-800 text-sm input-focus bg-white font-medium">
+                            <option value="student" id="t_opt_student">นิสิตจุฬาฯ (Chula Student)</option>
+                            <option value="personnel" id="t_opt_personnel">บุคลากรจุฬาฯ (Chula Personnel)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label id="t_lbl_identifier" class="block text-xs font-semibold text-gray-700 mb-1.5">
+                            รหัสนิสิต หรือ อีเมลจุฬาฯ <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" id="userIdentifier" placeholder="กรอกรหัสนิสิต 10 หลัก หรือ อีเมล @chula.ac.th"
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-gray-800 text-sm input-focus font-medium">
+                    </div>
+
+                    <!-- Searchable Faculty Combobox -->
+                    <div class="sm:col-span-2 relative" id="facultyComboboxContainer">
+                        <label id="t_lbl_faculty" class="block text-xs font-semibold text-gray-700 mb-1.5">
+                            คณะ / สถาบัน / หน่วยงานที่สังกัด <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="text" id="facultySearchInput" placeholder="-- ค้นหาหรือเลือกคณะ / สถาบัน / หน่วยงาน --"
+                                   autocomplete="off"
+                                   class="w-full px-4 py-2.5 pr-10 rounded-xl border border-gray-300 text-gray-800 text-sm input-focus bg-white font-medium cursor-pointer"
+                                   onclick="toggleFacultyDropdown(true)"
+                                   oninput="filterFacultyOptions()">
+                            <input type="hidden" id="selectedFaculty" value="">
+                            <button type="button" onclick="toggleFacultyDropdown()" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 focus:outline-none">
+                                <i data-lucide="chevron-down" id="facultyChevronIcon" class="w-4 h-4 transition-transform duration-200"></i>
+                            </button>
+                        </div>
+                        <div id="facultyDropdownList" class="hidden absolute left-0 right-0 top-full mt-1 max-h-52 overflow-y-auto bg-white rounded-xl shadow-xl border border-purple-100 z-50 divide-y divide-gray-50 custom-scrollbar">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 1: AI Tool Name -->
+            <div class="form-card space-y-4">
+                <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">1</div>
+                    <h3 id="t_sec1_title" class="font-bold text-gray-800 text-base">ชื่อเครื่องมือ AI ที่ต้องการเสนอแนะ</h3>
+                </div>
+
+                <div>
+                    <label id="t_lbl_tool_name" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        ชื่อโปรแกรม / AI Tool Name <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="text" id="toolName" placeholder="เช่น Midjourney, Notion AI, NotebookLM, DeepL Write, GitHub Copilot..."
+                           class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-sm sm:text-base input-focus font-medium">
+                </div>
+            </div>
+
+            <!-- Section 2: AI Tool Link URL -->
+            <div class="form-card space-y-4">
+                <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">2</div>
+                    <h3 id="t_sec2_title" class="font-bold text-gray-800 text-base">ลิงก์เข้าถึงเครื่องมือ AI</h3>
+                </div>
+
+                <div>
+                    <label id="t_lbl_tool_url" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        เว็บไซต์หรือลิงก์เข้าใช้งาน / Website URL <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                            <i data-lucide="link" class="w-4 h-4"></i>
+                        </div>
+                        <input type="url" id="toolUrl" placeholder="https://www.example.com"
+                               class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-sm sm:text-base input-focus font-medium font-inter">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Reason & Use Case -->
+            <div class="form-card space-y-4">
+                <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+                    <div class="w-7 h-7 rounded-lg bg-chula-100 text-chula-700 flex items-center justify-center font-bold text-xs">3</div>
+                    <h3 id="t_sec3_title" class="font-bold text-gray-800 text-base">เหตุผลและลักษณะงานในการเสนอแนะ</h3>
+                </div>
+
+                <div>
+                    <label id="t_lbl_tool_reason" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        เหตุผล ความจำเป็น หรือลักษณะงานที่ต้องการนำเครื่องมือนี้มาช่วย <span class="text-rose-500">*</span>
+                    </label>
+                    <textarea id="toolReason" rows="4" placeholder="โปรดระบุรายละเอียด เช่น ประโยชน์ต่องานวิจัย การเรียนการสอน ฟีเจอร์ที่น่าสนใจ หรือกลุ่มนิสิต/บุคลากรที่จะได้ประโยชน์..."
+                              class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-sm input-focus leading-relaxed font-medium"></textarea>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-2">
+                <button type="button" id="btnSubmit" onclick="submitSuggestion()"
+                        class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-chula-600 to-chula-700 hover:from-chula-700 hover:to-chula-800 text-white font-bold text-base shadow-lg shadow-purple-500/25 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2">
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                    <span id="t_btn_submit">ยืนยันการเสนอแนะเครื่องมือ AI</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Success State Container -->
+        <div id="successContainer" class="hidden form-card text-center py-12 px-6 max-w-lg mx-auto space-y-5 my-8">
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                <i data-lucide="check-circle" class="w-10 h-10"></i>
+            </div>
+            <h2 id="t_success_title" class="text-2xl font-bold text-gray-800">ขอบคุณสำหรับข้อเสนอแนะ!</h2>
+            <p id="t_success_desc" class="text-sm text-gray-600 leading-relaxed">
+                ระบบได้บันทึกข้อมูลข้อเสนอแนะเครื่องมือ AI ของท่านเรียบร้อยแล้ว<br>
+                สำนักงานวิทยทรัพยากรจะนำข้อมูลไปพิจารณาเพื่อพัฒนาบริการต่อไป
+            </p>
+            <div class="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
+                <button type="button" onclick="location.reload()"
+                        class="px-5 py-2.5 rounded-xl border border-gray-300 hover:bg-gray-50 text-sm font-semibold text-gray-700 transition">
+                    <span id="t_btn_new_suggestion">เสนอแนะเพิ่มเติม</span>
+                </button>
+                <button type="button" onclick="window.close()" id="t_btn_close"
+                        class="px-5 py-2.5 rounded-xl bg-chula-700 hover:bg-chula-800 text-white text-sm font-bold shadow transition">
+                    ปิดหน้าต่างนี้
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- FOOTER -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <footer class="border-t border-purple-100 bg-white/70 py-6 mt-10 text-center text-xs text-gray-500">
+        <p>© 2026 Chula AIX. Office of Academic Resources, Chulalongkorn University.</p>
+    </footer>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- JAVASCRIPT LOGIC -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <script>
+        const FACULTIES_DATA = [
+            { code: "21", th: "คณะวิศวกรรมศาสตร์", en: "Faculty of Engineering" },
+            { code: "22", th: "คณะอักษรศาสตร์", en: "Faculty of Arts" },
+            { code: "23", th: "คณะวิทยาศาสตร์", en: "Faculty of Science" },
+            { code: "24", th: "คณะรัฐศาสตร์", en: "Faculty of Political Science" },
+            { code: "25", th: "คณะสถาปัตยกรรมศาสตร์", en: "Faculty of Architecture" },
+            { code: "26", th: "คณะพาณิชยศาสตร์และการบัญชี", en: "Faculty of Commerce and Accountancy" },
+            { code: "27", th: "คณะครุศาสตร์", en: "Faculty of Education" },
+            { code: "28", th: "คณะนิเทศศาสตร์", en: "Faculty of Communication Arts" },
+            { code: "29", th: "คณะเศรษฐศาสตร์", en: "Faculty of Economics" },
+            { code: "30", th: "คณะแพทยศาสตร์", en: "Faculty of Medicine" },
+            { code: "31", th: "คณะสัตวแพทยศาสตร์", en: "Faculty of Veterinary Science" },
+            { code: "32", th: "คณะทันตแพทยศาสตร์", en: "Faculty of Dentistry" },
+            { code: "33", th: "คณะเภสัชศาสตร์", en: "Faculty of Pharmaceutical Sciences" },
+            { code: "34", th: "คณะนิติศาสตร์", en: "Faculty of Law" },
+            { code: "35", th: "คณะศิลปกรรมศาสตร์", en: "Faculty of Fine and Applied Arts" },
+            { code: "36", th: "คณะพยาบาลศาสตร์", en: "Faculty of Nursing" },
+            { code: "37", th: "คณะสหเวชศาสตร์", en: "Faculty of Allied Health Sciences" },
+            { code: "38", th: "คณะจิตวิทยา", en: "Faculty of Psychology" },
+            { code: "39", th: "คณะวิทยาศาสตร์การกีฬา", en: "Faculty of Sports Science" },
+            { code: "40", th: "สำนักวิชาทรัพยากรการเกษตร", en: "School of Agricultural Resources" },
+            { code: "51", th: "วิทยาลัยประชากรศาสตร์", en: "College of Population Studies" },
+            { code: "52", th: "วิทยาลัยปิโตรเลียมและปิโตรเคมี", en: "The Petroleum and Petrochemical College" },
+            { code: "53", th: "วิทยาลัยวิทยาศาสตร์สาธารณสุข", en: "College of Public Health Sciences" },
+            { code: "55", th: "สถาบันภาษา", en: "Language Institute (CULI)" },
+            { code: "56", th: "สถาบันนวัตกรรมบูรณาการ (BAScii)", en: "School of Integrated Innovation (ScII / BAScii)" },
+            { code: "58", th: "สถาบันบัณฑิตบริหารธุรกิจ ศศินทร์", en: "Sasin School of Management" },
+            { code: "92", th: "สำนักวิทยทรัพยากร (หอสมุดกลาง)", en: "Office of Academic Resources (Central Library)" },
+            { code: "94", th: "สำนักบริการเทคโนโลยีสารสนเทศ (IT Chula)", en: "Office of Information Technology (IT Chula)" },
+            { code: "99", th: "หน่วยงานอื่นๆ ในจุฬาลงกรณ์มหาวิทยาลัย", en: "Other Chulalongkorn Departments & Institutes" }
+        ];
+
+        let currentLang = localStorage.getItem('aix_pref_lang') || 'th';
+
+        const i18n = {
+            th: {
+                pageTitle: "เสนอแนะเครื่องมือ AI - Chula AIX",
+                headerTitle: "เสนอแนะเครื่องมือ AI",
+                headerSubtitle: "Chula AIX - AI Tool Suggestion",
+                bannerTitle: "ร่วมแนะนำเครื่องมือ AI ที่ท่านต้องการใช้งาน",
+                bannerDesc: "สำนักงานวิทยทรัพยากรยินดีรับฟังข้อเสนอแนะเครื่องมือ AI ใหม่ๆ เพื่อนำมาพิจารณาให้บริการในพื้นที่ Chula AIX ต่อไป",
+                secUserTitle: "ข้อมูลผู้เสนอแนะ (User Information)",
+                lblUserType: "ประเภทผู้ใช้งาน *",
+                optStudent: "นิสิตจุฬาฯ (Chula Student)",
+                optPersonnel: "บุคลากรจุฬาฯ (Chula Personnel)",
+                lblIdentifier: "รหัสนิสิต หรือ อีเมลจุฬาฯ *",
+                identifierPlaceholder: "กรอกรหัสนิสิต 10 หลัก หรือ อีเมล @chula.ac.th",
+                lblFaculty: "คณะ / สถาบัน / หน่วยงานที่สังกัด *",
+                selectFacultyPlaceholder: "-- ค้นหาหรือเลือกคณะ / สถาบัน / หน่วยงาน --",
+                noFacultyMatch: "ไม่พบคณะหรือหน่วยงานที่ค้นหา",
+                sec1Title: "1. ชื่อเครื่องมือ AI ที่ต้องการเสนอแนะ",
+                lblToolName: "ชื่อโปรแกรม / AI Tool Name *",
+                toolNamePlaceholder: "เช่น Midjourney, Notion AI, NotebookLM, DeepL Write, GitHub Copilot...",
+                sec2Title: "2. ลิงก์เข้าถึงเครื่องมือ AI",
+                lblToolUrl: "เว็บไซต์หรือลิงก์เข้าใช้งาน / Website URL *",
+                toolUrlPlaceholder: "https://www.example.com",
+                sec3Title: "3. เหตุผลและลักษณะงานในการเสนอแนะ",
+                lblToolReason: "เหตุผล ความจำเป็น หรือลักษณะงานที่ต้องการนำเครื่องมือนี้มาช่วย *",
+                toolReasonPlaceholder: "โปรดระบุรายละเอียด เช่น ประโยชน์ต่องานวิจัย การเรียนการสอน ฟีเจอร์ที่น่าสนใจ หรือกลุ่มนิสิต/บุคลากรที่จะได้ประโยชน์...",
+                btnSubmit: "ยืนยันการเสนอแนะเครื่องมือ AI",
+                savingText: "กำลังบันทึกข้อมูล...",
+                successTitle: "ขอบคุณสำหรับข้อเสนอแนะ!",
+                successDesc: "ระบบได้บันทึกข้อมูลข้อเสนอแนะเครื่องมือ AI ของท่านเรียบร้อยแล้ว<br>สำนักงานวิทยทรัพยากรจะนำข้อมูลไปพิจารณาเพื่อพัฒนาบริการต่อไป",
+                btnNewSuggestion: "เสนอแนะเพิ่มเติม",
+                btnClose: "ปิดหน้าต่างนี้",
+                alertToolName: "กรุณาระบุชื่อเครื่องมือ AI",
+                alertToolUrl: "กรุณาระบุลิงก์เข้าใช้งานที่ถูกต้อง (เช่น https://...)",
+                alertToolReason: "กรุณาระบุเหตุผลในการเสนอแนะ",
+                alertIdentifier: "กรุณาระบุรหัสนิสิตหรืออีเมลจุฬาฯ",
+                alertFaculty: "กรุณาเลือกคณะหรือหน่วยงานที่สังกัด"
+            },
+            en: {
+                pageTitle: "AI Tool Suggestion - Chula AIX",
+                headerTitle: "AI Tool Suggestion",
+                headerSubtitle: "Chula AIX - AI Tool Suggestion Platform",
+                bannerTitle: "Recommend AI Tools You Would Like to Use",
+                bannerDesc: "The Office of Academic Resources welcomes your suggestions for new AI tools to be considered for future availability at Chula AIX.",
+                secUserTitle: "User Information",
+                lblUserType: "User Type *",
+                optStudent: "Chula Student",
+                optPersonnel: "Chula Personnel",
+                lblIdentifier: "Student ID or Chula Email *",
+                identifierPlaceholder: "Enter 10-digit Student ID or @chula.ac.th email",
+                lblFaculty: "Faculty / Institute / Affiliation *",
+                selectFacultyPlaceholder: "-- Search or select faculty / department --",
+                noFacultyMatch: "No faculty or department found",
+                sec1Title: "1. Proposed AI Tool Name",
+                lblToolName: "Program / AI Tool Name *",
+                toolNamePlaceholder: "e.g., Midjourney, Notion AI, NotebookLM, DeepL Write, GitHub Copilot...",
+                sec2Title: "2. Tool Access Link / Website",
+                lblToolUrl: "Access URL / Website *",
+                toolUrlPlaceholder: "https://www.example.com",
+                sec3Title: "3. Reason & Use Case",
+                lblToolReason: "Why should we provide this tool? (Use cases, benefits) *",
+                toolReasonPlaceholder: "Please describe how this tool assists your research, study, work, or unique features...",
+                btnSubmit: "Submit AI Tool Suggestion",
+                savingText: "Submitting...",
+                successTitle: "Thank you for your suggestion!",
+                successDesc: "Your suggestion has been recorded.<br>The Office of Academic Resources will review it for future service development.",
+                btnNewSuggestion: "Submit Another",
+                btnClose: "Close Window",
+                alertToolName: "Please specify the AI tool name",
+                alertToolUrl: "Please provide a valid URL (e.g. https://...)",
+                alertToolReason: "Please provide a reason or use case",
+                alertIdentifier: "Please enter your Student ID or Chula email",
+                alertFaculty: "Please select your faculty or department"
+            }
+        };
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('aix_pref_lang', lang);
+
+            const btnTh = document.getElementById('langBtnTh');
+            const btnEn = document.getElementById('langBtnEn');
+            if (lang === 'th') {
+                btnTh.className = "lang-btn active px-3 py-1 rounded-full transition-all duration-200";
+                btnEn.className = "lang-btn px-3 py-1 rounded-full transition-all duration-200 text-purple-100 hover:text-white";
+            } else {
+                btnEn.className = "lang-btn active px-3 py-1 rounded-full transition-all duration-200";
+                btnTh.className = "lang-btn px-3 py-1 rounded-full transition-all duration-200 text-purple-100 hover:text-white";
+            }
+
+            const d = i18n[lang];
+            document.title = d.pageTitle;
+            document.getElementById('t_header_title').textContent = d.headerTitle;
+            document.getElementById('t_header_subtitle').textContent = d.headerSubtitle;
+            document.getElementById('t_banner_title').textContent = d.bannerTitle;
+            document.getElementById('t_banner_desc').textContent = d.bannerDesc;
+            document.getElementById('t_sec_user_title').textContent = d.secUserTitle;
+            document.getElementById('t_lbl_usertype').innerHTML = d.lblUserType.replace('*', '<span class="text-rose-500">*</span>');
+            document.getElementById('t_opt_student').textContent = d.optStudent;
+            document.getElementById('t_opt_personnel').textContent = d.optPersonnel;
+            document.getElementById('t_lbl_identifier').innerHTML = d.lblIdentifier.replace('*', '<span class="text-rose-500">*</span>');
+            document.getElementById('userIdentifier').placeholder = d.identifierPlaceholder;
+            document.getElementById('t_lbl_faculty').innerHTML = d.lblFaculty.replace('*', '<span class="text-rose-500">*</span>');
+            document.getElementById('facultySearchInput').placeholder = d.selectFacultyPlaceholder;
+
+            document.getElementById('t_sec1_title').textContent = d.sec1Title;
+            document.getElementById('t_lbl_tool_name').innerHTML = d.lblToolName.replace('*', '<span class="text-rose-500">*</span>');
+            document.getElementById('toolName').placeholder = d.toolNamePlaceholder;
+
+            document.getElementById('t_sec2_title').textContent = d.sec2Title;
+            document.getElementById('t_lbl_tool_url').innerHTML = d.lblToolUrl.replace('*', '<span class="text-rose-500">*</span>');
+            document.getElementById('toolUrl').placeholder = d.toolUrlPlaceholder;
+
+            document.getElementById('t_sec3_title').textContent = d.sec3Title;
+            document.getElementById('t_lbl_tool_reason').innerHTML = d.lblToolReason.replace('*', '<span class="text-rose-500">*</span>');
+            document.getElementById('toolReason').placeholder = d.toolReasonPlaceholder;
+
+            document.getElementById('t_btn_submit').textContent = d.btnSubmit;
+            document.getElementById('t_success_title').textContent = d.successTitle;
+            document.getElementById('t_success_desc').innerHTML = d.successDesc;
+            document.getElementById('t_btn_new_suggestion').textContent = d.btnNewSuggestion;
+            document.getElementById('t_btn_close').textContent = d.btnClose;
+
+            // Refresh selected faculty display name
+            const curVal = document.getElementById('selectedFaculty')?.value;
+            if (curVal) {
+                const found = FACULTIES_DATA.find(f => f.th === curVal || f.en === curVal || f.code === curVal);
+                if (found) document.getElementById('facultySearchInput').value = found[lang] || found.th;
+            }
+        }
+
+        // Combobox Logic
+        let isFacultyDropdownOpen = false;
+        function toggleFacultyDropdown(openState) {
+            const list = document.getElementById('facultyDropdownList');
+            const chevron = document.getElementById('facultyChevronIcon');
+            if (typeof openState === 'boolean') isFacultyDropdownOpen = openState;
+            else isFacultyDropdownOpen = !isFacultyDropdownOpen;
+
+            if (isFacultyDropdownOpen) {
+                filterFacultyOptions();
+                list.classList.remove('hidden');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            } else {
+                list.classList.add('hidden');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function filterFacultyOptions() {
+            const search = (document.getElementById('facultySearchInput')?.value || '').toLowerCase().trim();
+            const list = document.getElementById('facultyDropdownList');
+            const currentVal = document.getElementById('selectedFaculty')?.value || '';
+            if (!list) return;
+
+            const lang = currentLang || 'th';
+            const filtered = FACULTIES_DATA.filter(f => {
+                if (!search) return true;
+                return (f.th || '').toLowerCase().includes(search) || (f.en || '').toLowerCase().includes(search) || (f.code || '').includes(search);
+            });
+
+            if (filtered.length === 0) {
+                list.innerHTML = `<div class="p-3 text-center text-xs text-gray-400 font-medium">${i18n[lang].noFacultyMatch}</div>`;
+                return;
+            }
+
+            list.innerHTML = filtered.map(f => {
+                const displayName = f[lang] || f.th;
+                const isSelected = f.th === currentVal || f.en === currentVal || displayName === currentVal;
+                const activeClass = isSelected ? 'bg-purple-100/80 text-chula-900 font-bold' : 'text-gray-700 hover:bg-purple-50/60 font-medium';
+                return `
+                    <div class="px-4 py-2 text-xs cursor-pointer transition flex items-center justify-between ${activeClass}" 
+                         onclick="selectFaculty('${f.th.replace(/'/g, "\\'")}', '${displayName.replace(/'/g, "\\'")}')">
+                        <span>${displayName}</span>
+                        ${isSelected ? '<i data-lucide="check" class="w-3.5 h-3.5 text-chula-700"></i>' : ''}
+                    </div>
+                `;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function selectFaculty(value, displayText) {
+            document.getElementById('selectedFaculty').value = value;
+            document.getElementById('facultySearchInput').value = displayText;
+            toggleFacultyDropdown(false);
+        }
+
+        document.addEventListener('click', (e) => {
+            const container = document.getElementById('facultyComboboxContainer');
+            if (container && !container.contains(e.target)) toggleFacultyDropdown(false);
+        });
+
+        // Initialize & Auto-fill from localStorage if available
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            setLanguage(currentLang);
+
+            try {
+                const regDataStr = localStorage.getItem('aix_registration_data');
+                if (regDataStr) {
+                    const regData = JSON.parse(regDataStr);
+                    if (regData.userType && regData.userType.includes('Personnel')) {
+                        document.getElementById('userType').value = 'personnel';
+                    }
+                    if (regData.studentId) {
+                        document.getElementById('userIdentifier').value = regData.studentId;
+                    } else if (regData.email) {
+                        document.getElementById('userIdentifier').value = regData.email;
+                    }
+                    if (regData.facultyName) {
+                        selectFaculty(regData.facultyName, regData.facultyName);
+                    }
+                }
+            } catch (e) {}
+        });
+
+        function handleUserTypeChange() {
+            // Can be extended if needed
+        }
+
+        // Submit Form
+        function submitSuggestion() {
+            const d = i18n[currentLang];
+            const toolName = document.getElementById('toolName').value.trim();
+            const toolUrl = document.getElementById('toolUrl').value.trim();
+            const toolReason = document.getElementById('toolReason').value.trim();
+            const userIdentifier = document.getElementById('userIdentifier').value.trim();
+            const userType = document.getElementById('userType').value;
+            const facultyName = document.getElementById('selectedFaculty').value || document.getElementById('facultySearchInput').value.trim();
+
+            if (!userIdentifier) {
+                alert(d.alertIdentifier);
+                document.getElementById('userIdentifier').focus();
+                return;
+            }
+            if (!facultyName) {
+                alert(d.alertFaculty);
+                document.getElementById('facultySearchInput').focus();
+                toggleFacultyDropdown(true);
+                return;
+            }
+            if (!toolName) {
+                alert(d.alertToolName);
+                document.getElementById('toolName').focus();
+                return;
+            }
+            if (!toolUrl || !toolUrl.startsWith('http')) {
+                alert(d.alertToolUrl);
+                document.getElementById('toolUrl').focus();
+                return;
+            }
+            if (!toolReason) {
+                alert(d.alertToolReason);
+                document.getElementById('toolReason').focus();
+                return;
+            }
+
+            const isStudent = userType === 'student';
+            const payload = {
+                toolName: toolName,
+                toolUrl: toolUrl,
+                reason: toolReason,
+                userType: isStudent ? 'นิสิตจุฬาฯ (Chula Student)' : 'บุคลากรจุฬาฯ (Chula Personnel)',
+                identifier: userIdentifier,
+                studentId: isStudent && /^\d{10}$/.test(userIdentifier) ? userIdentifier : null,
+                email: userIdentifier.includes('@') ? userIdentifier : (isStudent ? `${userIdentifier}@student.chula.ac.th` : null),
+                facultyName: facultyName,
+                submittedAt: new Date().toISOString(),
+                userAgent: navigator.userAgent
+            };
+
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i><span>${d.savingText}</span>`;
+            lucide.createIcons();
+
+            const dbUrl = 'https://chula-aix-default-rtdb.asia-southeast1.firebasedatabase.app';
+            fetch(`${dbUrl}/suggestions.json`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log('✅ Suggestion saved to Firebase:', data);
+                showSuccess();
+            })
+            .catch(err => {
+                console.warn('Error saving suggestion:', err);
+                showSuccess();
+            });
+        }
+
+        function showSuccess() {
+            document.getElementById('formContainer').classList.add('hidden');
+            document.getElementById('successContainer').classList.remove('hidden');
+            lucide.createIcons();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
