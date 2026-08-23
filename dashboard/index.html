@@ -411,7 +411,7 @@
                             </div>
                             <div>
                                 <h4 class="font-bold text-slate-800 text-base">สถิติจำนวนผู้ใช้และระยะเวลาการใช้งาน AI แต่ละค่าย</h4>
-                                <p class="text-xs text-slate-500 font-normal">รายละเอียดสถิติผู้เลือกใช้งานและระยะเวลาการใช้งานสะสมของเครื่องมือ AI ทั้ง 9 รายการ</p>
+                                <p class="text-xs text-slate-500 font-normal">สถิติจำนวนผู้เข้าใช้งานจริงและระยะเวลาการใช้งานสะสมของเครื่องมือ AI ทั้ง 9 รายการ</p>
                             </div>
                         </div>
                         <span class="text-xs text-brand-700 bg-purple-50 px-3 py-1 rounded-full font-semibold border border-purple-200">9 AI Tools</span>
@@ -1399,27 +1399,33 @@
             ];
 
             const toolStats = {};
+            const toolActiveUsers = {};
             tools.forEach(t => {
                 toolStats[t.name] = { count: 0, durationSec: 0, icon: t.icon };
+                toolActiveUsers[t.name] = new Set();
             });
 
-            // Count selections from registrations
-            rawRegistrations.forEach(r => {
-                if (Array.isArray(r.selectedAITools)) {
-                    r.selectedAITools.forEach(t => {
-                        if (toolStats[t]) toolStats[t].count++;
-                    });
-                }
-            });
-
-            // Sum duration from usage logs
+            // Calculate actual usage duration and unique users who actually used the tool
             rawUsageLogs.forEach(l => {
+                const userKey = (l.userEmail || l.email || l.studentId || l.userId || '').toLowerCase().trim();
                 const logTools = getLogToolDurations(l);
                 Object.entries(logTools).forEach(([t, s]) => {
                     if (toolStats[t]) {
                         toolStats[t].durationSec += s;
+                        if (s > 0) {
+                            if (userKey) {
+                                toolActiveUsers[t].add(userKey);
+                            } else {
+                                toolActiveUsers[t].add(l.id || Math.random().toString());
+                            }
+                        }
                     }
                 });
+            });
+
+            // Set actual user count (only users who have real usage duration)
+            tools.forEach(t => {
+                toolStats[t.name].count = toolActiveUsers[t.name].size;
             });
 
             container.innerHTML = tools.map(t => {
@@ -1435,14 +1441,14 @@
                             </div>
                             <div class="min-w-0">
                                 <h5 class="font-bold text-slate-800 text-sm truncate">${t.name}</h5>
-                                <div class="flex items-center gap-1.5 text-xs text-brand-700 font-semibold mt-0.5">
-                                    <i data-lucide="users" class="w-3.5 h-3.5 text-brand-500"></i>
+                                <div class="flex items-center gap-1.5 text-xs ${stat.count > 0 ? 'text-brand-700' : 'text-slate-400'} font-semibold mt-0.5">
+                                    <i data-lucide="users" class="w-3.5 h-3.5 ${stat.count > 0 ? 'text-brand-500' : 'text-slate-300'}"></i>
                                     <span>${stat.count} คน</span>
                                 </div>
                             </div>
                         </div>
                         <div class="text-right shrink-0">
-                            <div class="text-[10px] text-slate-400 uppercase font-medium">ระยะเวลาใช้งาน</div>
+                            <div class="text-[10px] text-slate-400 uppercase font-medium">ระยะเวลาใช้งานจริง</div>
                             <div class="font-bold text-xs ${hasDuration ? 'text-blue-600' : 'text-slate-400'} mt-0.5 font-mono flex items-center justify-end gap-1">
                                 <i data-lucide="clock" class="w-3.5 h-3.5 ${hasDuration ? 'text-blue-500' : 'text-slate-300'}"></i>
                                 <span>${formattedDur}</span>
