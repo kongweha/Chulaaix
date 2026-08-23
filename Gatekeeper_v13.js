@@ -483,6 +483,9 @@
             var unlock = localStorage.getItem('gf_unlock_status');
             var email = localStorage.getItem('gf_user_email');
             if (unlock === 'active' && email) {
+                // Consume token immediately so it cannot trigger again on future page opens
+                localStorage.removeItem('gf_unlock_status');
+
                 var now = Date.now();
                 GM_setValue(KEY_STATUS, 'active');
                 GM_setValue(KEY_EMAIL, email);
@@ -593,6 +596,7 @@
                 closeInactivityModal();
                 finalizeAndSync();
                 GM_setValue(KEY_STATUS, 'locked');
+                GM_setValue(KEY_EMAIL, '');
                 GM_setValue(KEY_HEARTBEAT, 0);
                 removeTopBar();
                 if (isAITool) showOverlay();
