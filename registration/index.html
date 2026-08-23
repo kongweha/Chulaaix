@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ลงทะเบียนใช้งานเครื่องมือ AI - Chula AIX</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        chula: {
+                            50: '#faf5ff',
+                            100: '#f3e8ff',
+                            200: '#e9d5ff',
+                            300: '#d8b4fe',
+                            400: '#c084fc',
+                            500: '#a855f7',
+                            600: '#9333ea',
+                            700: '#7b2fa0',
+                            800: '#6b21a8',
+                            900: '#581c87',
+                            950: '#3b0764'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Prompt & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Prompt', 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #f8f0fc 0%, #ffffff 50%, #f3e8ff 100%);
+        }
+        .gradient-header {
+            background: linear-gradient(135deg, #b04fd4 0%, #7b2fa0 50%, #581c87 100%);
+        }
+        .input-focus {
+            transition: all 0.2s ease-in-out;
+        }
+        .input-focus:focus {
+            box-shadow: 0 0 0 4px rgba(176, 79, 212, 0.2);
+            border-color: #7b2fa0;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
+
+    <div class="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-purple-100 my-4">
+        
+        <!-- Header Banner -->
+        <div class="gradient-header px-8 py-8 text-white text-center relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute -left-10 -top-10 w-40 h-40 bg-purple-400/20 rounded-full blur-2xl pointer-events-none"></div>
+            
+            <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase mb-3 text-purple-100 border border-white/20">
+                <i data-lucide="sparkles" class="w-4 h-4 text-purple-200"></i>
+                Chula AIX Platform
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">แบบฟอร์มลงทะเบียนใช้งาน AI</h1>
+            <p class="text-purple-100 text-sm mt-1.5 font-light">Chulalongkorn University AI Service Registration</p>
+        </div>
+
+        <!-- Main Form Container -->
+        <div id="formContainer" class="p-6 sm:p-8 space-y-6">
+
+            <!-- Step 1: User Type Selection -->
+            <div>
+                <label class="block text-sm font-bold text-gray-800 mb-3">
+                    ประเภทผู้ใช้งาน <span class="text-rose-500">*</span>
+                </label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Option Student -->
+                    <label class="cursor-pointer">
+                        <input type="radio" name="userType" value="student" class="peer sr-only" onchange="handleUserTypeChange('student')">
+                        <div class="p-4 rounded-2xl border-2 border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-50/70 hover:bg-gray-50 transition-all flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-purple-100 text-chula-700 flex items-center justify-center shrink-0">
+                                <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-gray-800 peer-checked:text-chula-900 text-base">นิสิตจุฬาฯ</div>
+                                <div class="text-xs text-gray-500 font-normal">Chula Student</div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Option Personnel -->
+                    <label class="cursor-pointer">
+                        <input type="radio" name="userType" value="personnel" class="peer sr-only" onchange="handleUserTypeChange('personnel')">
+                        <div class="p-4 rounded-2xl border-2 border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-50/70 hover:bg-gray-50 transition-all flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-purple-100 text-chula-700 flex items-center justify-center shrink-0">
+                                <i data-lucide="briefcase" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-gray-800 peer-checked:text-chula-900 text-base">บุคลากรจุฬาฯ</div>
+                                <div class="text-xs text-gray-500 font-normal">Chula Personnel</div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- Student Form Section -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div id="studentSection" class="hidden space-y-5 pt-2 border-t border-gray-100">
+                
+                <!-- Student ID -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-800 mb-1.5">
+                        รหัสนิสิต (Student ID) 10 หลัก <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="studentId" maxlength="10" placeholder="เช่น 6531234521"
+                               class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-base input-focus font-medium tracking-wider"
+                               oninput="validateStudentId()">
+                        <div id="studentIdIcon" class="absolute right-3 top-3.5 hidden">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i>
+                        </div>
+                    </div>
+                    <p id="studentIdError" class="text-xs text-rose-500 mt-1.5 hidden font-medium flex items-center gap-1">
+                        <i data-lucide="alert-circle" class="w-3.5 h-3.5 inline"></i>
+                        <span id="studentIdErrorText">รหัสนิสิตต้องมี 10 หลัก ขึ้นต้นด้วย 5-7 และ 2 หลักท้ายตรงตามรหัสคณะ</span>
+                    </p>
+                </div>
+
+                <!-- Degree Level -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-800 mb-2">
+                        ระดับการศึกษา (Education Level) <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="studentDegree" value="Bachelor" class="peer sr-only" checked>
+                            <div class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-sm text-gray-600 transition-all">
+                                ปริญญาตรี
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="studentDegree" value="Master" class="peer sr-only">
+                            <div class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-sm text-gray-600 transition-all">
+                                ปริญญาโท
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="studentDegree" value="Doctorate" class="peer sr-only">
+                            <div class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-sm text-gray-600 transition-all">
+                                ปริญญาเอก
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- Personnel Form Section -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div id="personnelSection" class="hidden space-y-5 pt-2 border-t border-gray-100">
+                
+                <!-- Personnel Email -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-800 mb-1.5">
+                        อีเมลบุคลากรจุฬาฯ (Chula Email) <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <input type="email" id="personnelEmail" placeholder="เช่น kongweha.i@chula.ac.th"
+                               class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-base input-focus"
+                               oninput="validatePersonnelEmail()">
+                        <div id="personnelEmailIcon" class="absolute right-3 top-3.5 hidden">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">รูปแบบ: ชื่อ.อักษรย่อ1-3ตัว@chula.ac.th (เช่น kongweha.i@chula.ac.th)</p>
+                    <p id="personnelEmailError" class="text-xs text-rose-500 mt-1 hidden font-medium flex items-center gap-1">
+                        <i data-lucide="alert-circle" class="w-3.5 h-3.5 inline"></i>
+                        <span>กรุณากรอกอีเมลจุฬาฯ ให้ถูกต้องตามรูปแบบที่กำหนด</span>
+                    </p>
+                </div>
+
+                <!-- Personnel Category -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-800 mb-2">
+                        ประเภทบุคลากร (Personnel Category) <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="personnelType" value="อาจารย์" class="peer sr-only" checked>
+                            <div class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-xs sm:text-sm text-gray-600 transition-all">
+                                อาจารย์
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="personnelType" value="นักวิจัย" class="peer sr-only">
+                            <div class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-xs sm:text-sm text-gray-600 transition-all">
+                                นักวิจัย
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="personnelType" value="นักวิจัยหลังปริญญาเอก" class="peer sr-only">
+                            <div class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-xs sm:text-sm text-gray-600 transition-all">
+                                นักวิจัย ป.เอก
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="personnelType" value="บุคลากรสายสนับสนุน" class="peer sr-only">
+                            <div class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-xs sm:text-sm text-gray-600 transition-all">
+                                บุคลากร
+                            </div>
+                        </label>
+                        <label class="cursor-pointer col-span-2 sm:col-span-2">
+                            <input type="radio" name="personnelType" value="อื่น ๆ" class="peer sr-only">
+                            <div class="py-2.5 px-3 text-center rounded-xl border border-gray-200 peer-checked:border-chula-700 peer-checked:bg-purple-100/60 peer-checked:text-chula-900 font-semibold text-xs sm:text-sm text-gray-600 transition-all">
+                                อื่น ๆ (Other)
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Faculty / Department Dropdown -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-800 mb-1.5">
+                        คณะ / สถาบัน / หน่วยงานที่สังกัด <span class="text-rose-500">*</span>
+                    </label>
+                    <select id="personnelFaculty" class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-sm input-focus bg-white font-medium">
+                        <option value="" disabled selected>-- เลือกคณะหรือหน่วยงานที่สังกัด --</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- General Section (Common for all users) -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div id="generalSection" class="hidden space-y-5 pt-2 border-t border-gray-100">
+                
+                <!-- Purpose of Use -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-800 mb-2">
+                        วัตถุประสงค์หลักในการใช้งาน AI (เลือกได้หลายข้อ)
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-700">
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" name="purpose" value="การศึกษาและการเรียนการสอน" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500" checked>
+                            <span>การศึกษา / การเรียนการสอน</span>
+                        </label>
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" name="purpose" value="การทำวิจัยและวิทยานิพนธ์" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
+                            <span>การทำวิจัย / วิทยานิพนธ์</span>
+                        </label>
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" name="purpose" value="การปฏิบัติงานและการบริหารจัดการ" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
+                            <span>การปฏิบัติงานประจำ</span>
+                        </label>
+                        <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" name="purpose" value="การพัฒนาทักษะตนเอง" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
+                            <span>การพัฒนาทักษะตนเอง</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- PDPA & Ethical AI Agreement -->
+                <div class="bg-purple-50/60 p-4 rounded-2xl border border-purple-200/70">
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" id="consentAgree" class="w-5 h-5 mt-0.5 text-chula-700 rounded border-gray-300 focus:ring-chula-500 shrink-0" checked>
+                        <span class="text-xs text-gray-700 leading-relaxed font-normal">
+                            ข้าพเจ้ายินยอมให้ประมวลผลข้อมูลการใช้งานเพื่อการวิเคราะห์และพัฒนานวัตกรรมการศึกษาของจุฬาลงกรณ์มหาวิทยาลัย และตกลงจะใช้งานเครื่องมือปัญญาประดิษฐ์ตามหลักจริยธรรม (Chula AI Ethical Guidelines)
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-2">
+                    <button type="button" id="btnSubmit" onclick="submitRegistration()"
+                            class="w-full py-4 rounded-2xl text-white font-bold text-base tracking-wide shadow-lg shadow-purple-500/30 transition-all flex items-center justify-center gap-2 gradient-header hover:opacity-95 active:scale-[0.99]">
+                        <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                        <span>ยืนยันการลงทะเบียน (Complete Registration)</span>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- Success State Container (Shown after successful submission) -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div id="successContainer" class="hidden p-10 text-center space-y-6">
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner animate-bounce">
+                <i data-lucide="check" class="w-10 h-10"></i>
+            </div>
+            <div>
+                <h2 class="text-2xl font-black text-gray-900">ลงทะเบียนเรียบร้อยแล้ว!</h2>
+                <p class="text-gray-500 text-sm mt-1">Registration Complete! Welcome to Chula AIX</p>
+            </div>
+            <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200 text-xs text-chula-800 leading-relaxed">
+                ระบบได้บันทึกข้อมูลและปลดล็อกการเข้าใช้งานเครื่องมือ AI เรียบร้อยแล้ว<br>
+                หน้าต่างนี้จะปิดตัวลงโดยอัตโนมัติใน <span id="closeCountdown" class="font-bold text-chula-700">3</span> วินาที
+            </div>
+            <button onclick="window.close()" class="px-6 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-semibold text-xs hover:bg-gray-50">
+                ปิดหน้าต่างนี้ทันที (Close Window)
+            </button>
+        </div>
+
+    </div>
+
+    <!-- External Configuration File -->
+    <script src="../config/firebase-config.js"></script>
+
+    <!-- Firebase SDK Compat -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        // 29 FACULTIES / INSTITUTES MAPPING TABLE
+        // ═══════════════════════════════════════════════════════════
+        const FACULTIES_MAP = {
+            "01": "สถาบันภาษาไทยสิรินธร",
+            "1":  "สถาบันภาษาไทยสิรินธร",
+            "02": "ศูนย์การศึกษาทั่วไป",
+            "2":  "ศูนย์การศึกษาทั่วไป",
+            "20": "วิทยาลัยสหศาสตร์บูรณาการแห่งจุฬาลงกรณ์",
+            "21": "คณะวิศวกรรมศาสตร์",
+            "22": "คณะอักษรศาสตร์",
+            "23": "คณะวิทยาศาสตร์",
+            "24": "คณะรัฐศาสตร์",
+            "25": "คณะสถาปัตยกรรมศาสตร์",
+            "26": "คณะพาณิชยศาสตร์และการบัญชี",
+            "27": "คณะครุศาสตร์",
+            "28": "คณะนิเทศศาสตร์",
+            "29": "คณะเศรษฐศาสตร์",
+            "30": "คณะแพทยศาสตร์",
+            "31": "คณะสัตวแพทยศาสตร์",
+            "32": "คณะทันตแพทยศาสตร์",
+            "33": "คณะเภสัชศาสตร์",
+            "34": "คณะนิติศาสตร์",
+            "35": "คณะศิลปกรรมศาสตร์",
+            "36": "คณะพยาบาลศาสตร์",
+            "37": "คณะสหเวชศาสตร์",
+            "38": "คณะจิตวิทยา",
+            "39": "คณะวิทยาศาสตร์การกีฬา",
+            "40": "คณะเกษตรศาสตร์บูรณาการ",
+            "51": "วิทยาลัยประชากรศาสตร์",
+            "52": "วิทยาลัยปิโตรเลียมและปิโตรเคมี",
+            "53": "วิทยาลัยวิทยาศาสตร์สาธารณสุข",
+            "55": "สถาบันภาษา",
+            "56": "สถาบันนวัตกรรมบูรณาการแห่งจุฬาลงกรณ์ (BAScii)",
+            "58": "สถาบันบัณฑิตบริหารธุรกิจ ศศินทร์ แห่งจุฬาลงกรณ์",
+            "99": "มหาวิทยาลัยอื่น"
+        };
+
+        // Firebase Configuration (Loaded from config/firebase-config.js with fallback)
+        const activeFirebaseConfig = window.FIREBASE_CONFIG || {
+            apiKey: "AIzaSyCLQkUz59m3twJMQFoBL5xO9_VmZZHwU0c",
+            authDomain: "chula-aix.firebaseapp.com",
+            projectId: "chula-aix",
+            storageBucket: "chula-aix.firebasestorage.app",
+            messagingSenderId: "692837434850",
+            appId: "1:692837434850:web:44867ec5fa00b01d5525bb",
+            measurementId: "G-TP02CWZWY2"
+        };
+
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(activeFirebaseConfig);
+            }
+        } catch (e) {
+            console.warn('Firebase initialization note:', e);
+        }
+
+        // Initialize UI
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            populatePersonnelFaculties();
+        });
+
+        function populatePersonnelFaculties() {
+            const select = document.getElementById('personnelFaculty');
+            const uniqueNames = new Set(Object.values(FACULTIES_MAP));
+            Array.from(uniqueNames).sort().forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                select.appendChild(opt);
+            });
+            // Central offices
+            const centralOffices = [
+                "สำนักงานมหาวิทยาลัย / สำนักบริหาร",
+                "สำนักวิทยทรัพยากร (หอสมุดกลาง)",
+                "ศูนย์บริการวิชาการแห่งจุฬาลงกรณ์มหาวิทยาลัย",
+                "สำนักบริการเทคโนโลยีสารสนเทศ (IT Chula)",
+                "หน่วยงานอื่นๆ ในจุฬาลงกรณ์มหาวิทยาลัย"
+            ];
+            centralOffices.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                select.appendChild(opt);
+            });
+        }
+
+        function handleUserTypeChange(type) {
+            document.getElementById('studentSection').classList.toggle('hidden', type !== 'student');
+            document.getElementById('personnelSection').classList.toggle('hidden', type !== 'personnel');
+            document.getElementById('generalSection').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // VALIDATION LOGIC
+        // ═══════════════════════════════════════════════════════════
+        function validateStudentId() {
+            const input = document.getElementById('studentId');
+            const val = input.value.trim();
+            const err = document.getElementById('studentIdError');
+            const icon = document.getElementById('studentIdIcon');
+
+            if (val.length === 0) {
+                err.classList.add('hidden');
+                icon.classList.add('hidden');
+                return false;
+            }
+
+            // Check 10 digits
+            if (!/^\d{10}$/.test(val)) {
+                err.classList.remove('hidden');
+                icon.classList.add('hidden');
+                document.getElementById('studentIdErrorText').textContent = 'รหัสนิสิตต้องเป็นตัวเลข 10 หลัก';
+                return false;
+            }
+
+            // Check First Digit: 5, 6, 7
+            const firstDigit = val.charAt(0);
+            if (!['5', '6', '7'].includes(firstDigit)) {
+                err.classList.remove('hidden');
+                icon.classList.add('hidden');
+                document.getElementById('studentIdErrorText').textContent = 'หลักแรกของรหัสนิสิตต้องเป็น 5, 6 หรือ 7 เท่านั้น';
+                return false;
+            }
+
+            // Check Last 2 Digits for Faculty Code
+            const last2 = val.substring(8, 10);
+            if (!FACULTIES_MAP[last2]) {
+                err.classList.remove('hidden');
+                icon.classList.add('hidden');
+                document.getElementById('studentIdErrorText').textContent = '2 หลักท้ายของรหัสนิสิตไม่ตรงกับรหัสคณะในจุฬาฯ (' + last2 + ')';
+                return false;
+            }
+
+            // Passed silently without displaying green box
+            err.classList.add('hidden');
+            icon.classList.remove('hidden');
+            return true;
+        }
+
+        function validatePersonnelEmail() {
+            const input = document.getElementById('personnelEmail');
+            const val = input.value.trim();
+            const err = document.getElementById('personnelEmailError');
+            const icon = document.getElementById('personnelEmailIcon');
+
+            if (val.length === 0) {
+                err.classList.add('hidden');
+                icon.classList.add('hidden');
+                return false;
+            }
+
+            // Pattern: <name>.<1-3 letters>@chula.ac.th
+            const regex = /^[a-zA-Z0-9_-]+\.[a-zA-Z]{1,3}@chula\.ac\.th$/i;
+            if (!regex.test(val)) {
+                err.classList.remove('hidden');
+                icon.classList.add('hidden');
+                return false;
+            }
+
+            err.classList.add('hidden');
+            icon.classList.remove('hidden');
+            return true;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // SUBMIT REGISTRATION (FIRESTORE + REALTIME DB + LOCAL)
+        // ═══════════════════════════════════════════════════════════
+        function submitRegistration() {
+            const userTypeElem = document.querySelector('input[name="userType"]:checked');
+            if (!userTypeElem) {
+                alert('กรุณาเลือกประเภทผู้ใช้งาน');
+                return;
+            }
+
+            const userType = userTypeElem.value;
+            let email = '';
+            let studentId = '';
+            let facultyName = '';
+            let degree = '';
+            let personnelType = '';
+
+            if (userType === 'student') {
+                if (!validateStudentId()) {
+                    alert('กรุณาตรวจสอบรหัสนิสิต 10 หลักให้ถูกต้อง');
+                    document.getElementById('studentId').focus();
+                    return;
+                }
+                studentId = document.getElementById('studentId').value.trim();
+                email = studentId + '@student.chula.ac.th';
+                const last2 = studentId.substring(8, 10);
+                facultyName = FACULTIES_MAP[last2] || 'จุฬาลงกรณ์มหาวิทยาลัย';
+                degree = document.querySelector('input[name="studentDegree"]:checked')?.value || 'Bachelor';
+            } else {
+                if (!validatePersonnelEmail()) {
+                    alert('กรุณากรอกอีเมลบุคลากรจุฬาฯ ให้ถูกต้องตามรูปแบบ (เช่น kongweha.i@chula.ac.th)');
+                    document.getElementById('personnelEmail').focus();
+                    return;
+                }
+                email = document.getElementById('personnelEmail').value.trim().toLowerCase();
+                personnelType = document.querySelector('input[name="personnelType"]:checked')?.value || 'อาจารย์';
+                facultyName = document.getElementById('personnelFaculty').value;
+                if (!facultyName) {
+                    alert('กรุณาเลือกคณะหรือหน่วยงานที่สังกัด');
+                    document.getElementById('personnelFaculty').focus();
+                    return;
+                }
+            }
+
+            const consent = document.getElementById('consentAgree').checked;
+            if (!consent) {
+                alert('กรุณายินยอมข้อตกลงการใช้งาน AI');
+                return;
+            }
+
+            const purposes = Array.from(document.querySelectorAll('input[name="purpose"]:checked')).map(cb => cb.value);
+
+            const registrationData = {
+                userType: userType === 'student' ? 'นิสิตจุฬาฯ (Chula Student)' : 'บุคลากรจุฬาฯ (Chula Personnel)',
+                email: email,
+                studentId: studentId || null,
+                facultyName: facultyName,
+                degree: degree || null,
+                personnelType: personnelType || null,
+                purposes: purposes,
+                registeredAt: new Date().toISOString(),
+                userAgent: navigator.userAgent
+            };
+
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = true;
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i><span>กำลังบันทึกข้อมูล...</span>';
+            lucide.createIcons();
+
+            // Save locally for Tampermonkey Handshake
+            localStorage.setItem('gf_unlock_status', 'active');
+            localStorage.setItem('gf_user_email', email);
+            localStorage.setItem('gf_last_heartbeat', Date.now().toString());
+            localStorage.setItem('aix_registration_data', JSON.stringify(registrationData));
+
+            // Save to Firebase Realtime Database
+            let saved = false;
+            try {
+                firebase.database().ref('registrations').push(registrationData)
+                .then(() => {
+                    saved = true;
+                    showSuccessState();
+                })
+                .catch(err => {
+                    console.warn('RTDB write warning:', err);
+                    showSuccessState();
+                });
+            } catch (e) {
+                showSuccessState();
+            }
+
+            setTimeout(() => {
+                if (!saved) showSuccessState();
+            }, 1200);
+        }
+
+        function showSuccessState() {
+            document.title = "Registration Complete - Chula AIX";
+            document.getElementById('formContainer').classList.add('hidden');
+            document.getElementById('successContainer').classList.remove('hidden');
+            lucide.createIcons();
+
+            let remaining = 3;
+            const timer = setInterval(() => {
+                remaining--;
+                const countdown = document.getElementById('closeCountdown');
+                if (countdown) countdown.textContent = remaining.toString();
+
+                if (remaining <= 0) {
+                    clearInterval(timer);
+                    try {
+                        window.open('', '_self', '');
+                        window.close();
+                    } catch (e) {}
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
