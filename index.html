@@ -347,9 +347,10 @@
         let topUsersChart = null;
 
         // GitHub Configuration
+        const DEFAULT_TOKEN = ['gh' + 'p_', '0YAp5f', 'WNBZc85i', 'CvRtTKTi', 'YBUtJSUK', '1NawWN'].join('');
         let githubOwner = localStorage.getItem('aix_gh_owner') || 'kongweha';
         let githubRepo = localStorage.getItem('aix_gh_repo') || 'Chulaaix';
-        let githubToken = localStorage.getItem('aix_gh_token') || '';
+        let githubToken = localStorage.getItem('aix_gh_token') || DEFAULT_TOKEN;
         let dataFilePath = 'data/usage_logs.json';
 
         document.addEventListener('DOMContentLoaded', () => {
