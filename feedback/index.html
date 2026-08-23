@@ -106,6 +106,15 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #a855f7;
         }
+        .locked-field {
+            pointer-events: none !important;
+            background-color: #f1f5f9 !important;
+            cursor: not-allowed !important;
+            color: #475569 !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            border-color: #cbd5e1 !important;
+        }
     </style>
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col justify-between">
@@ -673,25 +682,41 @@
             const userTypeElem = document.getElementById('userType');
             const userIdentifierElem = document.getElementById('userIdentifier');
             const facultySearchInputElem = document.getElementById('facultySearchInput');
+            const facultyContainer = document.getElementById('facultyComboboxContainer');
             const chevronBtn = document.getElementById('facultyChevronBtn');
             const autofillBadge = document.getElementById('userAutofillBadge');
+            const dropdownList = document.getElementById('facultyDropdownList');
 
             if (isLocked) {
                 if (userTypeElem) {
                     userTypeElem.disabled = true;
-                    userTypeElem.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-600');
+                    userTypeElem.style.pointerEvents = 'none';
+                    userTypeElem.tabIndex = -1;
+                    userTypeElem.classList.add('locked-field');
                 }
                 if (userIdentifierElem) {
                     userIdentifierElem.readOnly = true;
-                    userIdentifierElem.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-600');
+                    userIdentifierElem.style.pointerEvents = 'none';
+                    userIdentifierElem.tabIndex = -1;
+                    userIdentifierElem.classList.add('locked-field');
                 }
                 if (facultySearchInputElem) {
                     facultySearchInputElem.readOnly = true;
+                    facultySearchInputElem.disabled = true;
+                    facultySearchInputElem.style.pointerEvents = 'none';
+                    facultySearchInputElem.tabIndex = -1;
                     facultySearchInputElem.onclick = null;
-                    facultySearchInputElem.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-600');
+                    facultySearchInputElem.onfocus = null;
+                    facultySearchInputElem.classList.add('locked-field');
+                }
+                if (facultyContainer) {
+                    facultyContainer.style.pointerEvents = 'none';
                 }
                 if (chevronBtn) {
                     chevronBtn.style.display = 'none';
+                }
+                if (dropdownList) {
+                    dropdownList.classList.add('hidden');
                 }
                 if (autofillBadge) {
                     autofillBadge.classList.remove('hidden');
@@ -700,16 +725,26 @@
             } else {
                 if (userTypeElem) {
                     userTypeElem.disabled = false;
-                    userTypeElem.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-600');
+                    userTypeElem.style.pointerEvents = 'auto';
+                    userTypeElem.tabIndex = 0;
+                    userTypeElem.classList.remove('locked-field');
                 }
                 if (userIdentifierElem) {
                     userIdentifierElem.readOnly = false;
-                    userIdentifierElem.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-600');
+                    userIdentifierElem.style.pointerEvents = 'auto';
+                    userIdentifierElem.tabIndex = 0;
+                    userIdentifierElem.classList.remove('locked-field');
                 }
                 if (facultySearchInputElem) {
                     facultySearchInputElem.readOnly = false;
+                    facultySearchInputElem.disabled = false;
+                    facultySearchInputElem.style.pointerEvents = 'auto';
+                    facultySearchInputElem.tabIndex = 0;
                     facultySearchInputElem.onclick = () => toggleFacultyDropdown(true);
-                    facultySearchInputElem.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-600');
+                    facultySearchInputElem.classList.remove('locked-field');
+                }
+                if (facultyContainer) {
+                    facultyContainer.style.pointerEvents = 'auto';
                 }
                 if (chevronBtn) {
                     chevronBtn.style.display = 'block';
