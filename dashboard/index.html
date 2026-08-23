@@ -494,15 +494,39 @@
                 </div>
 
                 <div class="card-stat p-6 space-y-4">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                        <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                            <i data-lucide="building-2" class="w-4 h-4 text-brand-700"></i>
-                            จัดอันดับคณะและหน่วยงานที่มีผู้ลงทะเบียนสูงสุด (Faculties & Institutes)
-                        </h4>
-                        <span class="text-xs text-slate-400">จากทั้งหมด 29 คณะ/หน่วยงาน</span>
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                                <i data-lucide="building-2" class="w-4 h-4 text-brand-700"></i>
+                                สถิติผู้ลงทะเบียนจำแนกตามคณะและหน่วยงาน 29 แห่ง (Faculties & Institutes)
+                            </h4>
+                            <p class="text-xs text-slate-400">แผนภูมิแนวตั้งแสดงรายชื่อคณะและหน่วยงานทั้ง 29 แห่งในจุฬาลงกรณ์มหาวิทยาลัย</p>
+                        </div>
+                        <div class="flex flex-wrap items-center bg-slate-100 p-1 rounded-xl gap-1">
+                            <button type="button" onclick="setFacultyChartMode('all')" id="btnFacultyMode_all"
+                                    class="faculty-mode-btn px-3 py-1 text-xs font-semibold rounded-lg transition text-slate-600 hover:text-slate-900">
+                                ทั้งหมด (Total)
+                            </button>
+                            <button type="button" onclick="setFacultyChartMode('split')" id="btnFacultyMode_split"
+                                    class="faculty-mode-btn active px-3 py-1 text-xs font-semibold rounded-lg transition bg-white text-brand-700 shadow-sm">
+                                แยกประเภท (นิสิต & บุคลากร)
+                            </button>
+                            <button type="button" onclick="setFacultyChartMode('student')" id="btnFacultyMode_student"
+                                    class="faculty-mode-btn px-3 py-1 text-xs font-semibold rounded-lg transition text-slate-600 hover:text-slate-900">
+                                เฉพาะนิสิต (Students)
+                            </button>
+                            <button type="button" onclick="setFacultyChartMode('personnel')" id="btnFacultyMode_personnel"
+                                    class="faculty-mode-btn px-3 py-1 text-xs font-semibold rounded-lg transition text-slate-600 hover:text-slate-900">
+                                เฉพาะบุคลากร (Personnel)
+                            </button>
+                        </div>
                     </div>
-                    <div class="h-96 w-full">
-                        <canvas id="chartFacultiesRanking"></canvas>
+
+                    <!-- Scrollable Chart Container for all 29 Faculties on X-Axis -->
+                    <div class="overflow-x-auto custom-scrollbar pb-3">
+                        <div class="min-w-[1280px] h-[500px]">
+                            <canvas id="chartFacultiesRanking"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1856,37 +1880,169 @@ function renderCurrentViewCharts() {
             });
         }
 
+        let currentFacultyChartMode = 'split';
+
+        function setFacultyChartMode(mode) {
+            currentFacultyChartMode = mode;
+            document.querySelectorAll('.faculty-mode-btn').forEach(btn => {
+                btn.className = "faculty-mode-btn px-3 py-1 text-xs font-semibold rounded-lg transition text-slate-600 hover:text-slate-900";
+            });
+            const activeBtn = document.getElementById(`btnFacultyMode_${mode}`);
+            if (activeBtn) {
+                activeBtn.className = "faculty-mode-btn active px-3 py-1 text-xs font-semibold rounded-lg transition bg-white text-brand-700 shadow-sm";
+            }
+            renderFacultiesRankingChart();
+        }
+
         function renderFacultiesRankingChart() {
             destroyChart('chartFacultiesRanking');
             const ctx = document.getElementById('chartFacultiesRanking')?.getContext('2d');
             if (!ctx) return;
 
-            const counts = {};
-            rawRegistrations.forEach(r => {
-                if (r.facultyName) counts[r.facultyName] = (counts[r.facultyName] || 0) + 1;
+            const ALL_29_FACULTIES = [
+                "คณะวิศวกรรมศาสตร์", "คณะอักษรศาสตร์", "คณะวิทยาศาสตร์", "คณะรัฐศาสตร์", "คณะสถาปัตยกรรมศาสตร์",
+                "คณะพาณิชยศาสตร์และการบัญชี", "คณะครุศาสตร์", "คณะนิเทศศาสตร์", "คณะเศรษฐศาสตร์", "คณะแพทยศาสตร์",
+                "คณะสัตวแพทยศาสตร์", "คณะทันตแพทยศาสตร์", "คณะเภสัชศาสตร์", "คณะนิติศาสตร์", "คณะศิลปกรรมศาสตร์",
+                "คณะพยาบาลศาสตร์", "คณะสหเวชศาสตร์", "คณะจิตวิทยา", "คณะวิทยาศาสตร์การกีฬา", "สำนักวิชาทรัพยากรการเกษตร",
+                "วิทยาลัยประชากรศาสตร์", "วิทยาลัยปิโตรเลียมและปิโตรเคมี", "วิทยาลัยวิทยาศาสตร์สาธารณสุข", "สถาบันภาษา",
+                "สถาบันนวัตกรรมบูรณาการ (BAScii)", "สถาบันบัณฑิตบริหารธุรกิจ ศศินทร์", "สำนักวิทยทรัพยากร (หอสมุดกลาง)",
+                "สำนักบริการเทคโนโลยีสารสนเทศ (IT Chula)", "หน่วยงานอื่นๆ ในจุฬาลงกรณ์มหาวิทยาลัย"
+            ];
+
+            const studentCounts = {};
+            const personnelCounts = {};
+            ALL_29_FACULTIES.forEach(f => {
+                studentCounts[f] = 0;
+                personnelCounts[f] = 0;
             });
 
-            const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 12);
-            const labels = sorted.map(s => s[0]);
-            const data = sorted.map(s => s[1]);
+            rawRegistrations.forEach(r => {
+                const isStudent = (r.userType || '').includes('นิสิต') || !!r.studentId;
+                const facName = (r.facultyName || '').trim();
+
+                let matchedFaculty = ALL_29_FACULTIES.find(f => f === facName);
+                if (!matchedFaculty && facName) {
+                    matchedFaculty = ALL_29_FACULTIES.find(f => facName.includes(f) || f.includes(facName));
+                }
+                if (!matchedFaculty && isStudent && r.studentId && /^\d{10}$/.test(r.studentId)) {
+                    const code = r.studentId.substring(8, 10);
+                    const foundObj = FACULTIES_DATA?.find(f => f.code === code);
+                    if (foundObj) matchedFaculty = ALL_29_FACULTIES.find(f => f === foundObj.th || f.includes(foundObj.th));
+                }
+                if (!matchedFaculty) {
+                    matchedFaculty = "หน่วยงานอื่นๆ ในจุฬาลงกรณ์มหาวิทยาลัย";
+                }
+
+                if (isStudent) {
+                    studentCounts[matchedFaculty] = (studentCounts[matchedFaculty] || 0) + 1;
+                } else {
+                    personnelCounts[matchedFaculty] = (personnelCounts[matchedFaculty] || 0) + 1;
+                }
+            });
+
+            const studentData = ALL_29_FACULTIES.map(f => studentCounts[f] || 0);
+            const personnelData = ALL_29_FACULTIES.map(f => personnelCounts[f] || 0);
+            const totalData = ALL_29_FACULTIES.map(f => (studentCounts[f] || 0) + (personnelCounts[f] || 0));
+
+            let datasets = [];
+            if (currentFacultyChartMode === 'split') {
+                datasets = [
+                    {
+                        label: 'นิสิตจุฬาฯ (Students)',
+                        data: studentData,
+                        backgroundColor: '#9333ea',
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        barPercentage: 0.85,
+                        categoryPercentage: 0.75
+                    },
+                    {
+                        label: 'บุคลากรจุฬาฯ (Personnel)',
+                        data: personnelData,
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        barPercentage: 0.85,
+                        categoryPercentage: 0.75
+                    }
+                ];
+            } else if (currentFacultyChartMode === 'student') {
+                datasets = [
+                    {
+                        label: 'เฉพาะนิสิตจุฬาฯ (Students)',
+                        data: studentData,
+                        backgroundColor: '#9333ea',
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        barPercentage: 0.65,
+                        categoryPercentage: 0.75
+                    }
+                ];
+            } else if (currentFacultyChartMode === 'personnel') {
+                datasets = [
+                    {
+                        label: 'เฉพาะบุคลากรจุฬาฯ (Personnel)',
+                        data: personnelData,
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        barPercentage: 0.65,
+                        categoryPercentage: 0.75
+                    }
+                ];
+            } else {
+                // 'all'
+                datasets = [
+                    {
+                        label: 'ผู้ลงทะเบียนทั้งหมด (Total)',
+                        data: totalData,
+                        backgroundColor: '#7b2fa0',
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        barPercentage: 0.65,
+                        categoryPercentage: 0.75
+                    }
+                ];
+            }
 
             chartInstances['chartFacultiesRanking'] = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: labels.length > 0 ? labels : ['ยังไม่มีข้อมูล'],
-                    datasets: [{
-                        label: 'จำนวนผู้ลงทะเบียน',
-                        data: data.length > 0 ? data : [0],
-                        backgroundColor: '#7b2fa0',
-                        borderRadius: 8
-                    }]
+                    labels: ALL_29_FACULTIES,
+                    datasets: datasets
                 },
                 options: {
-                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { x: { beginAtZero: true, ticks: { precision: 0, font: { family: 'Prompt' } } } }
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { font: { family: 'Prompt', size: 12 }, boxWidth: 14 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label(item) {
+                                    return ` ${item.dataset.label}: ${item.raw} คน`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0, font: { family: 'Prompt' } },
+                            grid: { color: '#f1f5f9' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: 'Prompt', size: 10.5 },
+                                maxRotation: 60,
+                                minRotation: 45,
+                                autoSkip: false
+                            }
+                        }
+                    }
                 }
             });
         }
