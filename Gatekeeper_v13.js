@@ -81,12 +81,12 @@
             items: [
                 {
                     name: 'AI Tool Suggestion',
-                    url: 'https://forms.gle/', // ใส่ลิงก์แบบฟอร์มแนะนำเครื่องมือ AI ที่นี่
+                    url: 'https://kongweha.github.io/Chulaaix/suggestion/',
                     iconSvg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7b2fa0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/><line x1="9" y1="22" x2="15" y2="22"/></svg>'
                 },
                 {
                     name: 'Feedback',
-                    url: 'https://forms.gle/', // ใส่ลิงก์แบบฟอร์มข้อเสนอแนะที่นี่
+                    url: 'https://kongweha.github.io/Chulaaix/feedback/',
                     iconSvg: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7b2fa0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
                 }
             ]
