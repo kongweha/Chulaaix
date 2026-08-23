@@ -894,7 +894,7 @@
                     btnTh.style.background = 'transparent'; btnTh.style.color = '#6b21a8';
                 }
             }
-            updateRulesLang('th');
+            updateRulesLang('en');
 
             btnTh.onclick = function() { updateRulesLang('th'); };
             btnEn.onclick = function() { updateRulesLang('en'); };
@@ -950,21 +950,21 @@
 
             // Logo: top center
             var logoWrap = document.createElement('div');
-            logoWrap.style.cssText = 'width:100%;display:flex;justify-content:center;padding:clamp(10px, 1.8vh, 20px) 0 0;flex-shrink:0;';
+            logoWrap.style.cssText = 'width:100%;display:flex;justify-content:center;padding:clamp(12px, 2vh, 22px) 0 0;flex-shrink:0;';
             var logoImg = document.createElement('img');
             logoImg.src = LOGO_SRC;
             logoImg.decoding = 'async';
-            logoImg.style.cssText = 'width:clamp(240px, 18vw, 360px);max-width:78%;object-fit:contain;';
+            logoImg.style.cssText = 'width:clamp(250px, 18vw, 380px);max-width:80%;object-fit:contain;';
             logoWrap.appendChild(logoImg);
             left.appendChild(logoWrap);
 
-            // Banner: middle glowing script graphic (Chula AIX Artificial Intelligence X)
+            // Banner: middle glowing script graphic stretched horizontally to edges and centered vertically
             var bannerWrap = document.createElement('div');
-            bannerWrap.style.cssText = 'width:100%;display:flex;justify-content:center;align-items:center;padding:clamp(2px, 0.8vh, 8px) 0;flex-shrink:0;';
+            bannerWrap.style.cssText = 'width:100%;display:flex;justify-content:center;align-items:center;padding:clamp(6px, 1.4vh, 16px) clamp(10px, 1.8vw, 24px);box-sizing:border-box;flex-shrink:0;';
             var bannerImg = document.createElement('img');
             bannerImg.src = BANNER_SRC;
             bannerImg.decoding = 'async';
-            bannerImg.style.cssText = 'width:clamp(320px, 26vw, 520px);max-width:90%;object-fit:contain;';
+            bannerImg.style.cssText = 'width:100%;max-width:100%;height:auto;max-height:clamp(55px, 10vh, 105px);object-fit:contain;object-position:center;';
             bannerWrap.appendChild(bannerImg);
             left.appendChild(bannerWrap);
 
