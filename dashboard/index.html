@@ -2793,7 +2793,7 @@ function renderCurrentViewCharts() {
         }
 
         // ───────────────────────────────────────────────────────────
-        // BUILD REGISTRATION → SESSION USAGE MAP
+        // BUILD REGISTRATION → SESSION USAGE MAP (แยกแต่ละเซสชัน ไม่รวมกัน)
         // ───────────────────────────────────────────────────────────
         function buildRegistrationSessionUsageMap() {
             const map = {};
@@ -2818,12 +2818,14 @@ function renderCurrentViewCharts() {
 
                 if (!regId) return;
 
-                if (!map[regId]) map[regId] = {};
+                if (!map[regId]) map[regId] = [];
 
                 const logTools = getLogToolDurations(l);
-                Object.entries(logTools).forEach(([tool, secs]) => {
-                    map[regId][tool] = (map[regId][tool] || 0) + secs;
-                });
+                // เก็บแต่ละ session แยกกัน ไม่รวมเวลา
+                if (Object.keys(logTools).length > 0) {
+                    const timestamp = l.startedAt || l.timestamp || l.createdAt || '';
+                    map[regId].push({ tools: logTools, timestamp: timestamp });
+                }
             });
 
             return map;
@@ -2867,14 +2869,19 @@ function renderCurrentViewCharts() {
                     ? r.selectedAITools.map(t => `<span class="inline-block bg-purple-50 text-purple-700 text-[10px] px-1.5 py-0.5 rounded border border-purple-200 mr-1 mb-1">${t}</span>`).join('')
                     : '-';
 
-                const actualMap = regUsageMap[r.id] || null;
+                const sessions = regUsageMap[r.id] || [];
 
                 let actualUsageHtml = '';
-                if (actualMap && Object.keys(actualMap).length > 0) {
-                    actualUsageHtml = Object.entries(actualMap).map(([tool, secs]) => {
-                        const durText = formatRealtimeDuration(secs);
-                        return `<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 text-[10px] px-2 py-0.5 rounded-md border border-emerald-200 font-semibold mr-1 mb-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${tool}: ${durText}</span>`;
-                    }).join('');
+                if (sessions.length > 0) {
+                    actualUsageHtml = sessions.map((session, sIdx) => {
+                        const sessionBadges = Object.entries(session.tools).map(([tool, secs]) => {
+                            const durText = formatRealtimeDuration(secs);
+                            return `<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 text-[10px] px-2 py-0.5 rounded-md border border-emerald-200 font-semibold mr-1 mb-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${tool}: ${durText}</span>`;
+                        }).join('');
+                        const timeLabel = session.timestamp ? new Date(session.timestamp).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }) : '';
+                        const sessionLabel = sessions.length > 1 ? `<div class="text-[9px] text-slate-400 font-mono mb-0.5">${timeLabel ? timeLabel : 'เซสชัน ' + (sIdx + 1)}</div>` : '';
+                        return sessionLabel + sessionBadges;
+                    }).join(sessions.length > 1 ? '<hr class="border-slate-200 my-1">' : '');
                 } else {
                     actualUsageHtml = `<span class="text-slate-400 text-[11px] italic">ยังไม่มีประวัติการใช้งาน</span>`;
                 }
