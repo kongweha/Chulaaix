@@ -632,7 +632,7 @@
 
             var cardBox = document.createElement('div');
             Object.assign(cardBox.style, {
-                width:'500px',maxWidth:'100%',height:'330px',background:'white',
+                width:'100%',maxWidth:'100%',height:'clamp(290px, 48vh, 340px)',background:'white',
                 borderRadius:'14px',overflow:'hidden',display:'flex',flexDirection:'column',
                 boxShadow:'0 8px 24px rgba(0,0,0,0.18)',border:'1px solid rgba(255,255,255,0.4)',
                 boxSizing:'border-box'
@@ -833,44 +833,44 @@
                 fontFamily:"'Segoe UI',Arial,sans-serif",overflow:'hidden'
             });
 
-            // ── LEFT: Purple Gradient ──
+            // ── LEFT 65%: Purple Gradient (Fluid Scale Up from min 1280x587) ──
             var left = document.createElement('div');
             Object.assign(left.style, {
-                flex:'1.4',width:'60%',height:'100%',position:'relative',
+                width:'65%',height:'100%',position:'relative',
                 background:'linear-gradient(145deg,#c060e0 0%,#8b28b8 50%,#6a1fa0 100%)',
                 overflow:'hidden',display:'flex',flexDirection:'column',
                 alignItems:'center',justifyContent:'space-between',boxSizing:'border-box'
             });
 
-            // Logo: top center
+            // Logo: top center (300px base scaled)
             var logoWrap = document.createElement('div');
-            logoWrap.style.cssText = 'width:100%;display:flex;justify-content:center;padding:clamp(16px, 3vh, 32px) 0 4px;flex-shrink:0;';
+            logoWrap.style.cssText = 'width:100%;display:flex;justify-content:center;padding:clamp(20px, 3vh, 32px) 0 clamp(8px, 1.5vh, 16px);flex-shrink:0;';
             var logoImg = document.createElement('img');
             logoImg.src = LOGO_SRC;
             logoImg.decoding = 'async';
-            logoImg.style.cssText = 'width:clamp(280px, 18vw, 380px);max-width:85%;object-fit:contain;';
+            logoImg.style.cssText = 'width:clamp(300px, 22vw, 420px);max-width:82%;object-fit:contain;';
             logoWrap.appendChild(logoImg);
             left.appendChild(logoWrap);
 
-            // Content row: Card (left) + Character flush bottom (right)
+            // Content row: Card (left) + Character (right)
             var contentRow = document.createElement('div');
             Object.assign(contentRow.style, {
-                flex:'1',width:'100%',display:'flex',
-                alignItems:'flex-end',justifyContent:'center',margin:'0 auto',
-                padding:'0 24px 0 24px',boxSizing:'border-box',
-                gap:'24px',height:'calc(100% - 65px)'
+                flex:'1',width:'100%',display:'flex',alignItems:'flex-end',
+                justifyContent:'center',margin:'0 auto',
+                padding:'0 clamp(16px, 2vw, 32px) 0 clamp(16px, 2vw, 32px)',boxSizing:'border-box',
+                gap:'clamp(12px, 1.5vw, 24px)',height:'calc(100% - 65px)'
             });
 
             // Left Card container (bottom-left)
             var cardWrap = document.createElement('div');
             Object.assign(cardWrap.style, {
-                width:'500px',maxWidth:'100%',flexShrink:'0',
+                flexShrink:'0',width:'clamp(460px, 34vw, 540px)',maxWidth:'100%',
                 display:'flex',flexDirection:'column',alignItems:'flex-start',
-                marginBottom:'20px'
+                paddingBottom:'clamp(14px, 2.5vh, 24px)'
             });
             buildLeftCard(cardWrap);
 
-            // Character container (bottom-right) flush with bottom window edge
+            // Character container (bottom-right, large flush bottom)
             var charWrap = document.createElement('div');
             Object.assign(charWrap.style, {
                 flex:'1',display:'flex',alignItems:'flex-end',
@@ -881,7 +881,7 @@
             charImg.src = CHAR_SRC;
             charImg.decoding = 'async';
             Object.assign(charImg.style, {
-                maxHeight:'100%',maxWidth:'100%',height:'auto',
+                maxHeight:'95%',maxWidth:'100%',
                 objectFit:'contain',objectPosition:'bottom center',
                 display:'block',verticalAlign:'bottom',marginBottom:'0px'
             });
@@ -891,28 +891,28 @@
             contentRow.appendChild(charWrap);
             left.appendChild(contentRow);
 
-            // ── RIGHT: Clean White Registration Panel (Base Min Scale + Fluid Scale Up) ──
+            // ── RIGHT 35%: Clean White Registration Panel (Fluid Scale Up from min 1280x587) ──
             var right = document.createElement('div');
             Object.assign(right.style, {
-                flex:'1',width:'clamp(380px, 35vw, 750px)',height:'100%',background:'white',
+                width:'35%',height:'100%',background:'white',
                 display:'flex',flexDirection:'column',justifyContent:'center',
-                alignItems:'center',padding:'clamp(32px, 5vw, 64px) clamp(24px, 3vw, 48px)',
+                alignItems:'center',padding:'clamp(32px, 4vw, 56px) clamp(20px, 2.5vw, 40px)',
                 boxSizing:'border-box',textAlign:'center'
             });
 
             var title = document.createElement('div');
             title.innerHTML = 'WELCOME<br>TO CHULA AIX';
             Object.assign(title.style, {
-                color:'#9b3db8',fontSize:'clamp(32px, 2.5vw, 56px)',fontWeight:'900',
-                letterSpacing:'clamp(2.5px, 0.25vw, 5px)',lineHeight:'1.22',marginBottom:'clamp(18px, 2.2vh, 36px)',
+                color:'#9b3db8',fontSize:'clamp(24px, 2.3vw, 46px)',fontWeight:'900',
+                letterSpacing:'clamp(2px, 0.2vw, 4px)',lineHeight:'1.25',marginBottom:'clamp(16px, 2.5vh, 32px)',
                 textTransform:'uppercase'
             });
 
             var sub = document.createElement('p');
             sub.innerHTML = 'Please register to start<br>using AI tools';
             Object.assign(sub.style, {
-                color:'#666',fontSize:'clamp(15px, 1.2vw, 24px)',
-                lineHeight:'1.6',margin:'0 0 clamp(28px, 3.5vh, 52px) 0'
+                color:'#666',fontSize:'clamp(13px, 1.2vw, 20px)',
+                lineHeight:'1.65',margin:'0 0 clamp(24px, 3.5vh, 48px) 0'
             });
 
             var btn = document.createElement('button');
@@ -920,10 +920,10 @@
             Object.assign(btn.style, {
                 background:'linear-gradient(to right,#b04fd4,#7b2fa0)',
                 color:'white',border:'none',borderRadius:'9999px',
-                padding:'clamp(16px, 1.8vh, 26px) 0',fontSize:'clamp(15px, 1.1vw, 22px)',fontWeight:'900',
+                padding:'clamp(14px, 1.8vh, 24px) 0',fontSize:'clamp(13px, 1.1vw, 20px)',fontWeight:'900',
                 letterSpacing:'2px',cursor:'pointer',textTransform:'uppercase',
-                boxShadow:'0 clamp(4px, 0.8vh, 12px) clamp(18px, 2vh, 36px) rgba(123,47,160,0.4)',
-                width:'100%',maxWidth:'clamp(260px, 18vw, 400px)'
+                boxShadow:'0 clamp(4px, 0.8vh, 12px) clamp(16px, 2vh, 32px) rgba(123,47,160,0.4)',
+                width:'100%',maxWidth:'clamp(260px, 18vw, 360px)'
             });
             var popupWin = null;
             function openRegistrationPopup() {
