@@ -1585,6 +1585,66 @@
         }
 
         // ═══════════════════════════════════════════════════════════
+        // HELPER: MATCH USAGE LOGS TO SPECIFIC REGISTRATION SESSIONS
+        // ═══════════════════════════════════════════════════════════
+        function buildRegistrationSessionUsageMap() {
+            // Group registrations by user key (email or studentId)
+            const userRegsMap = {};
+            rawRegistrations.forEach(r => {
+                const emailKey = (r.email || '').toLowerCase().trim();
+                const studentIdKey = (r.studentId ? `${r.studentId}@student.chula.ac.th` : '').toLowerCase().trim();
+                const key = emailKey || studentIdKey;
+                if (!key) return;
+                if (!userRegsMap[key]) userRegsMap[key] = [];
+                userRegsMap[key].push(r);
+            });
+
+            // Sort registrations for each user chronologically ascending
+            Object.keys(userRegsMap).forEach(k => {
+                userRegsMap[k].sort((a, b) => new Date(a.registeredAt || 0) - new Date(b.registeredAt || 0));
+            });
+
+            // Map: regId -> { toolName: seconds }
+            const regUsageMap = {};
+            rawRegistrations.forEach(r => {
+                regUsageMap[r.id] = {};
+            });
+
+            // Assign each usage log strictly to its corresponding registration session window
+            rawUsageLogs.forEach(l => {
+                const emailKey = (l.email || l.userEmail || '').toLowerCase().trim();
+                if (!emailKey) return;
+
+                const userRegs = userRegsMap[emailKey];
+                if (!userRegs || userRegs.length === 0) return;
+
+                const logTimeMs = new Date(l.startTime || l.createdAt || l.timestamp || 0).getTime();
+                const logTools = getLogToolDurations(l);
+
+                // Find the specific registration session this log belongs to:
+                // It belongs to the latest registration that started at or before this log
+                let assignedReg = userRegs[0];
+                for (let i = 0; i < userRegs.length; i++) {
+                    const regTimeMs = new Date(userRegs[i].registeredAt || 0).getTime();
+                    // Allow 2-minute buffer for client-server time differences
+                    if (logTimeMs >= regTimeMs - 120000) {
+                        assignedReg = userRegs[i];
+                    } else {
+                        break;
+                    }
+                }
+
+                if (assignedReg && assignedReg.id) {
+                    Object.entries(logTools).forEach(([tool, dur]) => {
+                        regUsageMap[assignedReg.id][tool] = (regUsageMap[assignedReg.id][tool] || 0) + dur;
+                    });
+                }
+            });
+
+            return regUsageMap;
+        }
+
+        // ═══════════════════════════════════════════════════════════
         // 3. RENDER OVERVIEW 7-COLUMN TABLE
         // ═══════════════════════════════════════════════════════════
         function renderOverviewUsersTable() {
@@ -1592,17 +1652,7 @@
             if (!tbody) return;
 
             const search = (document.getElementById('inputSearchOverviewTable')?.value || '').toLowerCase();
-            
-            const userActualUsageMap = {};
-            rawUsageLogs.forEach(l => {
-                const userKey = (l.email || l.userEmail || '').toLowerCase().trim();
-                if (!userKey) return;
-                if (!userActualUsageMap[userKey]) userActualUsageMap[userKey] = {};
-                const logTools = getLogToolDurations(l);
-                Object.entries(logTools).forEach(([tool, dur]) => {
-                    userActualUsageMap[userKey][tool] = (userActualUsageMap[userKey][tool] || 0) + dur;
-                });
-            });
+            const regUsageMap = buildRegistrationSessionUsageMap();
 
             const filtered = rawRegistrations.filter(r => {
                 if (!search) return true;
@@ -1630,9 +1680,7 @@
                     ? r.selectedAITools.map(t => `<span class="inline-block bg-purple-50 text-purple-700 text-[10px] px-1.5 py-0.5 rounded border border-purple-200 mr-1 mb-1">${t}</span>`).join('')
                     : '-';
 
-                const emailKey = (r.email || '').toLowerCase().trim();
-                const studentIdKey = (r.studentId ? `${r.studentId}@student.chula.ac.th` : '').toLowerCase().trim();
-                const actualMap = userActualUsageMap[emailKey] || userActualUsageMap[studentIdKey] || null;
+                const actualMap = regUsageMap[r.id] || null;
 
                 let actualUsageHtml = '';
                 if (actualMap && Object.keys(actualMap).length > 0) {
