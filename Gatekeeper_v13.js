@@ -629,15 +629,15 @@
             var fbFrame = document.createElement('iframe');
             var fbSrc = 'https://www.facebook.com/plugins/page.php' +
                 '?href=' + encodeURIComponent(FB_PAGE) +
-                '&tabs=timeline&width=450&height=360' +
-                '&small_header=true&adapt_container_width=true' +
+                '&tabs=timeline&width=500&height=300' +
+                '&small_header=true&adapt_container_width=false' +
                 '&hide_cover=true&show_facepile=false';
 
             fbFrame.loading = 'lazy';
             Object.assign(fbFrame.style, {
-                width:'100%',maxWidth:'clamp(340px, 22vw, 460px)',height:'clamp(260px, 28vh, 360px)',border:'none',
-                borderRadius:'14px',overflow:'hidden',display:'block',
-                background:'white',boxShadow:'0 8px 24px rgba(0,0,0,0.2)'
+                width:'500px',height:'300px',maxWidth:'100%',border:'none',
+                borderRadius:'12px',overflow:'hidden',display:'block',
+                background:'white',boxShadow:'0 8px 24px rgba(0,0,0,0.18)'
             });
             fbFrame.setAttribute('scrolling', 'no');
             fbFrame.setAttribute('frameborder', '0');
@@ -678,8 +678,8 @@
             link.rel = 'noopener noreferrer';
             link.textContent = '📄 ดูโพสต์ทั้งหมดบน Facebook';
             Object.assign(link.style, {
-                display:'block',marginTop:'clamp(6px, 1vh, 12px)',color:'rgba(255,255,255,0.92)',
-                fontSize:'clamp(12px, 0.95vw, 14px)',textDecoration:'none',textAlign:'center'
+                display:'block',marginTop:'8px',color:'rgba(255,255,255,0.92)',
+                fontSize:'12px',textDecoration:'none',textAlign:'center'
             });
 
             container.appendChild(fbFrame);
@@ -697,7 +697,7 @@
                 fontFamily:"'Segoe UI',Arial,sans-serif",overflow:'hidden'
             });
 
-            // ── LEFT: Purple Gradient & Cohesive Grouped Content (Base Min Scale + Fluid Scale Up) ──
+            // ── LEFT: Purple Gradient ──
             var left = document.createElement('div');
             Object.assign(left.style, {
                 flex:'1.4',width:'60%',height:'100%',position:'relative',
@@ -706,45 +706,45 @@
                 alignItems:'center',justifyContent:'space-between',boxSizing:'border-box'
             });
 
-            // Logo: top center, base 280px scaling up to 420px on 4K
+            // Logo: top center
             var logoWrap = document.createElement('div');
-            logoWrap.style.cssText = 'width:100%;display:flex;justify-content:center;padding:clamp(16px, 3vh, 36px) 0 4px;flex-shrink:0;';
+            logoWrap.style.cssText = 'width:100%;display:flex;justify-content:center;padding:clamp(16px, 3vh, 32px) 0 4px;flex-shrink:0;';
             var logoImg = document.createElement('img');
             logoImg.src = LOGO_SRC;
             logoImg.decoding = 'async';
-            logoImg.style.cssText = 'width:clamp(280px, 18vw, 420px);max-width:85%;object-fit:contain;';
+            logoImg.style.cssText = 'width:clamp(280px, 18vw, 380px);max-width:85%;object-fit:contain;';
             logoWrap.appendChild(logoImg);
             left.appendChild(logoWrap);
 
-            // Content row: FB card + 3D Character grouped centrally
+            // Content row: FB card (left) + Character (right)
             var contentRow = document.createElement('div');
             Object.assign(contentRow.style, {
-                flex:'1',width:'100%',maxWidth:'clamp(800px, 55vw, 1300px)',display:'flex',
+                flex:'1',width:'100%',display:'flex',
                 alignItems:'flex-end',justifyContent:'center',margin:'0 auto',
-                padding:'0 clamp(16px, 2vw, 36px)',boxSizing:'border-box',
-                gap:'clamp(20px, 2vw, 48px)',height:'calc(100% - 70px)'
+                padding:'0 24px',boxSizing:'border-box',
+                gap:'24px',height:'calc(100% - 65px)'
             });
 
             // FB Card container (bottom-left)
             var fbWrap = document.createElement('div');
             Object.assign(fbWrap.style, {
-                width:'clamp(340px, 22vw, 460px)',flexShrink:'0',
-                display:'flex',flexDirection:'column',alignItems:'center',
-                paddingBottom:'clamp(14px, 2.5vh, 28px)'
+                width:'500px',maxWidth:'100%',flexShrink:'0',
+                display:'flex',flexDirection:'column',alignItems:'flex-start',
+                paddingBottom:'16px'
             });
             buildFBCard(fbWrap);
 
-            // Character container (bottom-right)
+            // Character container (bottom-right) with height 120%
             var charWrap = document.createElement('div');
             Object.assign(charWrap.style, {
-                flex:'1',maxWidth:'clamp(340px, 25vw, 560px)',display:'flex',alignItems:'flex-end',
+                flex:'1',display:'flex',alignItems:'flex-end',
                 justifyContent:'center',height:'100%',overflow:'hidden'
             });
             var charImg = document.createElement('img');
             charImg.src = CHAR_SRC;
             charImg.decoding = 'async';
             Object.assign(charImg.style, {
-                maxHeight:'96%',maxWidth:'100%',
+                height:'120%',maxHeight:'120%',maxWidth:'100%',
                 objectFit:'contain',objectPosition:'bottom center',
                 display:'block'
             });
