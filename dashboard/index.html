@@ -292,7 +292,7 @@
                             <i data-lucide="users" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">1.1 ผู้ลงทะเบียนทั้งหมด</p>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ผู้ลงทะเบียนทั้งหมด</p>
                             <h3 id="statTotalUsers" class="text-2xl font-black text-slate-900 mt-0.5">0</h3>
                             <p class="text-[11px] text-emerald-600 font-medium mt-0.5">🟢 ฐานข้อมูลเรียลไทม์</p>
                         </div>
@@ -304,7 +304,7 @@
                             <i data-lucide="flame" class="w-6 h-6"></i>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider truncate">1.2 AI ที่ใช้เวลานานสุด</p>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider truncate">AI ที่ใช้เวลานานสุด</p>
                             <h3 id="statTopDurationTool" class="text-xl font-black text-slate-900 mt-0.5 truncate">-</h3>
                             <p id="statTopDurationToolSub" class="text-[11px] text-blue-600 font-medium mt-0.5">เวลารวม 0 ชม.</p>
                         </div>
@@ -316,7 +316,7 @@
                             <i data-lucide="building-2" class="w-6 h-6"></i>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider truncate">1.3 คณะ/หน่วยงานใช้มากสุด</p>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider truncate">คณะ/หน่วยงานใช้มากสุด</p>
                             <h3 id="statTopFaculty" class="text-base font-black text-slate-900 mt-0.5 truncate">-</h3>
                             <p id="statTopFacultySub" class="text-[11px] text-amber-700 font-medium mt-0.5">0 คน</p>
                         </div>
@@ -328,7 +328,7 @@
                             <i data-lucide="timer" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">1.4 เวลาเฉลี่ยต่อคน</p>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">เวลาเฉลี่ยต่อคน</p>
                             <h3 id="statAvgDurationPerPerson" class="text-2xl font-black text-slate-900 mt-0.5">0 นาที</h3>
                             <p class="text-[11px] text-slate-400 font-normal mt-0.5">Average Active Time</p>
                         </div>
@@ -340,15 +340,30 @@
                     
                     <!-- 2.1 แผนภูมิแท่งแสดงผู้มาใช้รายวัน แยก นิสิต vs บุคลากร (6 Cols) -->
                     <div class="card-stat p-5 lg:col-span-6 space-y-3">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                        <div class="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-100 pb-2.5">
                             <div>
                                 <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
                                     <i data-lucide="bar-chart-3" class="w-4 h-4 text-brand-700"></i>
                                     แผนภูมิแสดงจำนวนผู้มาใช้ในแต่ละวัน (แยกประเภท)
                                 </h4>
-                                <p class="text-[11px] text-slate-400">เปรียบเทียบจำนวนนิสิตจุฬาฯ และบุคลากร 7 วันย้อนหลัง</p>
+                                <p id="dailyTrendsSubtitle" class="text-[11px] text-slate-400">เปรียบเทียบจำนวนนิสิตจุฬาฯ และบุคลากร 7 วันย้อนหลัง</p>
                             </div>
-                            <span class="text-[11px] bg-purple-50 text-brand-700 px-2 py-0.5 rounded-md font-semibold border border-purple-200">7 วันล่าสุด</span>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <select id="selectDailyTrendRange" onchange="handleDailyTrendRangeChange()"
+                                        class="bg-purple-50 text-brand-700 text-xs px-2.5 py-1.5 rounded-xl font-semibold border border-purple-200 focus:ring-2 focus:ring-brand-500 outline-none cursor-pointer">
+                                    <option value="7" selected>7 วันล่าสุด</option>
+                                    <option value="14">14 วันล่าสุด</option>
+                                    <option value="30">30 วันล่าสุด</option>
+                                    <option value="this_month">เดือนนี้</option>
+                                    <option value="all">ทั้งหมด</option>
+                                    <option value="custom">กำหนดช่วงวันที่เอง...</option>
+                                </select>
+                                <div id="customDateRangeBox" class="hidden flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-xl border border-slate-200 text-xs">
+                                    <input type="date" id="dailyTrendStartDate" class="px-2 py-0.5 rounded border border-slate-300 text-[11px] text-slate-700 focus:outline-none" onchange="renderOverviewDailyTrendsChart()">
+                                    <span class="text-slate-400 text-xs">ถึง</span>
+                                    <input type="date" id="dailyTrendEndDate" class="px-2 py-0.5 rounded border border-slate-300 text-[11px] text-slate-700 focus:outline-none" onchange="renderOverviewDailyTrendsChart()">
+                                </div>
+                            </div>
                         </div>
                         <div class="h-64 sm:h-72 w-full">
                             <canvas id="chartOverviewDailyTrends"></canvas>
@@ -385,6 +400,26 @@
                         <div id="toolsDurationLegendDetails" class="text-xs space-y-1 pt-2 border-t border-slate-100"></div>
                     </div>
 
+                </div>
+
+                <!-- 2.5 ส่วนแสดงสถิติเครื่องมือ AI ทั้ง 9 ค่าย (9 AI Tools Performance & Usage Grid) -->
+                <div class="card-stat p-6 space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-xl bg-purple-100 text-brand-700 flex items-center justify-center font-bold text-xs shadow-inner">
+                                <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-base">สถิติจำนวนผู้ใช้และระยะเวลาการใช้งาน AI แต่ละค่าย</h4>
+                                <p class="text-xs text-slate-500 font-normal">รายละเอียดสถิติผู้เลือกใช้งานและระยะเวลาการใช้งานสะสมของเครื่องมือ AI ทั้ง 9 รายการ</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-brand-700 bg-purple-50 px-3 py-1 rounded-full font-semibold border border-purple-200">9 AI Tools</span>
+                    </div>
+
+                    <div id="overviewToolsPerformanceGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                        <!-- Dynamically populated 9 AI Tool cards with Logo, Name, Total Duration, Total Users -->
+                    </div>
                 </div>
 
                 <!-- 3. ส่วนล่าง: ตารางการลงทะเบียนและการใช้งาน AI รายคน (7 คอลัมน์) -->
@@ -1292,7 +1327,7 @@
             // 1.4 ระยะเวลาเฉลี่ยการใช้เครื่องมือต่อคน (ตามเวลาจริง: วินาที/นาที/ชม.)
             const divisor = Math.max(totalUsers, 1);
             const avgSecPerPerson = grandTotalSeconds / divisor;
-            document.getElementById('statAvgDurationPerPerson').textContent = `${formatRealtimeDuration(avgSecPerPerson)}/คน`;
+            document.getElementById('statAvgDurationPerPerson').textContent = formatRealtimeDuration(avgSecPerPerson);
 
             // Update View 5 Registration page stat counters
             let regStudents = 0;
@@ -1310,6 +1345,7 @@
 
             // Render components
             renderOverviewUsersTable();
+            renderOverviewToolsPerformanceGrid();
             renderToolBadgesGrid();
             renderCrossAnalysisTable();
             renderRegistrationsManagementTable();
@@ -1319,11 +1355,87 @@
         // ═══════════════════════════════════════════════════════════
         // RENDER CHARTS
         // ═══════════════════════════════════════════════════════════
-        function renderCurrentViewCharts() {
+                // ───────────────────────────────────────────────────────────
+        // OVERVIEW 9 AI TOOLS PERFORMANCE & USAGE GRID
+        // ───────────────────────────────────────────────────────────
+        function renderOverviewToolsPerformanceGrid() {
+            const container = document.getElementById('overviewToolsPerformanceGrid');
+            if (!container) return;
+
+            const tools = [
+                { name: "ChatGPT", icon: "https://chatgpt.com/favicon.ico" },
+                { name: "Claude", icon: "https://cdn.simpleicons.org/claude/D97757" },
+                { name: "Grammarly", icon: "https://cdn.simpleicons.org/grammarly/15C39A" },
+                { name: "Connected Papers", icon: "https://www.connectedpapers.com/favicon.ico" },
+                { name: "Runway", icon: "https://app.runwayml.com/favicon.ico" },
+                { name: "Consensus", icon: "https://consensus.app/favicon.ico" },
+                { name: "SciSpace", icon: "https://typeset.io/favicon.ico" },
+                { name: "Perplexity", icon: "https://www.perplexity.ai/favicon.ico" },
+                { name: "QuillBot", icon: "https://quillbot.com/favicon.ico" }
+            ];
+
+            const toolStats = {};
+            tools.forEach(t => {
+                toolStats[t.name] = { count: 0, durationSec: 0, icon: t.icon };
+            });
+
+            // Count selections from registrations
+            rawRegistrations.forEach(r => {
+                if (Array.isArray(r.selectedAITools)) {
+                    r.selectedAITools.forEach(t => {
+                        if (toolStats[t]) toolStats[t].count++;
+                    });
+                }
+            });
+
+            // Sum duration from usage logs
+            rawUsageLogs.forEach(l => {
+                const logTools = getLogToolDurations(l);
+                Object.entries(logTools).forEach(([t, s]) => {
+                    if (toolStats[t]) {
+                        toolStats[t].durationSec += s;
+                    }
+                });
+            });
+
+            container.innerHTML = tools.map(t => {
+                const stat = toolStats[t.name];
+                const formattedDur = formatRealtimeDuration(stat.durationSec);
+                const hasDuration = stat.durationSec > 0;
+
+                return `
+                    <div class="p-4 rounded-2xl border border-slate-200/80 bg-white hover:shadow-md hover:border-purple-200 transition-all flex items-center justify-between gap-3 group">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-1.5 shrink-0 group-hover:scale-105 transition-transform">
+                                <img src="${t.icon}" alt="${t.name}" class="w-full h-full object-contain" onerror="this.style.display='none'">
+                            </div>
+                            <div class="min-w-0">
+                                <h5 class="font-bold text-slate-800 text-sm truncate">${t.name}</h5>
+                                <div class="flex items-center gap-1.5 text-xs text-brand-700 font-semibold mt-0.5">
+                                    <i data-lucide="users" class="w-3.5 h-3.5 text-brand-500"></i>
+                                    <span>${stat.count} คน</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <div class="text-[10px] text-slate-400 uppercase font-medium">ระยะเวลาใช้งาน</div>
+                            <div class="font-bold text-xs ${hasDuration ? 'text-blue-600' : 'text-slate-400'} mt-0.5 font-mono flex items-center justify-end gap-1">
+                                <i data-lucide="clock" class="w-3.5 h-3.5 ${hasDuration ? 'text-blue-500' : 'text-slate-300'}"></i>
+                                <span>${formattedDur}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            lucide.createIcons();
+        }
+
+function renderCurrentViewCharts() {
             if (currentActiveView === 'overview') {
                 renderOverviewDailyTrendsChart();
                 renderOverviewUserTypesDonut();
                 renderOverviewToolsDurationDonut();
+                renderOverviewToolsPerformanceGrid();
             } else if (currentActiveView === 'demographics') {
                 renderStudentDegreesChart();
                 renderPersonnelCategoriesChart();
@@ -1347,20 +1459,100 @@
         // ───────────────────────────────────────────────────────────
         // OVERVIEW CHARTS
         // ───────────────────────────────────────────────────────────
+        function handleDailyTrendRangeChange() {
+            const val = document.getElementById('selectDailyTrendRange')?.value || '7';
+            const customBox = document.getElementById('customDateRangeBox');
+            if (val === 'custom') {
+                if (customBox) {
+                    customBox.classList.remove('hidden');
+                    customBox.classList.add('flex');
+                }
+                const startInput = document.getElementById('dailyTrendStartDate');
+                const endInput = document.getElementById('dailyTrendEndDate');
+                if (startInput && !startInput.value) {
+                    const d = new Date();
+                    d.setDate(d.getDate() - 7);
+                    startInput.value = d.toISOString().split('T')[0];
+                }
+                if (endInput && !endInput.value) {
+                    endInput.value = new Date().toISOString().split('T')[0];
+                }
+            } else {
+                if (customBox) {
+                    customBox.classList.add('hidden');
+                    customBox.classList.remove('flex');
+                }
+            }
+            renderOverviewDailyTrendsChart();
+        }
+
         function renderOverviewDailyTrendsChart() {
             destroyChart('chartOverviewDailyTrends');
             const ctx = document.getElementById('chartOverviewDailyTrends')?.getContext('2d');
             if (!ctx) return;
 
+            const rangeMode = document.getElementById('selectDailyTrendRange')?.value || '7';
+            const dateList = []; // Array of ISO 'YYYY-MM-DD'
+            const today = new Date();
+
+            if (rangeMode === '7' || rangeMode === '14' || rangeMode === '30') {
+                const countDays = parseInt(rangeMode, 10);
+                for (let i = countDays - 1; i >= 0; i--) {
+                    const d = new Date();
+                    d.setDate(today.getDate() - i);
+                    dateList.push(d.toISOString().split('T')[0]);
+                }
+            } else if (rangeMode === 'this_month') {
+                const year = today.getFullYear();
+                const month = today.getMonth();
+                const daysInMonth = today.getDate();
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const d = new Date(year, month, i);
+                    dateList.push(d.toISOString().split('T')[0]);
+                }
+            } else if (rangeMode === 'custom') {
+                const startStr = document.getElementById('dailyTrendStartDate')?.value;
+                const endStr = document.getElementById('dailyTrendEndDate')?.value;
+                if (startStr && endStr) {
+                    const startD = new Date(startStr);
+                    const endD = new Date(endStr);
+                    if (startD <= endD) {
+                        for (let cur = new Date(startD); cur <= endD; cur.setDate(cur.getDate() + 1)) {
+                            dateList.push(cur.toISOString().split('T')[0]);
+                        }
+                    }
+                }
+                if (dateList.length === 0) {
+                    for (let i = 6; i >= 0; i--) {
+                        const d = new Date();
+                        d.setDate(today.getDate() - i);
+                        dateList.push(d.toISOString().split('T')[0]);
+                    }
+                }
+            } else if (rangeMode === 'all') {
+                let earliestDate = today.toISOString().split('T')[0];
+                rawRegistrations.forEach(r => {
+                    const d = (r.registeredAt || '').split('T')[0];
+                    if (d && d < earliestDate) earliestDate = d;
+                });
+                rawUsageLogs.forEach(l => {
+                    const d = (l.timestamp || l.startTime || '').split('T')[0];
+                    if (d && d < earliestDate) earliestDate = d;
+                });
+                const startD = new Date(earliestDate);
+                for (let cur = new Date(startD); cur <= today; cur.setDate(cur.getDate() + 1)) {
+                    dateList.push(cur.toISOString().split('T')[0]);
+                }
+            }
+
             const days = [];
             const studentCounts = [];
             const personnelCounts = [];
 
-            for (let i = 6; i >= 0; i--) {
-                const d = new Date();
-                d.setDate(d.getDate() - i);
-                const dateStr = d.toISOString().split('T')[0];
-                const displayDate = d.toLocaleDateString('th-TH', { month: 'short', day: 'numeric' });
+            dateList.forEach(dateStr => {
+                const [y, m, d] = dateStr.split('-');
+                const localDate = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+                const displayDate = localDate.toLocaleDateString('th-TH', { month: 'short', day: 'numeric' });
                 days.push(displayDate);
 
                 let studentsOnDay = 0;
@@ -1383,6 +1575,16 @@
 
                 studentCounts.push(studentsOnDay);
                 personnelCounts.push(personnelOnDay);
+            });
+
+            // Update subtitle dynamically
+            const subtitle = document.getElementById('dailyTrendsSubtitle');
+            if (subtitle) {
+                if (days.length > 0) {
+                    subtitle.textContent = `เปรียบเทียบจำนวนนิสิตจุฬาฯ และบุคลากร (${days[0]} - ${days[days.length - 1]} รวม ${days.length} วัน)`;
+                } else {
+                    subtitle.textContent = 'เปรียบเทียบจำนวนนิสิตจุฬาฯ และบุคลากรตามช่วงเวลาที่เลือก';
+                }
             }
 
             chartInstances['chartOverviewDailyTrends'] = new Chart(ctx, {
@@ -1396,7 +1598,7 @@
                             backgroundColor: '#9333ea',
                             borderRadius: 6,
                             borderSkipped: false,
-                            barPercentage: 0.7,
+                            barPercentage: days.length > 14 ? 0.9 : 0.7,
                             categoryPercentage: 0.6
                         },
                         {
@@ -1405,7 +1607,7 @@
                             backgroundColor: '#3b82f6',
                             borderRadius: 6,
                             borderSkipped: false,
-                            barPercentage: 0.7,
+                            barPercentage: days.length > 14 ? 0.9 : 0.7,
                             categoryPercentage: 0.6
                         }
                     ]
@@ -1425,7 +1627,7 @@
                     },
                     scales: {
                         y: { beginAtZero: true, ticks: { precision: 0, font: { family: 'Prompt' } }, grid: { color: '#f1f5f9' } },
-                        x: { grid: { display: false }, ticks: { font: { family: 'Prompt' } } }
+                        x: { grid: { display: false }, ticks: { font: { family: 'Prompt' }, maxRotation: 45, minRotation: 0 } }
                     }
                 }
             });
