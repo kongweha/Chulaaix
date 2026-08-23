@@ -165,7 +165,9 @@
                         <div class="relative">
                             <input type="text" id="studentId" maxlength="10" placeholder="กรอกรหัสนิสิตของคุณ"
                                    class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-base input-focus font-medium tracking-wider"
-                                   oninput="validateStudentId()">
+                                   oninput="onStudentIdInput()"
+                                   onblur="onStudentIdBlur()"
+                                   onfocus="onStudentIdFocus()">
                             <div id="studentIdIcon" class="absolute right-3.5 top-3.5 hidden">
                                 <i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i>
                             </div>
@@ -212,7 +214,9 @@
                         <div class="relative">
                             <input type="email" id="personnelEmail" placeholder="กรอกอีเมลจุฬาฯ ของคุณ"
                                    class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-base input-focus"
-                                   oninput="validatePersonnelEmail()">
+                                   oninput="onPersonnelEmailInput()"
+                                   onblur="onPersonnelEmailBlur()"
+                                   onfocus="onPersonnelEmailFocus()">
                             <div id="personnelEmailIcon" class="absolute right-3.5 top-3.5 hidden">
                                 <i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i>
                             </div>
@@ -261,13 +265,27 @@
                         </div>
                     </div>
 
-                    <div>
+                    <!-- Searchable Combobox for Faculty / Institute / Affiliation -->
+                    <div class="relative" id="facultyComboboxContainer">
                         <label id="t_lbl_faculty" class="block text-sm font-semibold text-gray-700 mb-1.5">
                             คณะ / สถาบัน / หน่วยงานที่สังกัด <span class="text-rose-500">*</span>
                         </label>
-                        <select id="personnelFaculty" class="w-full px-4 py-3 rounded-xl border border-gray-300 text-gray-800 text-sm input-focus bg-white font-medium">
-                            <option value="" disabled selected id="t_opt_select_faculty">-- เลือกคณะหรือหน่วยงานที่สังกัด --</option>
-                        </select>
+                        <div class="relative">
+                            <input type="text" id="facultySearchInput" placeholder="-- ค้นหาหรือเลือกคณะ / หน่วยงาน --"
+                                   autocomplete="off"
+                                   class="w-full px-4 py-3 pr-10 rounded-xl border border-gray-300 text-gray-800 text-sm input-focus bg-white font-medium cursor-pointer"
+                                   onclick="toggleFacultyDropdown(true)"
+                                   oninput="filterFacultyOptions()"
+                                   onkeydown="handleFacultyKeydown(event)">
+                            <input type="hidden" id="personnelFaculty" value="">
+                            <button type="button" onclick="toggleFacultyDropdown()" class="absolute right-3.5 top-3.5 text-gray-400 hover:text-gray-600 focus:outline-none">
+                                <i data-lucide="chevron-down" id="facultyChevronIcon" class="w-4 h-4 transition-transform duration-200"></i>
+                            </button>
+                        </div>
+                        <!-- Dropdown List -->
+                        <div id="facultyDropdownList" class="hidden absolute left-0 right-0 top-full mt-1.5 max-h-56 overflow-y-auto bg-white rounded-xl shadow-xl border border-purple-100 z-50 divide-y divide-gray-50 custom-scrollbar">
+                            <!-- Populated dynamically -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -405,6 +423,15 @@
                             <input type="checkbox" name="primaryPurpose" value="การพัฒนาทักษะตนเอง" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span id="t_purp_4">การพัฒนาทักษะตนเอง</span>
                         </label>
+                        <!-- Other Purpose Option -->
+                        <div class="sm:col-span-2 space-y-2">
+                            <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
+                                <input type="checkbox" id="cbPrimaryPurposeOther" name="primaryPurpose" value="อื่น ๆ" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500" onchange="toggleOtherPurposeInput()">
+                                <span id="t_purp_other">อื่น ๆ (โปรดระบุ)</span>
+                            </label>
+                            <input type="text" id="primaryPurposeOtherText" placeholder="โปรดระบุวัตถุประสงค์อื่นๆ ของคุณ..."
+                                   class="hidden w-full px-4 py-2.5 rounded-xl border border-purple-200 text-gray-800 text-sm input-focus bg-purple-50/30">
+                        </div>
                     </div>
                 </div>
 
@@ -438,6 +465,15 @@
                             <input type="checkbox" name="activityType" value="วางแผนและระดมความคิด" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500">
                             <span id="t_act_6">วางแผนและระดมความคิด</span>
                         </label>
+                        <!-- Other Activity Option -->
+                        <div class="sm:col-span-2 space-y-2">
+                            <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 hover:bg-purple-50/50 cursor-pointer transition">
+                                <input type="checkbox" id="cbActivityTypeOther" name="activityType" value="อื่น ๆ" class="w-4 h-4 text-chula-700 rounded border-gray-300 focus:ring-chula-500" onchange="toggleOtherActivityInput()">
+                                <span id="t_act_other">อื่น ๆ (โปรดระบุ)</span>
+                            </label>
+                            <input type="text" id="activityTypeOtherText" placeholder="โปรดระบุลักษณะงานหรือกิจกรรมอื่นๆ ของคุณ..."
+                                   class="hidden w-full px-4 py-2.5 rounded-xl border border-purple-200 text-gray-800 text-sm input-focus bg-purple-50/30">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -586,6 +622,7 @@
         });
 
         // ═══════════════════════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════════
         // PURE BILINGUAL DICTIONARY (TH / EN)
         // ═══════════════════════════════════════════════════════════
         let currentLang = localStorage.getItem('aix_pref_lang') || 'th';
@@ -621,7 +658,8 @@
                 optStaff: "บุคลากรสายสนับสนุน",
                 optOtherPersonnel: "อื่น ๆ",
                 lblFaculty: "คณะ / สถาบัน / หน่วยงานที่สังกัด *",
-                selectFacultyPlaceholder: "-- เลือกคณะหรือหน่วยงานที่สังกัด --",
+                selectFacultyPlaceholder: "-- ค้นหาหรือเลือกคณะ / สถาบัน / หน่วยงาน --",
+                noFacultyMatch: "ไม่พบคณะหรือหน่วยงานที่ค้นหา",
                 q1Title: "เครื่องมือ AI ที่ต้องการใช้งานในวันนี้ (เลือกได้หลายข้อ) *",
                 q2Title: "คุณคาดว่าจะใช้งานนานแค่ไหน? *",
                 dur1: "น้อยกว่า 15 นาที",
@@ -634,6 +672,8 @@
                 purp2: "การทำวิจัยและวิทยานิพนธ์",
                 purp3: "การปฏิบัติงานประจำและงานบริหาร",
                 purp4: "การพัฒนาทักษะตนเอง",
+                purpOther: "อื่น ๆ (โปรดระบุ)",
+                purpOtherPlaceholder: "โปรดระบุวัตถุประสงค์อื่นๆ ของคุณ...",
                 q4Title: "ลักษณะงานหรือกิจกรรมที่คุณใช้ AI ช่วยในวันนี้คืออะไร? *",
                 act1: "ค้นหาข้อมูลและสรุปเนื้อหา",
                 act2: "ช่วยเขียนบทความและตรวจไวยากรณ์",
@@ -641,6 +681,8 @@
                 act4: "เขียนโค้ดและพัฒนาโปรแกรม",
                 act5: "สร้างรูปภาพและสื่อมัลติมีเดีย",
                 act6: "วางแผนและระดมความคิด",
+                actOther: "อื่น ๆ (โปรดระบุ)",
+                actOtherPlaceholder: "โปรดระบุลักษณะงานหรือกิจกรรมอื่นๆ ของคุณ...",
                 pdpaTitle: "ท่านยินยอมให้ดำเนินการตามเงื่อนไขด้านล่างหรือไม่? *",
                 pdpaContentHtml: `<p>สำนักงานวิทยทรัพยากรให้ความสำคัญกับความเป็นส่วนตัวของท่าน โดยข้อมูลที่ระบุตัวตนจะถูกเก็บรักษาเป็นความลับ อย่างไรก็ตาม ข้อเสนอแนะและผลการประเมิน จะถูกนำไปสรุปผลและเผยแพร่เพื่อเป็นแนวทางในการพัฒนาพื้นที่ Chula AIX ต่อไป นอกจากนี้ การเข้าใช้บริการถือว่าท่านยอมรับและยินดีปฏิบัติตาม <a href="https://chula.libguides.com/c.php?g=984417&p=7176297" target="_blank" class="underline text-chula-700 font-semibold hover:text-chula-900">ระเบียบและข้อปฏิบัติในการใช้บริการพื้นที่ AIX</a> อย่างเคร่งครัด</p><p>โปรดระบุข้อมูลที่ถูกต้อง การกรอกข้อมูลเท็จจะถูกดำเนินการตาม <a href="https://chula.libguides.com/c.php?g=984417&p=7176297" target="_blank" class="underline text-chula-700 font-semibold hover:text-chula-900">ระเบียบและข้อปฏิบัติของ Chula AIX</a></p>`,
                 pdpaCheckboxLabel: "ยินยอมและยอมรับเงื่อนไข",
@@ -692,7 +734,8 @@
                 optStaff: "Support Staff",
                 optOtherPersonnel: "Other",
                 lblFaculty: "Faculty / Institute / Affiliation *",
-                selectFacultyPlaceholder: "-- Select Faculty or Department --",
+                selectFacultyPlaceholder: "-- Search or select faculty / department --",
+                noFacultyMatch: "No faculty or department found",
                 q1Title: "Which AI tools do you plan to use today? (Select all that apply) *",
                 q2Title: "How long do you plan to use it? *",
                 dur1: "Less than 15 minutes",
@@ -705,6 +748,8 @@
                 purp2: "Research & Thesis",
                 purp3: "Administrative & Daily Work",
                 purp4: "Personal Skill Development",
+                purpOther: "Other (Please specify)",
+                purpOtherPlaceholder: "Please specify other purpose...",
                 q4Title: "What kind of activities are you using AI for today? *",
                 act1: "Information Search & Summarization",
                 act2: "Writing & Grammar Editing",
@@ -712,6 +757,8 @@
                 act4: "Coding & Software Development",
                 act5: "Image & Multimedia Generation",
                 act6: "Brainstorming & Planning",
+                actOther: "Other (Please specify)",
+                actOtherPlaceholder: "Please specify other activity...",
                 pdpaTitle: "Do you agree to the terms and conditions mentioned below? *",
                 pdpaContentHtml: `<p>The Office of Academic Resources prioritizes your privacy. All personal identifiable information will be kept strictly confidential. However, comments and evaluation results will be summarized and shared to help improve and develop the Chula AIX service area. By using this service, you acknowledge and agree to comply with the <a href="https://chula.libguides.com/c.php?g=984417&p=7176297" target="_blank" class="underline text-chula-700 font-semibold hover:text-chula-900">Chula AIX Regulations and Guidelines</a>.</p><p>Please provide accurate information. False entries will be subject to the <a href="https://chula.libguides.com/c.php?g=984417&p=7176297" target="_blank" class="underline text-chula-700 font-semibold hover:text-chula-900">Chula AIX regulations and guidelines</a>.</p>`,
                 pdpaCheckboxLabel: "I agree and accept the terms and conditions",
@@ -786,9 +833,16 @@
             document.getElementById('t_opt_other_personnel').textContent = dict.optOtherPersonnel;
 
             document.getElementById('t_lbl_faculty').innerHTML = dict.lblFaculty.replace('*', '<span class="text-rose-500">*</span>');
+            document.getElementById('facultySearchInput').placeholder = dict.selectFacultyPlaceholder;
             
-            // Re-populate faculties dropdown with pure language
-            populatePersonnelFaculties(lang);
+            // Refresh faculty combobox text if selected
+            const curVal = document.getElementById('personnelFaculty')?.value;
+            if (curVal) {
+                const found = FACULTIES_DATA.find(f => f.th === curVal || f.en === curVal || f.code === curVal);
+                if (found) {
+                    document.getElementById('facultySearchInput').value = found[lang] || found.th;
+                }
+            }
 
             document.getElementById('t_q1_title').innerHTML = dict.q1Title.replace('*', '<span class="text-rose-500">*</span>');
             document.getElementById('t_q2_title').innerHTML = dict.q2Title.replace('*', '<span class="text-rose-500">*</span>');
@@ -803,6 +857,8 @@
             document.getElementById('t_purp_2').textContent = dict.purp2;
             document.getElementById('t_purp_3').textContent = dict.purp3;
             document.getElementById('t_purp_4').textContent = dict.purp4;
+            document.getElementById('t_purp_other').textContent = dict.purpOther;
+            document.getElementById('primaryPurposeOtherText').placeholder = dict.purpOtherPlaceholder;
 
             document.getElementById('t_q4_title').innerHTML = dict.q4Title.replace('*', '<span class="text-rose-500">*</span>');
             document.getElementById('t_act_1').textContent = dict.act1;
@@ -811,6 +867,8 @@
             document.getElementById('t_act_4').textContent = dict.act4;
             document.getElementById('t_act_5').textContent = dict.act5;
             document.getElementById('t_act_6').textContent = dict.act6;
+            document.getElementById('t_act_other').textContent = dict.actOther;
+            document.getElementById('activityTypeOtherText').placeholder = dict.actOtherPlaceholder;
 
             document.getElementById('t_pdpa_title').innerHTML = dict.pdpaTitle.replace('*', '<span class="text-rose-500">*</span>');
             document.getElementById('t_pdpa_content').innerHTML = dict.pdpaContentHtml;
@@ -822,35 +880,125 @@
             document.getElementById('t_btn_close_now').textContent = dict.btnCloseNow;
         }
 
-        function populatePersonnelFaculties(lang) {
-            const select = document.getElementById('personnelFaculty');
-            const prevSelected = select.value;
-            select.innerHTML = '';
+        // ═══════════════════════════════════════════════════════════
+        // SEARCHABLE FACULTY COMBOBOX LOGIC
+        // ═══════════════════════════════════════════════════════════
+        let isFacultyDropdownOpen = false;
 
-            const defaultOpt = document.createElement('option');
-            defaultOpt.value = "";
-            defaultOpt.disabled = true;
-            defaultOpt.selected = true;
-            defaultOpt.id = "t_opt_select_faculty";
-            defaultOpt.textContent = i18n[lang].selectFacultyPlaceholder;
-            select.appendChild(defaultOpt);
+        function toggleFacultyDropdown(openState) {
+            const list = document.getElementById('facultyDropdownList');
+            const chevron = document.getElementById('facultyChevronIcon');
+            if (typeof openState === 'boolean') {
+                isFacultyDropdownOpen = openState;
+            } else {
+                isFacultyDropdownOpen = !isFacultyDropdownOpen;
+            }
 
-            // Sort faculties by localized name
-            const list = [...FACULTIES_DATA].sort((a, b) => {
+            if (isFacultyDropdownOpen) {
+                filterFacultyOptions();
+                list.classList.remove('hidden');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            } else {
+                list.classList.add('hidden');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function filterFacultyOptions() {
+            const search = (document.getElementById('facultySearchInput')?.value || '').toLowerCase().trim();
+            const list = document.getElementById('facultyDropdownList');
+            const currentVal = document.getElementById('personnelFaculty')?.value || '';
+            if (!list) return;
+
+            const lang = currentLang || 'th';
+            const faculties = [...FACULTIES_DATA].sort((a, b) => {
                 const nameA = a[lang] || a.th;
                 const nameB = b[lang] || b.th;
                 return nameA.localeCompare(nameB, lang === 'th' ? 'th' : 'en');
             });
 
-            list.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item[lang] || item.th;
-                opt.textContent = item[lang] || item.th;
-                if (opt.value === prevSelected) {
-                    opt.selected = true;
-                }
-                select.appendChild(opt);
+            const filtered = faculties.filter(f => {
+                if (!search) return true;
+                const matchTh = (f.th || '').toLowerCase().includes(search);
+                const matchEn = (f.en || '').toLowerCase().includes(search);
+                const matchCode = (f.code || '').includes(search);
+                return matchTh || matchEn || matchCode;
             });
+
+            if (filtered.length === 0) {
+                list.innerHTML = `<div class="p-3 text-center text-xs text-gray-400 font-medium">${i18n[lang].noFacultyMatch}</div>`;
+                return;
+            }
+
+            list.innerHTML = filtered.map(f => {
+                const displayName = f[lang] || f.th;
+                const isSelected = f.th === currentVal || f.en === currentVal || displayName === currentVal;
+                const activeClass = isSelected ? 'bg-purple-100/80 text-chula-900 font-bold' : 'text-gray-700 hover:bg-purple-50/60 font-medium';
+                return `
+                    <div class="px-4 py-2.5 text-xs cursor-pointer transition flex items-center justify-between ${activeClass}" 
+                         onclick="selectFaculty('${f.th.replace(/'/g, "\\'")}', '${displayName.replace(/'/g, "\\'")}')">
+                        <span>${displayName}</span>
+                        ${isSelected ? '<i data-lucide="check" class="w-4 h-4 text-chula-700"></i>' : ''}
+                    </div>
+                `;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function selectFaculty(value, displayText) {
+            document.getElementById('personnelFaculty').value = value;
+            document.getElementById('facultySearchInput').value = displayText;
+            toggleFacultyDropdown(false);
+        }
+
+        function handleFacultyKeydown(e) {
+            if (e.key === 'Escape') {
+                toggleFacultyDropdown(false);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                const list = document.getElementById('facultyDropdownList');
+                const firstOption = list?.querySelector('div[onclick]');
+                if (firstOption) firstOption.click();
+            } else if (e.key === 'ArrowDown') {
+                toggleFacultyDropdown(true);
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const container = document.getElementById('facultyComboboxContainer');
+            if (container && !container.contains(e.target)) {
+                toggleFacultyDropdown(false);
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════
+        // TOGGLE "OTHER" INPUTS FOR PURPOSE & ACTIVITIES
+        // ═══════════════════════════════════════════════════════════
+        function toggleOtherPurposeInput() {
+            const cb = document.getElementById('cbPrimaryPurposeOther');
+            const input = document.getElementById('primaryPurposeOtherText');
+            if (cb && input) {
+                input.classList.toggle('hidden', !cb.checked);
+                if (cb.checked) {
+                    input.focus();
+                } else {
+                    input.value = '';
+                }
+            }
+        }
+
+        function toggleOtherActivityInput() {
+            const cb = document.getElementById('cbActivityTypeOther');
+            const input = document.getElementById('activityTypeOtherText');
+            if (cb && input) {
+                input.classList.toggle('hidden', !cb.checked);
+                if (cb.checked) {
+                    input.focus();
+                } else {
+                    input.value = '';
+                }
+            }
         }
 
         // Clean URL query string from address bar immediately
@@ -877,58 +1025,99 @@
         }
 
         // ═══════════════════════════════════════════════════════════
-        // VALIDATION LOGIC
+        // VALIDATION LOGIC (NO ERROR WHILE TYPING; CHECK ON BLUR & SUBMIT)
         // ═══════════════════════════════════════════════════════════
-        function validateStudentId() {
-            const input = document.getElementById('studentId');
-            const val = input.value.trim();
-            const err = document.getElementById('studentIdError');
-            const icon = document.getElementById('studentIdIcon');
-
-            if (val.length === 0) {
-                err.classList.add('hidden');
-                icon.classList.add('hidden');
-                return false;
-            }
-
+        function checkStudentIdValid(val) {
             const is10Digits = /^\d{10}$/.test(val);
             const firstDigitOk = ['5', '6', '7'].includes(val.charAt(0));
             const last2 = val.substring(8, 10);
             const facultyOk = !!FACULTIES_MAP_BY_CODE[last2];
-
-            if (!is10Digits || !firstDigitOk || !facultyOk) {
-                err.classList.remove('hidden');
-                icon.classList.add('hidden');
-                return false;
-            }
-
-            err.classList.add('hidden');
-            icon.classList.remove('hidden');
-            return true;
+            return is10Digits && firstDigitOk && facultyOk;
         }
 
-        function validatePersonnelEmail() {
-            const input = document.getElementById('personnelEmail');
+        function onStudentIdInput() {
+            const input = document.getElementById('studentId');
             const val = input.value.trim();
-            const err = document.getElementById('personnelEmailError');
-            const icon = document.getElementById('personnelEmailIcon');
+            const icon = document.getElementById('studentIdIcon');
+            const err = document.getElementById('studentIdError');
+
+            if (checkStudentIdValid(val)) {
+                icon.classList.remove('hidden');
+                err.classList.add('hidden');
+            } else {
+                icon.classList.add('hidden');
+                // Do NOT show error while typing
+            }
+        }
+
+        function onStudentIdBlur() {
+            const input = document.getElementById('studentId');
+            const val = input.value.trim();
+            const icon = document.getElementById('studentIdIcon');
+            const err = document.getElementById('studentIdError');
 
             if (val.length === 0) {
                 err.classList.add('hidden');
                 icon.classList.add('hidden');
-                return false;
+                return;
             }
 
-            const regex = /^[a-zA-Z0-9_-]+\.[a-zA-Z]{1,3}@chula\.ac\.th$/i;
-            if (!regex.test(val)) {
+            if (!checkStudentIdValid(val)) {
                 err.classList.remove('hidden');
                 icon.classList.add('hidden');
-                return false;
+            } else {
+                err.classList.add('hidden');
+                icon.classList.remove('hidden');
+            }
+        }
+
+        function onStudentIdFocus() {
+            document.getElementById('studentIdError')?.classList.add('hidden');
+        }
+
+        function checkPersonnelEmailValid(val) {
+            const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]*chula\.ac\.th$/i;
+            return regex.test(val);
+        }
+
+        function onPersonnelEmailInput() {
+            const input = document.getElementById('personnelEmail');
+            const val = input.value.trim();
+            const icon = document.getElementById('personnelEmailIcon');
+            const err = document.getElementById('personnelEmailError');
+
+            if (checkPersonnelEmailValid(val)) {
+                icon.classList.remove('hidden');
+                err.classList.add('hidden');
+            } else {
+                icon.classList.add('hidden');
+                // Do NOT show error while typing
+            }
+        }
+
+        function onPersonnelEmailBlur() {
+            const input = document.getElementById('personnelEmail');
+            const val = input.value.trim();
+            const icon = document.getElementById('personnelEmailIcon');
+            const err = document.getElementById('personnelEmailError');
+
+            if (val.length === 0) {
+                err.classList.add('hidden');
+                icon.classList.add('hidden');
+                return;
             }
 
-            err.classList.add('hidden');
-            icon.classList.remove('hidden');
-            return true;
+            if (!checkPersonnelEmailValid(val)) {
+                err.classList.remove('hidden');
+                icon.classList.add('hidden');
+            } else {
+                err.classList.add('hidden');
+                icon.classList.remove('hidden');
+            }
+        }
+
+        function onPersonnelEmailFocus() {
+            document.getElementById('personnelEmailError')?.classList.add('hidden');
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -950,7 +1139,9 @@
             let personnelType = '';
 
             if (userType === 'student') {
-                if (!validateStudentId()) {
+                const sIdVal = document.getElementById('studentId').value.trim();
+                if (!checkStudentIdValid(sIdVal)) {
+                    document.getElementById('studentIdError').classList.remove('hidden');
                     alert(dict.alertCheckStudentId);
                     document.getElementById('studentId').focus();
                     return;
@@ -960,14 +1151,16 @@
                     alert(dict.alertSelectDegree);
                     return;
                 }
-                studentId = document.getElementById('studentId').value.trim();
+                studentId = sIdVal;
                 email = studentId + '@student.chula.ac.th';
                 const last2 = studentId.substring(8, 10);
                 const facultyObj = FACULTIES_MAP_BY_CODE[last2];
                 facultyName = facultyObj ? (facultyObj[currentLang] || facultyObj.th) : 'จุฬาลงกรณ์มหาวิทยาลัย';
                 degree = degreeElem.value;
             } else {
-                if (!validatePersonnelEmail()) {
+                const pEmailVal = document.getElementById('personnelEmail').value.trim();
+                if (!checkPersonnelEmailValid(pEmailVal)) {
+                    document.getElementById('personnelEmailError').classList.remove('hidden');
                     alert(dict.alertCheckEmail);
                     document.getElementById('personnelEmail').focus();
                     return;
@@ -980,10 +1173,11 @@
                 facultyName = document.getElementById('personnelFaculty').value;
                 if (!facultyName) {
                     alert(dict.alertSelectFaculty);
-                    document.getElementById('personnelFaculty').focus();
+                    document.getElementById('facultySearchInput').focus();
+                    toggleFacultyDropdown(true);
                     return;
                 }
-                email = document.getElementById('personnelEmail').value.trim().toLowerCase();
+                email = pEmailVal.toLowerCase();
                 personnelType = typeElem.value;
             }
 
@@ -1000,13 +1194,41 @@
             }
             const planDuration = durationElem.value;
 
-            const primaryPurposes = Array.from(document.querySelectorAll('input[name="primaryPurpose"]:checked')).map(cb => cb.value);
+            // Collect Primary Purposes (including Other with text)
+            const primaryPurposes = [];
+            document.querySelectorAll('input[name="primaryPurpose"]:checked').forEach(cb => {
+                if (cb.value === 'อื่น ๆ' || cb.id === 'cbPrimaryPurposeOther') {
+                    const customText = (document.getElementById('primaryPurposeOtherText')?.value || '').trim();
+                    if (customText) {
+                        primaryPurposes.push(`อื่น ๆ: ${customText}`);
+                    } else {
+                        primaryPurposes.push('อื่น ๆ');
+                    }
+                } else {
+                    primaryPurposes.push(cb.value);
+                }
+            });
+
             if (primaryPurposes.length === 0) {
                 alert(dict.alertSelectPurpose);
                 return;
             }
 
-            const activities = Array.from(document.querySelectorAll('input[name="activityType"]:checked')).map(cb => cb.value);
+            // Collect Activities (including Other with text)
+            const activities = [];
+            document.querySelectorAll('input[name="activityType"]:checked').forEach(cb => {
+                if (cb.value === 'อื่น ๆ' || cb.id === 'cbActivityTypeOther') {
+                    const customText = (document.getElementById('activityTypeOtherText')?.value || '').trim();
+                    if (customText) {
+                        activities.push(`อื่น ๆ: ${customText}`);
+                    } else {
+                        activities.push('อื่น ๆ');
+                    }
+                } else {
+                    activities.push(cb.value);
+                }
+            });
+
             if (activities.length === 0) {
                 alert(dict.alertSelectActivity);
                 return;
